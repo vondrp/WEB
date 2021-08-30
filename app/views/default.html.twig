@@ -1,0 +1,17 @@
+{% set data = {
+    'SITENAME' : SITENAME,
+    'URLROOT' : URLROOT
+}%}
+
+<!DOCTYPE html>
+<html>
+{% include('includes/head.inc.twig')%}
+<body>
+{% include('includes/navigation.inc.twig') %}
+{% block content %}
+    default content
+{% endblock %}
+
+
+</body>
+</html>

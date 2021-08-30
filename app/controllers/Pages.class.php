@@ -1,5 +1,10 @@
 <?php
+
+/**
+ * Class Pages is controller of view pages
+ */
 class Pages extends Controller {
+
     public function __construct(){
         $this->userModel = $this->model('User');
     }
@@ -11,7 +16,7 @@ class Pages extends Controller {
             'users' => $users
         ];
 
-        $this->view('pages/index',$data);
+        $this->view('pages/index', $data);
     }
 
     public function about(){

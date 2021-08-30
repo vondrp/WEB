@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Class Core is core class of the web
+ * it takes care of works with URL addresses
+ * and calling of Controllers
+ */
 class Core{
     /**
      * @var string if there no other controllers this page
@@ -23,7 +28,7 @@ class Core{
         $url = $this->getUrl();
         if($url !=NULL){
             /* ucwords - concatenate function - capitalize first letter */
-            if(!file_exists('../app/controllers/' .ucwords($url[0]) . 'php')){
+            if(file_exists('../app/controllers/' .ucwords($url[0]) . 'php')){
                 /* Will set a new controller */
                 $this->currentController = ucwords($url[0]);
                 unset($url[0]);
@@ -58,16 +63,5 @@ class Core{
             $url = explode('/', $url);
             return $url;
         }
-    }
-
-    public function loadTwig(){
-        $loader = new \Twig\Loader\FilesystemLoader('views');
-        $twig = new Twig\Environment($loader);
-
-        $md5Filter = new  \Twig\TwigFilter('md5', function ($string){
-            return md5($string);
-        });
-
-        $twig->addFilter($md5Filter);
     }
 }

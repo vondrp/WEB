@@ -1,7 +1,8 @@
 <?php
 
 /**
- * Class Database
+ * Class Database takes care of connection and
+ * work with database. PDO is used for these purposes.
  */
 class Database{
     private $dbHost = DB_HOST;

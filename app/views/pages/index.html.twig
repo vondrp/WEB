@@ -1,0 +1,13 @@
+{% extends("default.html.twig") %}
+
+{% block content%}
+    {% for user in users%}
+        Informace:{{ user.username }} {{ user.email }} <br>
+    {% endfor %}
+    <!--
+    foreach($data['users'] as $user){
+            echo "Information: ". $user->username ." ". $user->email;
+            echo "<br>";
+        }
+    -->
+{% endblock %}

@@ -47,8 +47,15 @@
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../twigTutorial2.1" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/app/views" />
     <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\programfiles\XAMPP\xampServer\htdocs\WEB\app\views" />
+      <recent name="D:\programfiles\XAMPP\xampServer\htdocs\WEB\app\views\pages" />
+      <recent name="D:\programfiles\XAMPP\xampServer\htdocs\WEB\app\views\includes" />
+    </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -58,7 +65,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1630321279299</updated>
-      <workItem from="1630321282083" duration="7124000" />
+      <workItem from="1630321282083" duration="14064000" />
     </task>
     <servers />
   </component>
