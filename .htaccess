@@ -1,0 +1,7 @@
+# rewrite everything from core public
+# public folder to core public URL
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^$ public/ [L]
+    RewriteRule (.*) public/$1 [L]
+</IfModule>
