@@ -28,7 +28,7 @@ class Core{
         $url = $this->getUrl();
         if($url !=NULL){
             /* ucwords - concatenate function - capitalize first letter */
-            if(file_exists('../app/controllers/' .ucwords($url[0]) . 'php')){
+            if(file_exists('../app/controllers/' .ucwords($url[0]) . '.class.php')){
                 /* Will set a new controller */
                 $this->currentController = ucwords($url[0]);
                 unset($url[0]);

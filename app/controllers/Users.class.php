@@ -1,13 +1,19 @@
 <?php
 
 /**
- * Class Users
+ * Class Users take care of users
  */
 class Users extends Controller{
+    /**
+     * Users constructor.
+     */
     public function __construct(){
         $this->userModel = $this->model('User');
     }
 
+    /**
+     * register user
+     */
     public function register(){
         $passwordMinLength = 6;
 
@@ -92,13 +98,15 @@ class Users extends Controller{
         $this->view('users/register', $data);
     }
 
+    /**
+     * login user
+     */
     public function login(){
+
         $data = [
             'title' => 'Login page',
-            //'username' => '',
             'usernameOrEmail' => '',
             'password' => '',
-            //'usernameError' => '',
             'usernameOrEmailError' => '',
             'passwordError' => ''
         ];
@@ -108,19 +116,12 @@ class Users extends Controller{
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
             $data = [
-                //'username' => trim($_POST['username']),
                 'usernameOrEmail' => trim($_POST['usernameOrEmail']),
                 'password' => trim($_POST['password']),
-                //'usernameError' => '',
                 'usernameOrEmailError' => '',
                 'passwordError' => ''
             ];
-            //Validate username
-            /*
-            if(empty($data['username'])){
-                $data['usernameError'] = 'Please enter a username';
-            }*/
-
+            //Validate usernameOrEmail
             if(empty($data['usernameOrEmail'])){
                 $data['usernameOrEmailError'] = 'Please enter a username or email';
             }
@@ -152,6 +153,10 @@ class Users extends Controller{
         $this->view('users/login', $data);
     }
 
+    /**
+     * Create session
+     * @param $user    user which is going to be login
+     */
     public function createUserSession($user){
         $_SESSION['user_id'] = $user->id;
         $_SESSION['username'] = $user->username;
@@ -160,6 +165,9 @@ class Users extends Controller{
         header('location:' .URLROOT . '/pages/index');
     }
 
+    /**
+     * unset all session parameters and redirect to header
+     */
     public function logout(){
         unset($_SESSION['user_id']);
         unset($_SESSION['username']);

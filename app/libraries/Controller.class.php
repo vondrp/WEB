@@ -8,11 +8,6 @@
  */
 class Controller{
 
-    protected $twig;
-
-    private function __construct(){
-        $this->twig = $this->loadTwig();
-    }
     /**
      * Load the model
      * @param $model   name of the model
@@ -33,6 +28,7 @@ class Controller{
         if(file_exists('../app/views/' . $view . '.html.twig')){
             //require_once '../app/views/' . $view . '.html.twig';
            $twig = $this->loadTwig();
+           $twig->addGlobal('session', $_SESSION);
            $twig->display($view.".html.twig", $data);
         }else{
             die("View does not exists");
@@ -46,7 +42,6 @@ class Controller{
     public function loadTwig(){
         $loader = new \Twig\Loader\FilesystemLoader('../app/views');
         $twig = new Twig\Environment($loader);
-
         $md5Filter = new  \Twig\TwigFilter('md5', function ($string){
             return md5($string);
         });
