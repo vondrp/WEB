@@ -1,32 +1,44 @@
 {% extends('default.html.twig') %}
 {% block content %}
-<div class="container-login">
-    <div class="wrapper-login">
-        <h2>Register</h2>
+<div class="container container-login wrapper-login">
+    <div class="row justify-content-center">
+        <div class="col-sm-6 col-md-4 col-lg-4 col-xl-3">
+            <h2>Register</h2>
 
-        <form action="{{ constant('URLROOT')}}/users/register" method="POST">
-            <input type="text" placeholder="Username *" name="username" value="{{ username }}">
-            <span class="invalidFeedBack">
-                {{ usernameError }}
-            </span>
-            <input type="email" placeholder="Email *" name="email" value="{{ email }}">
-            <span class="invalidFeedBack">
-                {{ emailError }}
-            </span>
-            <input type="password" placeholder="Password *" name="password">
-            <span class="invalidFeedBack">
-                {{ passwordError }}
-            </span>
-            <input type="password" placeholder="Confirm Password *" name="confirmPassword">
-            <span class="invalidFeedBack">
-                {{ confirmPasswordError }}
-            </span>
-            {% if confirmPasswordError is not empty %}
-                <br>
-            {% endif %}
-            <button id="submit" type="submit" value="submit">Submit</button>
-            <p class="options">Already registered? <a href="{{ constant('URLROOT')}}/users/register">Sign in</a></p>
-        </form>
+            <form action="{{ constant('URLROOT')}}/users/register" method="POST">
+                <div class="form-outline mb-4">
+                    <input class="form-control" type="text" placeholder="Username *" name="username" value="{{ username }}">
+                    <span class="invalidFeedBack">
+                        {{ usernameError }}
+                    </span>
+                </div>
+
+                <div class="form-outline mb-4">
+                    <input class="form-control" type="email" placeholder="Email *" name="email" value="{{ email }}">
+                    <span class="invalidFeedBack">
+                        {{ emailError }}
+                    </span>
+                </div>
+
+                <div class="form-outline mb-4">
+                    <input class="form-control" type="password" placeholder="Password *" name="password">
+                    <span class="invalidFeedBack">
+                        {{ passwordError }}
+                    </span>
+                </div>
+                <div class="form-outline mb-4">
+                    <input class="form-control w-15" type="password" placeholder="Confirm Password *" name="confirmPassword">
+                    <span class="invalidFeedBack">
+                        {{ confirmPasswordError }}
+                    </span>
+                    {% if confirmPasswordError is not empty %}
+                        <br>
+                    {% endif %}
+                </div>
+                <button class="myBtn btn btn-primary w-100 h1" id="submit" type="submit" value="submit">Submit</button>
+                <p class="options">Already registered? <a href="{{ constant('URLROOT')}}/users/login">Sign in</a></p>
+            </form>
+        </div>
     </div>
 </div>
 {% endblock %}

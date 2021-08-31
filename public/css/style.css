@@ -1,0 +1,49 @@
+html, body{
+    height: 100%;
+    width:100%;
+    padding:0;
+    margin:0;
+    top: 0;
+    bottom: 0;
+    font-family: 'Lato', sans-serif;;
+    display:flex;
+    flex-direction:column;
+    background-color: #f2f2f2;
+}
+
+.container-login{
+    width: 100%;
+    margin: 0 auto;
+    float:none;
+    text-align:center;
+    position: relative;
+    top:20%;
+}
+
+.wrapper-login input{
+    border: 1px solid #cccccc;
+    background-color: #f5f5f5;
+    font-size: 1em;
+    display: block;
+    position: relative;
+    margin: 20px auto;
+}
+
+.wrapper-login h2{
+    font-size:3em;
+    text-transform: uppercase;
+}
+
+::placeholder{
+    font-size: 1em;
+    font-weight: 100;
+    font-style:italic;
+    opacity: 100;
+}
+.invalidFeedBack{
+    color:#ff0000;
+}
+
+.myBtn{
+    font-size:1.5em;
+}
