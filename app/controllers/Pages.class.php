@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Class Pages is controller of view pages
+ * Class Pages is controller of pages view
  */
 class Pages extends Controller {
 

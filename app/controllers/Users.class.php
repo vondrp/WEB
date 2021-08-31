@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Class Users take care of users
+ * Class Users is controller of users
  */
 class Users extends Controller{
     /**

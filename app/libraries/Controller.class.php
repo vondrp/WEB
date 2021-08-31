@@ -1,7 +1,4 @@
 <?php
-
-//Load the model and the view
-
 /**
  * Class Controller contains methods
  * to load the model and the view
