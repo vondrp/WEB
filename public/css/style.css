@@ -47,3 +47,19 @@ html, body{
 .myBtn{
     font-size:1.5em;
 }
+.navbar{
+    box-shadow: 0px 0px 10px #1a1a1a;
+}
+
+#wysiwygTextArea{
+    height: 20em;
+}
+
+.green{
+    background-color: #4CAF50;
+}
+
+.green:hover{
+    background-color: #64A764;
+    transition: 0.20s ease-in-out;
+}

@@ -36,6 +36,7 @@ class Posts extends Controller{
         $data = [
             'title' => '',
             'content' => '',
+            'description' =>'',
             'titleError' => '',
             'contentError' => ''
         ];
@@ -47,6 +48,7 @@ class Posts extends Controller{
                 'user_id' => $_SESSION['user_id'],
                 'title' => trim($_POST['title']),
                 'content' => trim($_POST['content']),
+                'description' => trim($_POST['description']),
                 'titleError' => '',
                 'contentError' => ''
             ];
@@ -60,7 +62,8 @@ class Posts extends Controller{
             }
 
             if(empty($data['titleError'])
-                && empty($data['contentError'])){
+                && empty($data['contentError'])
+                && empty($data['descriptionError'])){
                 if($this->postModel->addPost($data)){
                     header("Location:". URLROOT ."/posts");
                 }else{
@@ -90,6 +93,7 @@ class Posts extends Controller{
             'post' => $post,
             'title' => '',
             'content' => '',
+            'description' => '',
             'titleError' =>'',
             'contentError' => ''
         ];
@@ -102,6 +106,7 @@ class Posts extends Controller{
                 'user_id' => $_SESSION['user_id'],
                 'title' => trim($_POST['title']),
                 'content' => trim($_POST['content']),
+                'description' => trim($_POST['description']),
                 'titleError' => '',
                 'contentError' => ''
             ];
@@ -148,13 +153,6 @@ class Posts extends Controller{
         }elseif($post->user_id != $_SESSION['user_id']){
             header("Location: ". URLROOT . "/posts");
         }
-        $data = [
-            'post' => $post,
-            'title' => '',
-            'content' => '',
-            'titleError' =>'',
-            'contentError' => ''
-        ];
 
         if($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);

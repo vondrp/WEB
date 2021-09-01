@@ -33,11 +33,12 @@ class Post{
      * @return bool     true - if action is successful, otherwise return false
      */
     public function addPost($data){
-        $this->db->query('INSERT INTO posts(user_id, title, content) VALUES
-        (:user_id, :title, :content)');
+        $this->db->query('INSERT INTO posts(user_id, title, description, content) VALUES
+        (:user_id, :title,:description ,:content)');
 
         $this->db->bind(':user_id', $data['user_id']);
         $this->db->bind(':title', $data['title']);
+        $this->db->bind(':description', $data['description']);
         $this->db->bind(':content', $data['content']);
 
         if($this->db->execute()){
@@ -64,10 +65,11 @@ class Post{
      * @return bool     true - if update succeeded, otherwise return false
      */
     public function updatePost($data){
-        $this->db->query('UPDATE posts SET title = :title, content = :content WHERE id = :id');
+        $this->db->query('UPDATE posts SET title = :title, description = :description, content = :content WHERE id = :id');
 
         $this->db->bind(':id',$data['id']);
         $this->db->bind(':title',$data['title']);
+        $this->db->bind(':description',$data['description']);
         $this->db->bind(':content',$data['content']);
 
         if($this->db->execute()){

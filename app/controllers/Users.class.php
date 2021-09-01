@@ -131,7 +131,8 @@ class Users extends Controller{
                 $data['passwordError'] = 'Please enter a password';
             }
             //Check if all errors are empty
-            if(empty($data['usernameOrEmailError']) && empty($data['passwordError'])){
+            if(empty($data['usernameOrEmailError'])
+                && empty($data['passwordError'])){
                 $loggedInUser = $this->userModel->login($data['usernameOrEmail'], $data['password']);
                 if($loggedInUser){
                     $this->createUserSession($loggedInUser);
@@ -139,7 +140,7 @@ class Users extends Controller{
                     $data['passwordError'] = 'Password 
                     or username is in incorrect.
                     Please try again';
-                    $this->view('users/login', $data);
+                   // $this->view('users/login', $data);
                 }
             }
         }else{
