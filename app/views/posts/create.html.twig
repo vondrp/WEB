@@ -1,7 +1,7 @@
 {% extends('default.html.twig') %}
 
 {% block content %}
-    <div class="container center">
+    <div class="container center mb-2">
         <h1 class="text-center pt-5">Vytvořit nový článek</h1>
 
         <form action="{{ constant('URLROOT')}}/posts/create" method="POST">
@@ -24,7 +24,6 @@
                     {{ post.contentError }}
                 </span>
             </div>
-
             <button class="myBtn btn btn-primary green" name="submit" type="submit">Submit</button>
         </form>
     </div>

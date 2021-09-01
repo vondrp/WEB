@@ -6,12 +6,14 @@
 <!DOCTYPE html>
 <html>
 {% include('includes/head.inc.twig')%}
-<body>
+<body class="d-flex flex-column min-vh-100">
 {% include('includes/navigation.inc.twig') %}
-{% block content %}
-    default content
-{% endblock %}
 
-
+<content>
+        {% block content %}
+            default content
+        {% endblock %}
+</content>
+{% include('includes/footer.inc.twig') %}
 </body>
 </html>

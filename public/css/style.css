@@ -3,12 +3,18 @@ html, body{
     width:100%;
     padding:0;
     margin:0;
-    top: 0;
-    bottom: 0;
     font-family: 'Lato', sans-serif;;
     display:flex;
     flex-direction:column;
-    background-color: #f2f2f2;
+    font-size:1.2em;
+
+    position: relative;
+    min-height: 100%;
+}
+body{
+    background:  linear-gradient(45deg, rgb(130, 183, 220),rgb(52, 102, 170), #f2f2f2);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
 .container-login{
@@ -62,4 +68,12 @@ html, body{
 .green:hover{
     background-color: #64A764;
     transition: 0.20s ease-in-out;
+}
+content{
+    min-height: 90%;
+}
+
+.divFooter{
+    width:100%;
+    margin-top:0.5em;
 }

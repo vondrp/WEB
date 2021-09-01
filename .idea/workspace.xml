@@ -47,7 +47,7 @@
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../MVCframeworkTut" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
@@ -72,7 +72,8 @@
       <workItem from="1630428076119" duration="2894000" />
       <workItem from="1630478895692" duration="1832000" />
       <workItem from="1630489976499" duration="13290000" />
-      <workItem from="1630514575622" duration="3539000" />
+      <workItem from="1630514575622" duration="4320000" />
+      <workItem from="1630525400771" duration="4432000" />
     </task>
     <servers />
   </component>
