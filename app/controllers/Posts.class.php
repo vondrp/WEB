@@ -135,7 +135,6 @@ class Posts extends Controller{
 
         }
         $this->view('posts/update', $data);
-
     }
 
     /**
@@ -162,6 +161,88 @@ class Posts extends Controller{
 
             if($this->postModel->deletePost($id)){
                 header("Location: ". URLROOT ."/posts");
+            }else{
+                die('Something went wrong');
+            }
+        }
+    }
+
+    /**
+     * Controller of showing one specific post
+     * @param $post_id  id of the showed post
+     */
+    public function show($post_id){
+        $post =  $this->postModel->findPostById($post_id);
+        if(!$post){
+            header("Location: ". URLROOT . "/posts");
+        }
+        $comments = $this->postModel->findPostComments($post_id);
+        $data = [
+            'post' => $post,
+            'comments'=> $comments
+        ];
+        $this->view('posts/show', $data);
+    }
+
+    public function createComment($post_id){
+        if(!isLoggedIn()){
+            header("Location: ".URLROOT ."/posts/show/".$post_id);
+        }
+        $data = [
+            'content' => '',
+            'contentError' => ''
+        ];
+
+        //Check is form submitted
+        if($_SERVER['REQUEST_METHOD'] == 'POST'){
+            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+            $data = [
+                'post_id' => $post_id,
+                'author' => $_SESSION['username'],
+                'content' => trim($_POST['content']),
+                'contentError' => ''
+            ];
+
+            if(empty($data['content'])){
+                $data['contentError'] = 'The content of a comment cannot be empty';
+            }
+
+            if(empty($data['contentError']) ){
+                if($this->postModel->addComment($data)){
+                    header("Location:". URLROOT ."/posts/show/".$post_id);
+                }else{
+                    die("Something went wrong, please try again!");
+                }
+            }else{
+                $this->view('posts/show/'.$post_id, $data);
+            }
+
+        }
+        $this->view('posts/show/'.$post_id, $data);
+    }
+
+    /**
+     * Controller method of post deleting
+     * @param $id   id of the deleted comment
+     */
+    public function deleteComment($id){
+        $comment = $this->postModel->findCommentById($id);
+        if(!isLoggedIn()){
+            header("Location: ". URLROOT ."/posts/show/".$comment->post_id);
+        }elseif($comment->author != $_SESSION['username']){
+            header("Location: ". URLROOT . "/posts");
+        }
+        $data = [
+            'comment' => $comment,
+            'content' => '',
+            'contentError' => ''
+        ];
+
+        if($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+            if($this->postModel->deleteComment($id)){
+                header("Location: ". URLROOT ."/posts/show/".$comment->post_id);
             }else{
                 die('Something went wrong');
             }

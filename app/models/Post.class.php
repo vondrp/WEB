@@ -46,7 +46,6 @@ class Post{
             return false;
         }
     }
-
     /**
      * Find post in table posts with his id
      * @param $id       id of the post, which is being looked for
@@ -93,4 +92,62 @@ class Post{
         }
     }
 
+    /**
+     * Return all comments form table comments relatable to the selected post
+     * @param $post_id      id of the post
+     * @return mixed        post comments
+     */
+    public function findPostComments($post_id){
+        $this->db->query('SELECT * FROM comments WHERE post_id = :post_id ORDER BY created_at DESC ');
+        $this->db->bind(':post_id', $post_id);
+        $results = $this->db->resultSet();
+        return $results;
+    }
+
+    /**
+     * Find comment in table comments with his id
+     * @param $id       id of the comment, which is being looked for
+     * @return mixed    data of comment with right id
+     */
+    public function findCommentById($id){
+        $this->db->query('SELECT * FROM comments WHERE id = :id');
+        $this->db->bind(':id', $id);
+        $row = $this->db->single();
+        return $row;
+    }
+
+    /**
+     * Add a new Comment to the comments table
+     * @param $data     array of data which are being added to comments table in database
+     * @return bool     true - if action is successful, otherwise return false
+     */
+    public function addComment($data){
+        $this->db->query('INSERT INTO comments(post_id, author, content) VALUES
+        (:post_id, :author, :content)');
+
+        $this->db->bind(':post_id', $data['post_id']);
+        $this->db->bind(':author', $data['author']);
+        $this->db->bind(':content', $data['content']);
+
+        if($this->db->execute()){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     * Delete post in table posts with right id
+     * @param $comment_id       id of the comment
+     * @return bool     true - action success, otherwise return false
+     */
+    public function deleteComment($comment_id){
+        $this->db->query('DELETE FROM comments WHERE id = :id');
+        $this->db->bind(':id', $comment_id);
+        if($this->db->execute()){
+            return true;
+        }else{
+            return false;
+        }
+    }
 }
