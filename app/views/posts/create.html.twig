@@ -7,9 +7,9 @@
         <form action="{{ constant('URLROOT')}}/posts/create" method="POST">
             <div class="form-group mb-4 form-item">
                 <label>Nadpis</label>
-                <input class="form-control" type="text" name="title" placeholder="Titulek článku *">
+                <input class="form-control" type="text" name="title" placeholder="Titulek článku *" value="{{ post.title }}">
                 <span class="invalidFeedBack">
-                    {{ post.titleError }}
+                    {{ titleError }}
                 </span>
             </div>
 
@@ -19,9 +19,11 @@
             </div>
 
             <div class="form-group mb-4 form-item ">
-                <textarea rows="12" class="form-control" id="wysiwygTextArea" type="text" name="content" placeholder="Zadejte svůj příspěvek *"></textarea>
+                <textarea rows="12" class="form-control" id="wysiwygTextArea" type="text" name="content" placeholder="Zadejte svůj příspěvek *">
+                    {{ post.content }}
+                </textarea>
                 <span class="invalidFeedBack">
-                    {{ post.contentError }}
+                    {{ contentError }}
                 </span>
             </div>
             <button class="myBtn btn btn-primary green" name="submit" type="submit">Submit</button>

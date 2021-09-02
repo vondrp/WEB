@@ -13,6 +13,12 @@
                    href="{{ constant('URLROOT')}}/posts/update/{{ post.id}}">
                                               Update
                 </a>
+
+                <a class="myBtn orange"
+                   href="{{ constant('URLROOT')}}/reviews/create/{{ post.id}}">
+                    Review
+                </a>
+
                 <form action="{{ constant('URLROOT')}}/posts/delete/{{ post.id}}" method="POST" class="delete-form">
                 <button class="myBtn red" name="submit" type="submit">Delete</button>
                 </form>

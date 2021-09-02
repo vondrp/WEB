@@ -73,8 +73,9 @@ class Posts extends Controller{
                 $this->view('posts/create', $data);
             }
 
+        }else{
+            $this->view('posts/create', $data);
         }
-        $this->view('posts/create', $data);
     }
 
     /**
@@ -84,19 +85,18 @@ class Posts extends Controller{
      */
     public function update($id){
         $post = $this->postModel->findPostById($id);
-        if(!isLoggedIn()){
-            header("Location: ". URLROOT . "/posts");
-        }elseif($post->user_id != $_SESSION['user_id']){
+        if(!isLoggedIn() or ($post->user_id != $_SESSION['user_id']) ){
             header("Location: ". URLROOT . "/posts");
         }
         $data = [
             'post' => $post,
-            'title' => '',
+            'title' => 'test',
             'content' => '',
             'description' => '',
             'titleError' =>'',
             'contentError' => ''
         ];
+
         //Check is form submitted
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
@@ -119,12 +119,11 @@ class Posts extends Controller{
                 $data['contentError'] = 'The content of a post cannot be empty';
             }
 
-            if($data['title'] == $this->postModel->findPostById($id)->title){
-                $data['titleError'] == 'At least change the title!';
-            }
+            if(($data['title'] == $this->postModel->findPostById($id)->title)
+            && ($data['content'] == $this->postModel->findPostById($id)->content) ){
 
-            if($data['content'] == $this->postModel->findPostById($id)->content){
-                $data['contentError'] == 'At least change the body!';
+                $data['contentError'] = 'Nothing has been changed';
+                $data['titleError'] = 'At least change the title!';
             }
 
             if(empty($data['titleError'])
@@ -138,8 +137,9 @@ class Posts extends Controller{
                 $this->view('posts/update', $data);
             }
 
+        }else{
+            $this->view('posts/update', $data);
         }
-        $this->view('posts/update', $data);
     }
 
     /**
