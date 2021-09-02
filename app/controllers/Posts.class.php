@@ -175,6 +175,7 @@ class Posts extends Controller{
             header("Location: ". URLROOT . "/posts");
         }
         $comments = $this->postModel->findPostComments($post_id);
+        var_dump($comments);
         $data = [
             'post' => $post,
             'comments'=> $comments
@@ -182,6 +183,16 @@ class Posts extends Controller{
         $this->view('posts/show', $data);
     }
 
+    //*******************
+    //
+    //  COMMENTS METHODS
+    //
+    //*******************
+
+    /**
+     * Create comment
+     * @param $post_id  id of the post to which is comment related
+     */
     public function createComment($post_id){
         if(!isLoggedIn()){
             header("Location: ".URLROOT ."/posts/show/".$post_id);
@@ -246,5 +257,7 @@ class Posts extends Controller{
             }
         }
     }
+
+
 
 }

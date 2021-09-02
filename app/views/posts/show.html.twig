@@ -1,54 +1,57 @@
 {% extends('default.html.twig') %}
 
 {% block content %}
-    <a href="{{ constant('URLROOT') }}/posts/index">zpět na seznam článků</a>
+    <div class="container mt-4">
+        <a href="{{ constant('URLROOT') }}/posts/index">zpět na seznam článků</a>
 
-    {% if session.user_id is not empty and session.user_id == post.user_id %}
-        <a class="myBtn orange"
-           href="{{ constant('URLROOT')}}/posts/update/{{ post.id}}">
-            Update
-        </a>
-        <form action="{{ constant('URLROOT')}}/posts/delete/{{ post.id}}" method="POST" class="delete-form">
-        <button class="myBtn red" name="submit" type="submit">Delete</button>
-        </form>
-
-    {% endif %}
-
-    <h2>{{ post.title }}</h2>
-
-    <p>{{ post.content | raw }}</p>
-    <br>
-    <h2>Komentáře</h2>
-    <h3>Vložte nový příspěvek</h3>
-    {% if session.user_id is not empty %}
-        <form action="{{ constant('URLROOT')}}/posts/createComment/{{ post.id }}" method="POST">
-
-            <div class="form-item">
-                <textarea type="text" name="content" placeholder="Enter you post"></textarea>
-                <span class="invalidFeedBack">
-                    {{ comment.contentError }}
-            </span>
-            </div>
-
-            <button class="myBtn green" name="submit" type="submit">Přidat komentář</button>
-        </form>
-    {% endif %}
-
-
-    {% for comment in comments %}
-
-        {% if session.user_id is not empty and session.username == comment.author %}
-            <form action="{{ constant('URLROOT')}}/posts/deleteComment/{{ comment.id}}" method="POST" class="delete-form">
+        {% if session.user_id is not empty and session.user_id == post.user_id %}
+            <a class="myBtn orange"
+               href="{{ constant('URLROOT')}}/posts/update/{{ post.id}}">
+                Update
+            </a>
+            <form action="{{ constant('URLROOT')}}/posts/delete/{{ post.id}}" method="POST" class="delete-form">
             <button class="myBtn red" name="submit" type="submit">Delete</button>
             </form>
 
         {% endif %}
 
-        <h4>{{ comment.author }}</h4>
-        <p>{{ comment.content }}</p>
+        <h2>{{ post.title }}</h2>
 
-        <h6>{{ comment.created_at }}</h6>
-    {% endfor %}
+        <p>{{ post.content | raw }}</p>
+        <br>
+        <h2>Komentáře</h2>
+        <h3>Vložte nový příspěvek</h3>
+        {% if session.user_id is not empty %}
+            <form action="{{ constant('URLROOT')}}/posts/createComment/{{ post.id }}" method="POST">
+
+                <div class="form-item">
+                    <textarea type="text" name="content" placeholder="Enter you post"></textarea>
+                    <span class="invalidFeedBack">
+                        {{ comment.contentError }}
+                </span>
+                </div>
+
+                <button class="myBtn green" name="submit" type="submit">Přidat komentář</button>
+            </form>
+        {% endif %}
+
+        <div class="comments">
+            {% for comment in comments %}
+
+                {% if session.user_id is not empty and session.username == comment.author %}
+                    <form action="{{ constant('URLROOT')}}/posts/deleteComment/{{ comment.id}}" method="POST" class="delete-form">
+                    <button class="myBtn red" name="submit" type="submit">Delete</button>
+                    </form>
+
+                {% endif %}
+
+                <h4>{{ comment.author }}</h4>
+                <p>{{ comment.content }}</p>
+
+                <h6>{{ comment.created_at }}</h6>
+            {% endfor %}
+        </div>
+    </div>
 
 
 {% endblock %}

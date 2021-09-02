@@ -7,12 +7,14 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="navbar-collapse collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav nav-pills me-auto ">
-                <!--  constant('Acme\\DemoBundle\\Entity\\Demo::MY_CONSTANT') }}-->
+            <ul class="navbar-nav nav-pills ">
                 <li class="nav-item"><a class="nav-link" href="{{ constant('URLROOT')}}/pages/about">About</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ constant('URLROOT')}}/pages/projects">Projects</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ constant('URLROOT')}}/pages/contact">Contact</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ constant('URLROOT')}}/posts/index">Blog</a></li>
+            </ul>
+
+            <ul class="navbar-nav nav-pills ms-auto">
                 <li class="nav-item btn-login">
                     {% if session.user_id is not empty %}
                         <a class="nav-link" href="{{ constant('URLROOT')}}/users/logout">Log out</a>
@@ -21,12 +23,6 @@
                     {% endif %}
                 </li>
             </ul>
-            <form class="form-inline">
-                <div class="input-group">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                </div>
-            </form>
         </div>
     </div>
 </nav>

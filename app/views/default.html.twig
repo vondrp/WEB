@@ -9,11 +9,13 @@
 <body class="d-flex flex-column min-vh-100">
 {% include('includes/navigation.inc.twig') %}
 
-<content>
+<article>
+    <div class="mainSiteContent">
         {% block content %}
             default content
         {% endblock %}
-</content>
+    </div>
 {% include('includes/footer.inc.twig') %}
+</article>
 </body>
 </html>
