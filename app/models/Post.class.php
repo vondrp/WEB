@@ -152,4 +152,16 @@ class Post{
             return false;
         }
     }
+
+    /**
+     * Return all reviews form table reviews relatable to the selected post
+     * @param $post_id      id of the post
+     * @return mixed        post comments
+     */
+    public function findPostReviews($post_id){
+        $this->db->query('SELECT * FROM reviews WHERE post_id = :post_id ORDER BY created_at DESC ');
+        $this->db->bind(':post_id', $post_id);
+        $results = $this->db->resultSet();
+        return $results;
+    }
 }

@@ -19,6 +19,50 @@
 
         <p>{{ post.content | raw }}</p>
         <br>
+        
+        <h2>Recenze</h2>
+        <a class="myBtn orange"
+           href="{{ constant('URLROOT')}}/reviews/create/{{ post.id}}">
+            Vytvořit recenzi
+        </a>
+        <div class="reviews">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">Autor recenze</th>
+                    <th scope="col">Kvalita tématu</th>
+                    <th scope="col">Jazyk</th>
+                    <th scope="col">Originalita</th>
+                    <th scope="col">Poznámky</th>
+                </tr>
+                </thead>
+
+
+            {% for review in reviews %}
+
+
+                <tbody>
+                <tr>
+                    <th scope="row">{{ review.reviewer }}</th>
+                    <td>{{ review.topicRelevance }}</td>
+                    <td>{{ review.langQuality }}</td>
+                    <td>{{ review.originality }}</td>
+                    <td>{{ review.notes }}</td>
+                    {% if session.user_id is not empty and session.username == review.reviewer %}
+
+                        <td><a href="{{ constant('URLROOT')}}/reviews/update/{{ review.id }}">Upravit</a></td>
+                        <td>
+                            <form action="{{ constant('URLROOT')}}/reviews/delete/{{ review.id}}" method="POST" class="delete-form">
+                                <button class="myBtn red" name="submit" type="submit">Delete</button>
+                            </form>
+                        </td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <br>
         <h2>Komentáře</h2>
         <h3>Vložte nový příspěvek</h3>
         {% if session.user_id is not empty %}

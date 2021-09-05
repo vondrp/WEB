@@ -12,9 +12,9 @@ class Reviews extends Controller {
 
 
     /**
-     * Controller of the create view
-     * checks data of the new post provided by the user
-     * before sending them to model
+     * Controller of the create review view
+     * checks data of the new review provided by the user
+     * @param $post_id  id of the post to which review belong
      */
     public function create($post_id){
         //href="{{ constant('URLROOT') }}/posts/show/{{ post.id }}
@@ -86,6 +86,91 @@ class Reviews extends Controller {
 
         }else{
             $this->view('reviews/create', $data);
+        }
+
+    }
+
+    /**
+     * Controller of the create view
+     * checks data of the new post provided by the user
+     * before sending them to model
+     */
+
+    /**
+     * Controller of the update review view
+     * checks upgraded data of the review provided by the user
+     * before sending them to model
+     * @param $review_id    id of the upgraded review
+     */
+    public function update($review_id){
+        $review = $this->reviewModel->findReviewById($review_id);
+        if(!isLoggedIn() or (strcmp($review->reviewer,$_SESSION['username'] ) !=0))
+            {
+            header("Location: ".URLROOT . "/posts/show/".$review->post_id);
+        }
+        $data = [
+            'review' => $review,
+            'topicRelevance' => '',
+            'langQuality' => '',
+            'originality' =>'',
+            'recommendation' => '',
+            'notes' => '',
+            'topicRelevanceError' => '',
+            'langQualityError' => '',
+            'originalityError' =>'',
+            'recommendationError' => '',
+            'notesError' => ''
+        ];
+
+        //Check is form submitted
+        if($_SERVER['REQUEST_METHOD'] == 'POST'){
+            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+            $data = [
+                'id' => $review_id,
+                'topicRelevance' => trim($_POST['topicRelevance']),
+                'langQuality' => trim($_POST['langQuality']),
+                'originality' => trim($_POST['originality']),
+                'recommendation' =>  trim($_POST['recommendation']),
+                'notes' => trim($_POST['notes']),
+                'topicRelevanceError' => '',
+                'langQualityError' => '',
+                'originalityError' =>'',
+                'recommendationError' => '',
+                'notesError' => ''
+            ];
+
+            if(empty($data['topicRelevance'])){
+                $data['topicRelevanceError'] = 'Je třeba uvést relevantnost tématu.';
+            }
+
+            if(empty($data['langQuality'])){
+                $data['langQualityError'] = 'Je třeba uvést kvalitu jazykových prostředků.';
+            }
+
+            if(empty($data['originality'])){
+                $data['originalityError'] = 'Je třeba uvést míru originality.';
+            }
+
+            if(empty($data['recommendation'])){
+                $data['recommendationError'] = 'Je třeba uvést doporučení o publikování.';
+            }
+
+            if(empty($data['topicRelevanceError'])
+                && empty($data['langQualityError'])
+                && empty($data['originalityError'])
+                && empty($data['recommendationError'])){
+                if($this->reviewModel->updateReview($data)){
+                    header("Location:". URLROOT ."/posts");
+                }else{
+                    die("Something went wrong, please try again!");
+                }
+            }else{
+                $this->view('reviews/update', $data);
+            }
+
+        }else{
+            $this->view('reviews/update', $data);
         }
 
     }

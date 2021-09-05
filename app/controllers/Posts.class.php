@@ -90,7 +90,7 @@ class Posts extends Controller{
         }
         $data = [
             'post' => $post,
-            'title' => 'test',
+            'title' => '',
             'content' => '',
             'description' => '',
             'titleError' =>'',
@@ -175,10 +175,11 @@ class Posts extends Controller{
             header("Location: ". URLROOT . "/posts");
         }
         $comments = $this->postModel->findPostComments($post_id);
-        var_dump($comments);
+        $reviews = $this->postModel->findPostReviews($post_id);
         $data = [
             'post' => $post,
-            'comments'=> $comments
+            'comments'=> $comments,
+            'reviews' => $reviews
         ];
         $this->view('posts/show', $data);
     }

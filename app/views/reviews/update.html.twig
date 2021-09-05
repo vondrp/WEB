@@ -1,0 +1,77 @@
+{% extends('default.html.twig') %}
+
+{% block content %}
+    <div class="container center mb-2">
+        <h1 class="text-center pt-5">Upravit recenzi</h1>
+
+        <form action="{{ constant('URLROOT')}}/reviews/update/{{ review.id }}" method="POST">
+            <div class="form-group mb-4 form-item">
+                <label>Relevance tématu</label>
+                <select class="form-control" name="topicRelevance">
+                    <option value="1" {% if review.topicRelevace == 1 %} selected="selected" {% endif %}>1</option>
+                    <option value="2" {% if review.topicRelevace == 2 %} selected="selected" {% endif %}>2</option>
+                    <option value="3" {% if review.topicRelevace == 3 %} selected="selected" {% endif %}>3 = vcelku relevantní</option>
+                    <option value="4" {% if review.topicRelevace == 4 %} selected="selected" {% endif %}>4</option>
+                    <option value="5" {% if review.topicRelevace == 5 %} selected="selected" {% endif %}>5</option>
+                </select>
+
+                <span class="invalidFeedBack">
+                    {{ topicRelevanceError }}
+                </span>
+            </div>
+
+            <div class="form-group mb-4 form-item">
+                <label>Kvalita jazyku</label>
+                <select class="form-control" name="langQuality">
+                    <option value="1" {% if review.langQuality == 1 %} selected="selected" {% endif %}>1</option>
+                    <option value="2" {% if review.langQuality == 2 %} selected="selected" {% endif %}>2</option>
+                    <option value="3" {% if review.langQuality == 3 %} selected="selected" {% endif %}>3</option>
+                    <option value="4" {% if review.langQuality == 4 %} selected="selected" {% endif %}>4</option>
+                    <option value="5" {% if review.langQuality == 5 %} selected="selected" {% endif %}>5 = jazyk jako prezident Zeman</option>
+                </select>
+                <span class="invalidFeedBack">
+                    {{ langQualityError }}
+                </span>
+            </div>
+
+            <div class="form-group mb-4 form-item">
+                <label>Originalita</label>
+                <select class="form-control" name="originality">
+                    <option value="1" {% if review.originality == 1 %} selected="selected" {% endif %}>1 = jedinečné</option>
+                    <option value="2" {% if review.originality == 2 %} selected="selected" {% endif %}>2</option>
+                    <option value="3" {% if review.originality == 3 %} selected="selected" {% endif %}>3</option>
+                    <option value="4" {% if review.originality == 4 %} selected="selected" {% endif %}>4</option>
+                    <option value="5" {% if review.originality == 5 %} selected="selected" {% endif %}>5 = naprosto neoriginální</option>
+                </select>
+                <span class="invalidFeedBack">
+                    {{ originalityError }}
+                </span>
+            </div>
+            <div class="form-group mb-4 form-item">
+                <label>Doporučení</label>
+                <!--  <?php if($options=="PHP") echo 'selected="selected"'; ?>-->
+                <select class="form-control" name="recommendation">
+                    <option value="1" {% if review.recommendation == 1 %} selected="selected" {% endif %}>1 = určitě vydat</option>
+                    <option value="2" {% if review.recommendation == 2 %} selected="selected" {% endif %}>2 = spíše vydat</option>
+                    <option value="3" {% if review.recommendation == 3 %} selected="selected" {% endif %} >3 = lze vydat </option>
+                    <option value="4" {% if review.recommendation == 4 %} selected="selected" {% endif %}>4 = radši nevydávat</option>
+                    <option value="5" {% if review.recommendation == 5 %} selected="selected" {% endif %}>5 = nevydat</option>
+                </select>
+                <span class="invalidFeedBack">
+                    {{ recommendationError }}
+                </span>
+            </div>
+
+            <div class="form-group mb-4 form-item ">
+                <label>Poznámky</label>
+                <textarea rows="12" class="form-control" id="wysiwygTextArea" type="text" name="notes" placeholder="Zadejte své poznámky *">
+                    {{ review.notes }}
+                </textarea>
+                <span class="invalidFeedBack">
+                    {{ notesError }}
+                </span>
+            </div>
+            <button class="myBtn btn btn-primary green" name="submit" type="submit">Submit</button>
+        </form>
+    </div>
+{% endblock %}
