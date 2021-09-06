@@ -8,6 +8,11 @@
 
     <title>{{ constant('SITENAME') }} </title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <!-- link to icons at fontawesome-->
+    <link rel="stylesheet" href="{{ constant('URLROOT') }}/public/css/all.min.css">
+    <link rel="stylesheet" href="{{ constant('URLROOT') }}/public/css/fontawesome.min.css">
+    <!-- according to tutorial https://www.youtube.com/watch?v=hc3crz0E2wk -->
+
     <link rel="stylesheet" href="{{ constant('URLROOT') }}/public/css/style.css">
 
     <!-- WYSIWYG tiny cloud-->
@@ -17,4 +22,5 @@
             selector: '#wysiwygTextArea'
         });
     </script>
+    <script src="{{ constant('URLROOT') }}/public/javascript/javascript.js"></script>
 </head>

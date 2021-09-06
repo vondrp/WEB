@@ -2,33 +2,70 @@
 {% block content %}
 <div class="container container-login wrapper-login">
     <div class="row justify-content-center">
-        <div class="col-sm-6 col-md-4 col-lg-4 col-xl-3">
-            <h2>Register</h2>
+        <div class="col-sm-6 col-md-6 col-lg-5 col-xl-4">
+            <h2>Registrace</h2>
 
-            <form action="{{ constant('URLROOT')}}/users/register" method="POST">
+            <form action="{{ constant('URLROOT')}}/users/register" method="POST" id="registrationForm" onkeydown="registrationUp()">
+
                 <div class="form-outline mb-4">
-                    <input class="form-control" type="text" placeholder="Username *" name="username" value="{{ username }}">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-addon iconInputLeft pt-2" >
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <input class="form-control" type="text" id="username" placeholder="Uživatelské jméno *" name="username" value="{{ username }}">
+                        </div>
+                    </div>
                     <span class="invalidFeedBack">
                         {{ usernameError }}
                     </span>
                 </div>
 
                 <div class="form-outline mb-4">
-                    <input class="form-control" type="email" placeholder="Email *" name="email" value="{{ email }}">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-addon iconInputLeft pt-2" >
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                        <input class="form-control" id="email" type="email" placeholder="Email *" name="email" value="{{ email }}">
+                        </div>
+                    </div>
                     <span class="invalidFeedBack">
-                        {{ emailError }}
+                            {{ emailError }}
                     </span>
                 </div>
 
                 <div class="form-outline mb-4">
-                    <input class="form-control" type="password" placeholder="Password *" name="password">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-addon iconInputLeft pt-2" >
+                                <i class="fas fa-lock"></i>
+                            </div>
+                             <input class="form-control" id="password" type="password" placeholder="Heslo *" name="password">
+                            <div class="input-group-addon iconInputRight pt-2" onclick="openCloseEye('password', 'openEye', 'closeEye')">
+                                <i id="closeEye" class="fas fa-eye-slash"></i>
+                                <i id="openEye" class="fas fa-eye" style="display:none;"></i>
+                            </div>
+                        </div>
+                    </div>
                     <span class="invalidFeedBack">
                         {{ passwordError }}
                     </span>
                 </div>
 
                 <div class="form-outline mb-4">
-                    <input class="form-control w-15" type="password" placeholder="Confirm Password *" name="confirmPassword">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-addon iconInputLeft pt-2" >
+                                <i class="fas fa-lock"></i>
+                            </div>
+                            <input class="form-control w-15" id="password2" type="password" placeholder="Potvrzovací heslo *" name="confirmPassword">
+                            <div class="input-group-addon iconInputRight pt-2" onclick="openCloseEye('password2','openEye2', 'closeEye2')">
+                                <i id="closeEye2" class="fas fa-eye-slash"></i>
+                                <i id="openEye2" class="fas fa-eye" style="display:none;"></i>
+                            </div>
+                        </div>
+                    </div>
                     <span class="invalidFeedBack">
                         {{ confirmPasswordError }}
                     </span>
@@ -36,8 +73,8 @@
                         <br>
                     {% endif %}
                 </div>
-                <button class="myBtn btn btn-primary w-100" id="submit" type="submit" value="submit">Submit</button>
-                <p class="options">Already registered? <a href="{{ constant('URLROOT')}}/users/login">Sign in</a></p>
+                <button class="myBtn btn btn-primary w-100" id="registerButton" disabled="disabled" type="submit" value="submit">Odeslat</button>
+                <p class="options">Již zaregistrovaný? <a href="{{ constant('URLROOT')}}/users/login">Přihlásit se</a></p>
             </form>
         </div>
     </div>
