@@ -198,10 +198,21 @@ class Posts extends Controller{
         if(!isLoggedIn()){
             header("Location: ".URLROOT ."/posts/show/".$post_id);
         }
+        $post =  $this->postModel->findPostById($post_id);
+        $comments = $this->postModel->findPostComments($post_id);
+        $reviews = $this->postModel->findPostReviews($post_id);
+        $data = [
+            'post' => $post,
+            'comments'=> $comments,
+            'reviews' => $reviews,
+            'content' => '',
+            'contentError' => ''
+         ];
+        /*
         $data = [
             'content' => '',
             'contentError' => ''
-        ];
+        ];*/
 
         //Check is form submitted
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
@@ -210,7 +221,11 @@ class Posts extends Controller{
                 'post_id' => $post_id,
                 'author' => $_SESSION['username'],
                 'content' => trim($_POST['content']),
-                'contentError' => ''
+                'contentError' => '',
+
+                'post' => $post,
+                'comments'=> $comments,
+                'reviews' => $reviews
             ];
 
             if(empty($data['content'])){
@@ -223,12 +238,9 @@ class Posts extends Controller{
                 }else{
                     die("Something went wrong, please try again!");
                 }
-            }else{
-                $this->view('posts/show/'.$post_id, $data);
             }
-
         }
-        $this->view('posts/show/'.$post_id, $data);
+        $this->view('posts/show', $data);
     }
 
     /**

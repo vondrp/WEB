@@ -22,10 +22,11 @@ class Controller{
      * @param array $data   dynamic data which are going to be passed into the view
      */
     public function view($view, $data = []){
+        $twig = $this->loadTwig();
+        $twig->addGlobal('session', $_SESSION);
+
         if(file_exists('../app/views/' . $view . '.html.twig')){
             //require_once '../app/views/' . $view . '.html.twig';
-           $twig = $this->loadTwig();
-           $twig->addGlobal('session', $_SESSION);
            $twig->display($view.".html.twig", $data);
         }else{
             die("View does not exists");

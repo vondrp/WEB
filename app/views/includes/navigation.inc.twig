@@ -11,18 +11,38 @@
                 <li class="nav-item"><a class="nav-link" href="{{ constant('URLROOT')}}/pages/about">About</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ constant('URLROOT')}}/pages/projects">Projects</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ constant('URLROOT')}}/pages/contact">Contact</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ constant('URLROOT')}}/posts/index">Blog</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ constant('URLROOT')}}/posts/index">Články</a></li>
             </ul>
 
             <ul class="navbar-nav nav-pills ms-auto">
                 <li class="nav-item btn-login">
                     {% if session.user_id is not empty %}
-                        <a class="nav-link" href="{{ constant('URLROOT')}}/users/logout">Log out</a>
+                        <span class="input-group">
+                            <div class="pt-2" >
+                                <i class="fas fa-sign-out-alt"></i>
+                            </div>
+                            <a class="nav-link" href="{{ constant('URLROOT')}}/users/logout">Odhlásit se</a>
+                        </span>
                     {% else %}
-                        <a class="nav-link" href="{{ constant('URLROOT')}}/users/login">Log in</a>
+                        <span class="input-group">
+                            <div class="pt-2" >
+                                <i class="fas fa-sign-in-alt"></i>
+                            </div>
+                            <a class="nav-link" href="{{ constant('URLROOT')}}/users/login">Přihlásit se</a>
+                        </span>
                     {% endif %}
                 </li>
             </ul>
         </div>
     </div>
 </nav>
+
+<!--
+<div class="input-group">
+                                    <div class="input-group-addon iconInputLeft pt-2" >
+                                            <i class="fas fa-user"></i>
+                                    </div>
+                                    <input class="form-control" id="usernameOrEmail" type="text" placeholder="Uživatelské jméno *" name="usernameOrEmail" value="{{ usernameOrEmail }}">
+
+                                </div>
+-->

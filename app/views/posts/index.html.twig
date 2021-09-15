@@ -3,19 +3,19 @@
 {% block content %}
 <div class="container mt-4">
     {% if session.user_id is not empty %}
-        <a class="myBtn green" href="{{constant('URLROOT')}}/posts/create">Create</a>
+        <a class="myBtn btn green" href="{{constant('URLROOT')}}/posts/create">Create</a>
     {% endif %}
 
     {% for post in posts %}
         <div class="container-item">
             {% if session.user_id is not empty and session.user_id == post.user_id %}
-                <a class="myBtn orange"
+                <a class="myBtn btn orange ms-3 float-end"
                    href="{{ constant('URLROOT')}}/posts/update/{{ post.id}}">
-                                              Update
+                                              Upravit
                 </a>
 
                 <form action="{{ constant('URLROOT')}}/posts/delete/{{ post.id}}" method="POST" class="delete-form">
-                <button class="myBtn red" name="submit" type="submit">Delete</button>
+                <button class="myBtn btn btn-danger float-end ms-2" name="submit" type="submit">Smazat</button>
                 </form>
 
             {% endif %}

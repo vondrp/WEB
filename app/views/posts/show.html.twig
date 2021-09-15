@@ -3,14 +3,14 @@
 {% block content %}
     <div class="container mt-4">
         <a href="{{ constant('URLROOT') }}/posts/index">zpět na seznam článků</a>
-
+<br>
         {% if session.user_id is not empty and session.user_id == post.user_id %}
-            <a class="myBtn orange"
+            <a class="orange btn myBtn fa-pull-right ms-3"
                href="{{ constant('URLROOT')}}/posts/update/{{ post.id}}">
-                Update
+                Upravit článek
             </a>
             <form action="{{ constant('URLROOT')}}/posts/delete/{{ post.id}}" method="POST" class="delete-form">
-            <button class="myBtn red" name="submit" type="submit">Delete</button>
+                <button class="myBtn btn btn-danger fa-pull-right" name="submit" type="submit">Smazat článek</button>
             </form>
 
         {% endif %}
@@ -21,7 +21,7 @@
         <br>
         
         <h2>Recenze</h2>
-        <a class="myBtn orange"
+        <a class="green btn myBtn"
            href="{{ constant('URLROOT')}}/reviews/create/{{ post.id}}">
             Vytvořit recenzi
         </a>
@@ -50,10 +50,12 @@
                     <td>{{ review.notes }}</td>
                     {% if session.user_id is not empty and session.username == review.reviewer %}
 
-                        <td><a href="{{ constant('URLROOT')}}/reviews/update/{{ review.id }}">Upravit</a></td>
+                        <td>
+                                <a class="orange btn myBtn" href="{{ constant('URLROOT')}}/reviews/update/{{ review.id }}">Upravit</a>
+                        </td>
                         <td>
                             <form action="{{ constant('URLROOT')}}/reviews/delete/{{ review.id}}" method="POST" class="delete-form">
-                                <button class="myBtn red" name="submit" type="submit">Delete</button>
+                                <button class="myBtn btn btn-danger" name="submit" type="submit">Smazat</button>
                             </form>
                         </td>
                     {% endif %}
@@ -66,35 +68,51 @@
         <h2>Komentáře</h2>
         <h3>Vložte nový příspěvek</h3>
         {% if session.user_id is not empty %}
-            <form action="{{ constant('URLROOT')}}/posts/createComment/{{ post.id }}" method="POST">
+            <div class="addComment">
+            <form id="commentForm" action="{{ constant('URLROOT')}}/posts/createComment/{{ post.id }}" method="POST">
 
                 <div class="form-item">
-                    <textarea type="text" name="content" placeholder="Enter you post"></textarea>
+                    <textarea class="form-control" type="text" name="content" placeholder="Enter you post" value="{{ comment.content }}"></textarea>
                     <span class="invalidFeedBack">
-                        {{ comment.contentError }}
+                        {{ contentError }}
                 </span>
                 </div>
-
-                <button class="myBtn green" name="submit" type="submit">Přidat komentář</button>
+                <div class="form-item">
+                    <button class="myBtn green btn mt-3  float-end" name="submit" type="submit">Přidat komentář</button>
+                </div>
             </form>
+            </div>
         {% endif %}
 
         <div class="comments">
             {% for comment in comments %}
 
-                {% if session.user_id is not empty and session.username == comment.author %}
-                    <form action="{{ constant('URLROOT')}}/posts/deleteComment/{{ comment.id}}" method="POST" class="delete-form">
-                    <button class="myBtn red" name="submit" type="submit">Delete</button>
-                    </form>
+                <div class="comment">
+                    <h6 style="font-weight: bold;">{{ comment.author }}</h6> <h6 class="text-muted">{{ comment.created_at }}</h6>
+                    <p>{{ comment.content }}</p>
 
-                {% endif %}
+                    <div class="reply" id="reply">
+                        <a class="myBtn btn lightBtn"href="#" id="replyA" onclick="reply(this)">Reply</a>
+                    </div>
 
-                <h4>{{ comment.author }}</h4>
-                <p>{{ comment.content }}</p>
+                    {% if session.user_id is not empty and session.username == comment.author %}
+                        <form action="{{ constant('URLROOT')}}/posts/deleteComment/{{ comment.id}}" method="POST" class="delete-form">
+                            <button class="myBtn btn btn-danger float-end" name="submit" type="submit">Delete</button>
+                        </form>
+                    {% endif %}
 
-                <h6>{{ comment.created_at }}</h6>
+                </div>
             {% endfor %}
         </div>
+
+        <div class="row replyRow" id="replyRow" style="display:none;">
+            <div class="col-md-12">
+                        <textarea type="text" id="replyComment" name="content" placeholder="Add reply"></textarea>
+                    <button class="myBtn green" name="submit" type="submit">Add reply</button>
+            </div>
+        </div>
+
+
     </div>
 
 

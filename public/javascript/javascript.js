@@ -45,3 +45,12 @@ function openCloseEye(passwordId, openEyeId, closeEyeId){
         z.style.display = "block";
     }
 }
+
+
+function reply(caller){
+  //var replyRow = $("#replyRow");
+  //replyRow.insertAfter(".reply");
+  //replyRow.show();
+  $(".replyRow").insertAfter($caller);
+  $(".replyRow").show();
+}
