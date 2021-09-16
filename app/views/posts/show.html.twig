@@ -89,6 +89,17 @@
 
                 <div class="comment">
                     <h6 style="font-weight: bold;">{{ comment.author }}</h6> <h6 class="text-muted">{{ comment.created_at }}</h6>
+                    <h6>Pokus s datem: {{  comment.created_at|date("m/d/y H:i:s'") }} }}</h6>
+                    <p> {{ "now"|date('m/d/y H:i:s')}}</p>
+                    {% set datePost = comment.created_at|date('d-m-Y') %}
+                    {% set today = "now"|date('d-m-Y') %}
+                    {% set difference = date(today).diff(date(datePost))%}
+                    {% set leftDays = difference.days %}
+                    {% if datePost == today %}
+                        <h6 class="text-muted">today </h6>
+                    {% else %}
+                        <h6 class="text-muted">{{ leftDays }} </h6>
+                    {% endif %}
                     <p>{{ comment.content }}</p>
 
                     <div class="reply" id="reply">

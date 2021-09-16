@@ -11,6 +11,21 @@ class Users extends Controller{
         $this->userModel = $this->model('User');
     }
 
+    public function index(){
+        if(!isLoggedIn()){
+            header("Location: ".URLROOT . "/users/login");
+        }
+
+        $posts = $this->userModel->findUserPosts($_SESSION['user_id']);
+        $users = $this->userModel->getUsers();
+        $data = [
+            'posts' => $posts,
+            'users' => $users
+        ];
+        $this->view('users/index', $data);
+
+
+    }
     /**
      * register user
      */

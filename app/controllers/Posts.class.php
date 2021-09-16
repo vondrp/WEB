@@ -176,6 +176,8 @@ class Posts extends Controller{
         }
         $comments = $this->postModel->findPostComments($post_id);
         $reviews = $this->postModel->findPostReviews($post_id);
+
+
         $data = [
             'post' => $post,
             'comments'=> $comments,
@@ -270,7 +272,4 @@ class Posts extends Controller{
             }
         }
     }
-
-
-
 }

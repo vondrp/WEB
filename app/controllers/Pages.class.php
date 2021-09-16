@@ -15,7 +15,6 @@ class Pages extends Controller {
             'title' => 'Home page',
             'users' => $users
         ];
-
         $this->view('pages/index', $data);
     }
 

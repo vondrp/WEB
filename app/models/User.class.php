@@ -87,4 +87,17 @@ class User{
             return false;
         }
     }
+
+    /**
+     * Find all user posts
+     * @param $user_id  id of the user
+     * @return mixed    all posts, which user created
+     */
+    public function findUserPosts($user_id){
+        $this->db->query('SELECT * FROM posts WHERE user_id = :user_id ORDER BY created_at DESC');
+
+        $this->db->bind(':user_id', $user_id);
+
+        return $this->db->resultSet();
+    }
 }

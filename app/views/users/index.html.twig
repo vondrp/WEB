@@ -1,0 +1,28 @@
+{% extends('default.html.twig') %}
+
+{% block content %}
+
+    <h1>Uživatelé přehled</h1>
+
+    {% for post in posts %}
+        <div class="container-item">
+        {% if session.user_id is not empty and session.user_id == post.user_id %}
+            <a class="myBtn btn orange ms-3 float-end"
+               href="{{ constant('URLROOT')}}/posts/update/{{ post.id}}">
+                Upravit
+            </a>
+
+            <form action="{{ constant('URLROOT')}}/posts/delete/{{ post.id}}" method="POST" class="delete-form">
+                <button class="myBtn btn btn-danger float-end ms-2" name="submit" type="submit">Smazat</button>
+            </form>
+
+        {% endif %}
+
+        <h2><a href="{{ constant('URLROOT') }}/posts/show/{{ post.id }}">{{ post.title }}</a></h2>
+        <p>
+            {{ post.content | raw  }}
+        </p>
+        </div>
+    {% endfor %}
+
+{% endblock %}
