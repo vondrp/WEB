@@ -57,6 +57,7 @@ class User{
      * @return false if login action failed
      */
     public function login($usernameOrEmail, $password){
+        //LEFT JOIN roles
         $this->db->query('SELECT * FROM users WHERE username = :usernameOrEmail OR email= :usernameOrEmail');
         //Bind value
         $this->db->bind(':usernameOrEmail', $usernameOrEmail);
@@ -71,6 +72,7 @@ class User{
             return false;
         }
     }
+
     /**
      * Find user by email, Email is passsed in by the Controller
      * @param $email    email address we are looking for

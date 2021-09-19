@@ -37,9 +37,7 @@
                 </tr>
                 </thead>
 
-
             {% for review in reviews %}
-
 
                 <tbody>
                 <tr>
@@ -47,9 +45,8 @@
                     <td>{{ review.topicRelevance }}</td>
                     <td>{{ review.langQuality }}</td>
                     <td>{{ review.originality }}</td>
-                    <td>{{ review.notes }}</td>
+                    <td>{{ review.notes  | raw }}</td>
                     {% if session.user_id is not empty and session.username == review.reviewer %}
-
                         <td>
                                 <a class="orange btn myBtn" href="{{ constant('URLROOT')}}/reviews/update/{{ review.id }}">Upravit</a>
                         </td>
@@ -65,9 +62,9 @@
             </table>
         </div>
         <br>
-        <h2>Komentáře</h2>
-        <h3>Vložte nový příspěvek</h3>
+        <h2><i class="fas fa-comment-alt me-2"></i>Komentáře</h2>
         {% if session.user_id is not empty %}
+            <h3>Vložte nový příspěvek</h3>
             <div class="addComment">
             <form id="commentForm" action="{{ constant('URLROOT')}}/posts/createComment/{{ post.id }}" method="POST">
 
@@ -85,46 +82,88 @@
         {% endif %}
 
         <div class="comments">
+            <p>počet komentářů: {{ comments|length }}</p>
             {% for comment in comments %}
 
                 <div class="comment">
-                    <h6 style="font-weight: bold;">{{ comment.author }}</h6> <h6 class="text-muted">{{ comment.created_at }}</h6>
-                    <h6>Pokus s datem: {{  comment.created_at|date("m/d/y H:i:s'") }} }}</h6>
-                    <p> {{ "now"|date('m/d/y H:i:s')}}</p>
-                    {% set datePost = comment.created_at|date('d-m-Y') %}
-                    {% set today = "now"|date('d-m-Y') %}
-                    {% set difference = date(today).diff(date(datePost))%}
-                    {% set leftDays = difference.days %}
-                    {% if datePost == today %}
+                   <h6 style="font-weight: bold;"><i class="fas fa-comment me-1"></i> {{ comment.author }}</h6> <h6 class="text-muted">{{ comment.created_at }}</h6>
+
+                    <!--
+                    { comment.created_at|time_diff }}
+                    <h6>Pokus s datem: {  comment.created_at|date("m/d/y H:i:s'") }} </h6>
+                    <p> { "now"|date('m/d/y H:i:s')}}</p>
+
+                    % set datePost = comment.created_at|date('d-m-Y') %}
+                    % set today = "now"|date('d-m-Y') %}
+                    % set difference = date(today).diff(date(datePost))%}
+                    % set leftDays = difference.days %}
+                    % if datePost == today %}
                         <h6 class="text-muted">today </h6>
-                    {% else %}
-                        <h6 class="text-muted">{{ leftDays }} </h6>
-                    {% endif %}
+                    % else %}
+                        <h6 class="text-muted">{ leftDays }} </h6>
+                    % endif %}
+                    -->
+
                     <p>{{ comment.content }}</p>
-
-                    <div class="reply" id="reply">
-                        <a class="myBtn btn lightBtn"href="#" id="replyA" onclick="reply(this)">Reply</a>
-                    </div>
-
-                    {% if session.user_id is not empty and session.username == comment.author %}
+                    {% if session.user_id is not empty and (session.username == comment.author or session.user.role == 'admin')  %}
                         <form action="{{ constant('URLROOT')}}/posts/deleteComment/{{ comment.id}}" method="POST" class="delete-form">
-                            <button class="myBtn btn btn-danger float-end" name="submit" type="submit">Delete</button>
+                            <button class="myBtn btn btn-danger float-end" name="submit" type="submit">Smazat komentář</button>
                         </form>
                     {% endif %}
 
+                    {% for reply in comment.replies %}
+                        <div class="replyDiv" id="reply_{{ reply.id }}">
+                            <h6 style="font-weight: bold;"><i class="fas fa-comment-dots"></i> {{ reply.author.username }}</h6> <h6 class="text-muted">{{ reply.created_at }}</h6>
+                            <p>{{ reply.content }}</p>
+                            {% if session.user_id is not empty and (session.username == comment.author or session.user.role == 'admin')  %}
+                                <button class="myBtn btn btn-danger float-end" onclick="deleteReply({{ reply.id }}, {{ post.id }})" name="submit" type="submit">Smazat reply(ajax)</button>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+
+                    {% if session.user_id is not empty %}
+                    <div class="reply">
+                        <button class="myBtn btn lightBtn" onclick="reply(this, {{ comment.id }})"><i class="fas fa-reply"></i> Reply</button>
+                    </div>
+                    {% endif %}
                 </div>
             {% endfor %}
         </div>
+        <!-- action=" constant('URLROOT')}}/posts/createReply/ comment.id }}"-->
+        <div class="addComment row replyRow" style="display:none;">
+            <form id="replyForm" method="POST">
+                <div class="form-item">
+                    <textarea class="form-control" type="text" name="replyContent" placeholder="Enter you reply" value="{{ comment.content }}"></textarea>
+                    <span class="invalidFeedBack">
+                        {{ replyContentError }}
+                </span>
+                </div>
+                    <div class="form-item">
+                        <button class="myBtn green btn mt-3  float-end" name="submit" type="submit">Přidat reply</button>
+                    </div>
 
-        <div class="row replyRow" id="replyRow" style="display:none;">
-            <div class="col-md-12">
-                        <textarea type="text" id="replyComment" name="content" placeholder="Add reply"></textarea>
-                    <button class="myBtn green" name="submit" type="submit">Add reply</button>
-            </div>
+            </form>
         </div>
 
-
     </div>
+    <script>
+        function reply(caller, comment_id){
+            $(".replyRow").insertBefore($(caller));
+            $("#replyForm").attr('action',"{{ constant('URLROOT')}}/posts/createReply/"+ comment_id )  ;
+            $(".replyRow").show();
 
+        }
+
+        function deleteReply (reply_id, post_id) {
+            let replyId = "reply_"+reply_id;
+            $.ajax({
+                url:"{{ constant('URLROOT')}}/posts/deleteReply/"+reply_id+"/"+post_id,    //the page containing php script
+                type: "post",    //request type,
+                success: function(response) {
+                    $("#"+replyId).remove();
+                }
+            });
+        }
+    </script>
 
 {% endblock %}

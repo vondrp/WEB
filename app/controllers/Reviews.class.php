@@ -38,7 +38,7 @@ class Reviews extends Controller {
 
         //Check is form submitted
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
-            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+            $_POST = filter_input_array(INPUT_POST);
 
             $data = [
                 'post_id' => $post_id,
@@ -124,7 +124,7 @@ class Reviews extends Controller {
 
         //Check is form submitted
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
-            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+            $_POST = filter_input_array(INPUT_POST);
 
             $data = [
                 'id' => $review_id,

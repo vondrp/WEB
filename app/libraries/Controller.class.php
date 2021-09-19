@@ -24,6 +24,7 @@ class Controller{
     public function view($view, $data = []){
         $twig = $this->loadTwig();
         $twig->addGlobal('session', $_SESSION);
+        $twig->addExtension(new Twig_Extensions_Extension_Date());
 
         if(file_exists('../app/views/' . $view . '.html.twig')){
             //require_once '../app/views/' . $view . '.html.twig';

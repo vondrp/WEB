@@ -178,6 +178,7 @@ class Users extends Controller{
         $_SESSION['username'] = $user->username;
         $_SESSION['email'] = $user->email;
         $_SESSION['role'] =$user->role;
+        $_SESSION['user'] = $user;
         header('location:' .URLROOT . '/pages/index');
     }
 
@@ -189,6 +190,7 @@ class Users extends Controller{
         unset($_SESSION['username']);
         unset($_SESSION['email']);
         unset($_SESSION['role']);
+        unset($_SESSION['user']);
         header('location: ' . URLROOT .'/users/login');
     }
 }

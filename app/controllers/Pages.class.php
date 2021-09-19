@@ -11,6 +11,11 @@ class Pages extends Controller {
 
     public function index(){
         $users = $this->userModel->getUsers();
+        /*
+        if(isLoggedIn()){
+            $perm = $this->userModel->getPermissions($_SESSION['user']);
+        }*/
+
         $data = [
             'title' => 'Home page',
             'users' => $users

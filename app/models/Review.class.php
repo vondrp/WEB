@@ -26,10 +26,10 @@ class Review{
 
         $this->db->bind(':post_id', $data['post_id']);
         $this->db->bind(':reviewer', $data['reviewer']);
-        $this->db->bind(':topicRelevance', $data['topicRelevance']);
-        $this->db->bind(':langQuality', $data['langQuality']);
-        $this->db->bind(':originality', $data['originality']);
-        $this->db->bind(':recommendation', $data['recommendation']);
+        $this->db->bind(':recommendation', $data['recommendation'], PDO::PARAM_INT);
+        $this->db->bind(':topicRelevance', $data['topicRelevance'], PDO::PARAM_INT);
+        $this->db->bind(':langQuality', $data['langQuality'], PDO::PARAM_INT);
+        $this->db->bind(':originality', $data['originality'], PDO::PARAM_INT);
         $this->db->bind(':notes', $data['notes']);
 
         if($this->db->execute()){
@@ -48,11 +48,11 @@ class Review{
         $this->db->query('UPDATE reviews SET topicRelevance = :topicRelevance, langQuality = :langQuality,
  originality = :originality, recommendation = :recommendation, notes = :notes WHERE id = :id');
 
+        $this->db->bind(':recommendation', $data['recommendation']);
         $this->db->bind(':id', $data['id']);
         $this->db->bind(':topicRelevance', $data['topicRelevance']);
         $this->db->bind(':langQuality', $data['langQuality']);
         $this->db->bind(':originality', $data['originality']);
-        $this->db->bind(':recommendation', $data['recommendation']);
         $this->db->bind(':notes', $data['notes']);
 
         if($this->db->execute()){

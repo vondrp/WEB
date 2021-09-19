@@ -3,7 +3,8 @@
     require_once 'helpers/session_helper.php';
 
     //Require libraries from folder libraries
-    require_once 'libraries/twigTS/vendor/autoload.php';
+    //require_once 'libraries/twigTS/vendor/autoload.php';
+    require_once 'libraries/twigExtension/vendor/autoload.php';
     require_once 'libraries/Core.class.php';
     require_once 'libraries/Controller.class.php';
     require_once 'libraries/Database.class.php';

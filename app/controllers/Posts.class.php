@@ -43,7 +43,8 @@ class Posts extends Controller{
 
         //Check is form submitted
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
-            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+            //FILTER_SANITIZE_STRING - original second parameter - destroys html tags
+            $_POST = filter_input_array(INPUT_POST);
             $data = [
                 'user_id' => $_SESSION['user_id'],
                 'title' => trim($_POST['title']),
@@ -99,7 +100,7 @@ class Posts extends Controller{
 
         //Check is form submitted
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
-            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+            $_POST = filter_input_array(INPUT_POST);
             $data = [
                 'id' => $id,
                 'post' => $post,
@@ -175,8 +176,8 @@ class Posts extends Controller{
             header("Location: ". URLROOT . "/posts");
         }
         $comments = $this->postModel->findPostComments($post_id);
+        $this->postModel->findAllCommentsReplies($comments);
         $reviews = $this->postModel->findPostReviews($post_id);
-
 
         $data = [
             'post' => $post,
@@ -218,7 +219,7 @@ class Posts extends Controller{
 
         //Check is form submitted
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
-            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+            $_POST = filter_input_array(INPUT_POST);
             $data = [
                 'post_id' => $post_id,
                 'author' => $_SESSION['username'],
@@ -267,6 +268,92 @@ class Posts extends Controller{
 
             if($this->postModel->deleteComment($id)){
                 header("Location: ". URLROOT ."/posts/show/".$comment->post_id);
+            }else{
+                die('Something went wrong');
+            }
+        }
+    }
+
+    /*********
+     *  REPLIES METHODS
+     */
+    /**
+     * Create reply
+     * @param $comment_id id of the post to which is comment related
+     */
+    public function createReply($comment_id){
+        $comment = $this->postModel->findCommentById($comment_id);
+
+        $post_id = $comment->post_id;
+
+        if(!isLoggedIn()){
+            header("Location: ".URLROOT ."/posts/show/".$post_id);
+        }
+
+        $post =  $this->postModel->findPostById($post_id);
+        $comments = $this->postModel->findPostComments($post_id);
+        $reviews = $this->postModel->findPostReviews($post_id);
+        $data = [
+            'post' => $post,
+            'comments'=> $comments,
+            'reviews' => $reviews,
+
+            'comment_id' =>$comment_id,
+            'replyContent' =>'',
+            'replyContentError' => '',
+
+            'content' => '',
+            'contentError' => ''
+        ];
+
+        //Check is form submitted
+        if($_SERVER['REQUEST_METHOD'] == 'POST'){
+            $_POST = filter_input_array(INPUT_POST);
+            $data = [
+                'comment_id' => $comment_id,
+                'user_id' => $_SESSION['user_id'],
+                'replyContent' => trim($_POST['replyContent']),
+
+                'replyContentError' => '',
+
+                'post' => $post,
+                'comments'=> $comments,
+                'reviews' => $reviews
+            ];
+
+            if(empty($data['replyContent'])){
+                $data['replyContentError'] = 'The content of a comment cannot be empty';
+            }
+
+            if(empty($data['replyContentError']) ){
+                if($this->postModel->addReply($data)){
+                    header("Location:". URLROOT ."/posts/show/".$post_id);
+                }else{
+                    die("Something went wrong, please try again!");
+                }
+            }
+        }
+        $this->view('posts/show', $data);
+    }
+
+    /**
+     * Controller method of reply deleting
+     * @param $reply_id   id of the deleted reply
+     * @param $post_id    id of the post to which is reply related
+     */
+    public function deleteReply($reply_id, $post_id){
+        $reply = $this->postModel->findReply($reply_id);
+        if(!isLoggedIn()){
+             header("Location: ". URLROOT ."/posts/show/".$post_id);
+        }elseif($reply->user_id != $_SESSION['user_id']){
+             header("Location: ". URLROOT . "/posts");
+        }
+
+        if($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+            if($this->postModel->deleteReply($reply_id)){
+               header("Location: ". URLROOT ."/posts/show/".$post_id);
             }else{
                 die('Something went wrong');
             }

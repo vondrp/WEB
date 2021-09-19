@@ -34,22 +34,20 @@ body{
     position: relative;
 }
 
-.iconInputLeft{
+.iconInput{
     border: 1px solid #cccccc;
     background-color: #f5f5f5;
+    padding-left:0.5em;
+    padding-right:0.5em;
+}
+.iconInputLeft{
     border-top-left-radius: 0.2em 0.2em;
     border-bottom-left-radius: 0.2em 0.2em;
-    padding-left:0.2em;
-    padding-right:0.2em;
 }
 
 .iconInputRight{
-    border: 1px solid #cccccc;
-    background-color: #f5f5f5;
     border-top-right-radius: 0.2em 0.2em;
     border-bottom-right-radius: 0.2em 0.2em;
-    padding-left:0.2em;
-    padding-right:0.2em;
 }
 
 .wrapper-login h2{
@@ -147,6 +145,21 @@ body{
     overflow: auto;
 }
 
+.comment h6, h6{
+    display:inline;
+}
+
+.replyDiv{
+    margin-top: 0.5em;
+    border-top: 0.1em ridge darkgrey;
+    border-left: 0.2em solid darkgrey;
+    overflow:auto;
+    margin-left:1em;
+}
+
+.reply{
+    margin-top: 0.5em;
+}
 .aboutSection{
     background:url(../img/blueGray.jpg);
     color:white;

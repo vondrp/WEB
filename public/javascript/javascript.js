@@ -38,19 +38,13 @@ function openCloseEye(passwordId, openEyeId, closeEyeId){
     if(x.type === 'password'){
         x.type = "text";
         y.style.display = "block";
+        y.style.paddingTop = '0.2em';
         z.style.display = "none";
     }else{
         x.type = "password";
         y.style.display = "none";
         z.style.display = "block";
+        z.style.paddingTop = '0.2em';
     }
 }
 
-
-function reply(caller){
-  //var replyRow = $("#replyRow");
-  //replyRow.insertAfter(".reply");
-  //replyRow.show();
-  $(".replyRow").insertAfter($caller);
-  $(".replyRow").show();
-}
