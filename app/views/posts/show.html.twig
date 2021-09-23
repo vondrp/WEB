@@ -1,19 +1,12 @@
 {% extends('default.html.twig') %}
 
+{% import 'includes/permissions.inc.twig' as macros %}
+
 {% block content %}
     <div class="container mt-4">
         <a href="{{ constant('URLROOT') }}/posts/index">zpět na seznam článků</a>
-<br>
-        {% if session.user_id is not empty and session.user_id == post.user_id %}
-            <a class="orange btn myBtn fa-pull-right ms-3"
-               href="{{ constant('URLROOT')}}/posts/update/{{ post.id}}">
-                Upravit článek
-            </a>
-            <form action="{{ constant('URLROOT')}}/posts/delete/{{ post.id}}" method="POST" class="delete-form">
-                <button class="myBtn btn btn-danger fa-pull-right" name="submit" type="submit">Smazat článek</button>
-            </form>
-
-        {% endif %}
+        <br>
+        {{ macros.canUpdateDeletePost(post)}}
 
         <h2>{{ post.title }}</h2>
 
@@ -21,10 +14,7 @@
         <br>
         
         <h2>Recenze</h2>
-        <a class="green btn myBtn"
-           href="{{ constant('URLROOT')}}/reviews/create/{{ post.id}}">
-            Vytvořit recenzi
-        </a>
+        {{ macros.canCreateReview(post) }}
         <div class="reviews">
             <table class="table table-striped">
                 <thead>
@@ -46,14 +36,12 @@
                     <td>{{ review.langQuality }}</td>
                     <td>{{ review.originality }}</td>
                     <td>{{ review.notes  | raw }}</td>
-                    {% if session.user_id is not empty and session.username == review.reviewer %}
+                    {% if session.user is not empty  %}
                         <td>
-                                <a class="orange btn myBtn" href="{{ constant('URLROOT')}}/reviews/update/{{ review.id }}">Upravit</a>
+                                {{ macros.canUpdateReview(review) }}
                         </td>
                         <td>
-                            <form action="{{ constant('URLROOT')}}/reviews/delete/{{ review.id}}" method="POST" class="delete-form">
-                                <button class="myBtn btn btn-danger" name="submit" type="submit">Smazat</button>
-                            </form>
+                                {{ macros.canDeleteReview(review) }}
                         </td>
                     {% endif %}
                 </tr>
@@ -63,21 +51,27 @@
         </div>
         <br>
         <h2><i class="fas fa-comment-alt me-2"></i>Komentáře</h2>
-        {% if session.user_id is not empty %}
+        {% if session.user is not empty %}
             <h3>Vložte nový příspěvek</h3>
             <div class="addComment">
+                <!-- action="{ constant('URLROOT')}}/posts/createComment/{post.id }}"-->
             <form id="commentForm" action="{{ constant('URLROOT')}}/posts/createComment/{{ post.id }}" method="POST">
 
                 <div class="form-item">
-                    <textarea class="form-control" type="text" name="content" placeholder="Enter you post" value="{{ comment.content }}"></textarea>
+                    <textarea class="form-control" type="text" name="commentContent" id="commentContent" placeholder="Enter you post" value="{{ comment.content }}"></textarea>
                     <span class="invalidFeedBack">
-                        {{ contentError }}
+                        {{ commentContentError }}
                 </span>
                 </div>
                 <div class="form-item">
-                    <button class="myBtn green btn mt-3  float-end" name="submit" type="submit">Přidat komentář</button>
+                    <button class="myBtn green btn mt-3  float-end" id="submitAddComment"name="submit" type="submit">Přidat komentář</button>
                 </div>
+                <p class="form-message"></p>
             </form>
+                <span id="comment_message">
+
+                </span>
+                <div id="display_comment"></div>
             </div>
         {% endif %}
 
@@ -85,7 +79,7 @@
             <p>počet komentářů: {{ comments|length }}</p>
             {% for comment in comments %}
 
-                <div class="comment">
+                <div class="comment" id="comment_{{ comment.id }}">
                    <h6 style="font-weight: bold;"><i class="fas fa-comment me-1"></i> {{ comment.author }}</h6> <h6 class="text-muted">{{ comment.created_at }}</h6>
 
                     <!--
@@ -105,23 +99,21 @@
                     -->
 
                     <p>{{ comment.content }}</p>
-                    {% if session.user_id is not empty and (session.username == comment.author or session.user.role == 'admin')  %}
-                        <form action="{{ constant('URLROOT')}}/posts/deleteComment/{{ comment.id}}" method="POST" class="delete-form">
-                            <button class="myBtn btn btn-danger float-end" name="submit" type="submit">Smazat komentář</button>
-                        </form>
+                    {% if session.user is not empty and (session.user.username == comment.author or session.user.role == 'admin')  %}
+                        <button class="myBtn btn btn-danger float-end" onclick="deleteComment({{ comment.id }})" name="submit" type="submit">Smazat komentář</button>
                     {% endif %}
 
                     {% for reply in comment.replies %}
                         <div class="replyDiv" id="reply_{{ reply.id }}">
                             <h6 style="font-weight: bold;"><i class="fas fa-comment-dots"></i> {{ reply.author.username }}</h6> <h6 class="text-muted">{{ reply.created_at }}</h6>
                             <p>{{ reply.content }}</p>
-                            {% if session.user_id is not empty and (session.username == comment.author or session.user.role == 'admin')  %}
+                            {% if session.user is not empty and (session.user.username == comment.author or session.user.role == 'admin')  %}
                                 <button class="myBtn btn btn-danger float-end" onclick="deleteReply({{ reply.id }}, {{ post.id }})" name="submit" type="submit">Smazat reply(ajax)</button>
                             {% endif %}
                         </div>
                     {% endfor %}
 
-                    {% if session.user_id is not empty %}
+                    {% if session.user is not empty %}
                     <div class="reply">
                         <button class="myBtn btn lightBtn" onclick="reply(this, {{ comment.id }})"><i class="fas fa-reply"></i> Reply</button>
                     </div>
@@ -130,13 +122,13 @@
             {% endfor %}
         </div>
         <!-- action=" constant('URLROOT')}}/posts/createReply/ comment.id }}"-->
-        <div class="addComment row replyRow" style="display:none;">
+        <div class="addComment row replyRow" action=" {{constant('URLROOT')}}/posts/createReply/{{ comment.id }}" style="display:none;">
             <form id="replyForm" method="POST">
                 <div class="form-item">
                     <textarea class="form-control" type="text" name="replyContent" placeholder="Enter you reply" value="{{ comment.content }}"></textarea>
                     <span class="invalidFeedBack">
                         {{ replyContentError }}
-                </span>
+                    </span>
                 </div>
                     <div class="form-item">
                         <button class="myBtn green btn mt-3  float-end" name="submit" type="submit">Přidat reply</button>
@@ -154,6 +146,11 @@
 
         }
 
+        /**
+         * Delete reply
+         * @param reply_id    id of the deleted reply
+         * @param post_id   id of the post to which is reply related to
+         */
         function deleteReply (reply_id, post_id) {
             let replyId = "reply_"+reply_id;
             $.ajax({
@@ -163,6 +160,50 @@
                     $("#"+replyId).remove();
                 }
             });
+        }
+
+        /**
+         * Delete comment
+         * @param comment_id    id of the deleted comment
+         */
+        function deleteComment (comment_id) {
+            let commentId = "comment_"+comment_id;
+            $.ajax({
+                url:"{{ constant('URLROOT')}}/posts/deleteComment/"+comment_id,    //the page containing php script
+                type: "post",    //request type,
+                success: function() {
+                    $("#"+commentId).remove();
+                }
+            });
+        }
+
+        $(document).ready(function(){
+            $("#commentForm").submit(function (event){
+                event.preventDefault();
+                var form_data = $(this).serialize();
+                $.ajax({
+                   url: "{{ constant('URLROOT')}}/posts/createComment/{{ post.id }}",
+                    method: "POST",
+                    data: form_data,
+                    dataType: "json",
+                    success:function (data){
+                       if(data.error != ''){
+                           $("#commentForm")[0].reset();
+                           $('#comment_message').html(data.error);
+                       }
+                    }
+                });
+            });
+        });
+       // load_comment();
+        function load_comment(){
+            $.ajax({
+                url: "{{ constant('URLROOT')}}/posts/displayComment/{{ post.id }}",
+                method: "POST",
+                success:function (data){
+                    $('#display_comment').html(data);
+                }
+            })
         }
     </script>
 

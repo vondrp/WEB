@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Class Users is controller of users
+ * Class Users - controller of users
  */
 class Users extends Controller{
     /**
@@ -16,10 +16,10 @@ class Users extends Controller{
             header("Location: ".URLROOT . "/users/login");
         }
 
-        $posts = $this->userModel->findUserPosts($_SESSION['user_id']);
+        $userPosts = $this->userModel->findUserPosts($_SESSION['user']);
         $users = $this->userModel->getUsers();
         $data = [
-            'posts' => $posts,
+            'userPosts' => $userPosts,
             'users' => $users
         ];
         $this->view('users/index', $data);
@@ -173,23 +173,101 @@ class Users extends Controller{
      * Create session
      * @param $user    user which is going to be login
      */
-    public function createUserSession($user){
-        $_SESSION['user_id'] = $user->id;
-        $_SESSION['username'] = $user->username;
-        $_SESSION['email'] = $user->email;
-        $_SESSION['role'] =$user->role;
+    private function createUserSession($user){
         $_SESSION['user'] = $user;
         header('location:' .URLROOT . '/pages/index');
     }
 
     /**
+     * Changes data of the selected user
+     * @param $user selected user
+     */
+    public function updateUserUsernameEmail($user = null){
+        if($user == null){
+
+        }
+        $data = [
+            'username' => '',
+            'email' => '',
+            'usernameError' => '',
+            'emailError'=> '',
+        ];
+        //REQUEST METHOD
+        if($_SERVER['REQUEST_METHOD'] == 'POST'){
+            //Santize post data
+            //severs problems with unwanted characters - PDO mechanic
+            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+            //trim remove white space
+            $data = [
+                'id' => $user->id,
+
+                'username' => trim($_POST['username']),
+                'email' => trim($_POST['email']),
+                'usernameError' => '',
+                'emailError'=> '',
+            ];
+            $nameValidation = "/^[a-zA-Z0-9]*$/";
+            //Validate username on letters/numbers
+            if(empty($data['username'])){
+                $data['usernameError'] = 'Please enter username';
+            }elseif(!preg_match($nameValidation, $data['username'])){
+                $data['usernameError'] = 'Name can only contain letters and numbers';
+            }
+            //Validate email
+            if(empty($data['email'])){
+                $data['emailError'] = 'Please enter email address.';
+
+            }elseif (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)){
+                $data['emailError'] = 'Please enter the correct format';
+            }else{
+                //check if email exists
+                if($this->userModel->findUserByEmail($data['email'])){
+                    $data['emailError'] = 'Email is already taken';
+                }
+            }
+
+            //Make sure that errors are empty
+            if( empty($data['usernameError']) && empty($data['emailError'])){
+                //Update user username and email
+                if($this->userModel->updateUserUsernameEmail($data)){
+                    //Redirect to the user index page page
+                    header('location: ' . URLROOT . '/users/index');
+                }else{
+                    die('Something went wrong.');
+                }
+            }
+        }
+        $this->view('users/index', $data);
+    }
+
+    public function changePassword($user){
+
+        $data = [
+            'password' => '',
+            'confirmPassword' => '',
+            'passwordError' => '',
+            'confirmPasswordError' => ''
+        ];
+        //Check for post
+        if($_SERVER['REQUEST_METHOD'] == 'POST') {
+            //Sanitize post data
+            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+            $data = [
+                'password' => trim($_POST['password']),
+                'confirmPassword' => trim($_POST['confirmPassword']),
+                'passwordError' => '',
+                'confirmPasswordError' => ''
+            ];
+            $passwordValidation = "/^(.{0,7}|[^a-z]*|[^\d]*)$/i";
+        }
+    }
+
+
+    /**
      * unset all session parameters and redirect to header
      */
     public function logout(){
-        unset($_SESSION['user_id']);
-        unset($_SESSION['username']);
-        unset($_SESSION['email']);
-        unset($_SESSION['role']);
         unset($_SESSION['user']);
         header('location: ' . URLROOT .'/users/login');
     }

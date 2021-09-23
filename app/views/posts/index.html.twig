@@ -1,24 +1,16 @@
 {% extends('default.html.twig') %}
 
+{% import 'includes/permissions.inc.twig' as macros %}
 {% block content %}
+
 <div class="container mt-4">
-    {% if session.user_id is not empty %}
-        <a class="myBtn btn green" href="{{constant('URLROOT')}}/posts/create">Create</a>
-    {% endif %}
+    {{ macros.canCreatePost() }}
 
     {% for post in posts %}
         <div class="container-item">
-            {% if session.user_id is not empty and session.user_id == post.user_id %}
-                <a class="myBtn btn orange ms-3 float-end"
-                   href="{{ constant('URLROOT')}}/posts/update/{{ post.id}}">
-                                              Upravit
-                </a>
 
-                <form action="{{ constant('URLROOT')}}/posts/delete/{{ post.id}}" method="POST" class="delete-form">
-                <button class="myBtn btn btn-danger float-end ms-2" name="submit" type="submit">Smazat</button>
-                </form>
+            {{ macros.canUpdateDeletePost(post) }}
 
-            {% endif %}
 
             <h2><a href="{{ constant('URLROOT') }}/posts/show/{{ post.id }}">{{ post.title }}</a></h2>
             <p>

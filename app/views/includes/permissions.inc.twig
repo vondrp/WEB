@@ -1,0 +1,46 @@
+{% macro canUpdateDeletePost(post)  %}
+
+    {% if session.user is not empty and (session.user.id == post.user_id or session.user.role == 'superadmin') %}
+        <a class="orange btn myBtn fa-pull-right ms-3"
+           href="{{ constant('URLROOT')}}/posts/update/{{ post.id}}">
+            Upravit článek
+        </a>
+        <form action="{{ constant('URLROOT')}}/posts/delete/{{ post.id}}" method="POST" class="delete-form">
+            <button class="myBtn btn btn-danger fa-pull-right" name="submit" type="submit">Smazat článek</button>
+        </form>
+
+    {% endif %}
+
+{% endmacro %}
+
+{% macro canCreatePost() %}
+    {% if session.user is not empty and (session.user.role == 'editor' or session.user.role == 'superadmin')%}
+        <a class="myBtn btn green" href="{{constant('URLROOT')}}/posts/create">Create</a>
+    {% endif %}
+{% endmacro %}
+
+
+{% macro canCreateReview(post) %}
+    {% if session.user is not empty and (session.user.role == 'reviewer' or session.user.role == 'superadmin') %}
+        <a class="green btn myBtn"
+           href="{{ constant('URLROOT')}}/reviews/create/{{ post.id}}">
+            Vytvořit recenzi
+        </a>
+    {% endif %}
+{% endmacro %}
+
+{# macro find out if session user can update selected review#}
+{% macro canUpdateReview(review) %}
+    {% if session.user is not empty and (session.user.id == review.reviewer_id or session.user.role == 'superadmin') %}
+        <a class="orange btn myBtn" href="{{ constant('URLROOT')}}/reviews/update/{{ review.id }}">Upravit</a>
+    {% endif %}
+{% endmacro %}
+
+{# macro find out if session user can delete selected review#}
+{% macro canDeleteReview(review) %}
+    {% if session.user is not empty and (session.user.id == review.reviewer_id or session.user.role == 'superadmin') %}
+            <form action="{{ constant('URLROOT')}}/reviews/delete/{{ review.id}}" method="POST" class="delete-form">
+                <button class="myBtn btn btn-danger" name="submit" type="submit">Smazat</button>
+            </form>
+    {% endif %}
+{% endmacro %}

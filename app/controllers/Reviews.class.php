@@ -19,12 +19,12 @@ class Reviews extends Controller {
     public function create($post_id){
         //href="{{ constant('URLROOT') }}/posts/show/{{ post.id }}
         $post = $this->postModel->findPostById($post_id);
-        if(!isLoggedIn()){
+        if(!reviewerPermissions()){
             header("Location: ".URLROOT . "/posts/show/".$post_id);
         }
         $data = [
             'post' => $post,
-            'topicRelevance' => '2',
+            'topicRelevance' => '',
             'langQuality' => '',
             'originality' =>'',
             'recommendation' => '',
@@ -42,7 +42,7 @@ class Reviews extends Controller {
 
             $data = [
                 'post_id' => $post_id,
-                'reviewer' => $_SESSION['username'],
+                'reviewer_id' => $_SESSION['user']->id,
                 'topicRelevance' => trim($_POST['topicRelevance']),
                 'langQuality' => trim($_POST['langQuality']),
                 'originality' => trim($_POST['originality']),
@@ -76,7 +76,7 @@ class Reviews extends Controller {
                 && empty($data['originalityError'])
                 && empty($data['recommendationError'])){
                 if($this->reviewModel->addReview($data)){
-                    header("Location:". URLROOT ."/posts");
+                    header("Location:". URLROOT ."/posts/show/".$post_id);
                 }else{
                     die("Something went wrong, please try again!");
                 }
@@ -104,8 +104,9 @@ class Reviews extends Controller {
      */
     public function update($review_id){
         $review = $this->reviewModel->findReviewById($review_id);
-        if(!isLoggedIn() or (strcmp($review->reviewer,$_SESSION['username'] ) !=0))
-            {
+        //strcmp($review->reviewer,$_SESSION['username'] ) !=0)
+        if(!isLoggedIn() or ( $review->reviewer_id != $_SESSION['user']->id))
+        {
             header("Location: ".URLROOT . "/posts/show/".$review->post_id);
         }
         $data = [
@@ -161,7 +162,7 @@ class Reviews extends Controller {
                 && empty($data['originalityError'])
                 && empty($data['recommendationError'])){
                 if($this->reviewModel->updateReview($data)){
-                    header("Location:". URLROOT ."/posts");
+                    header("Location:". URLROOT ."/posts/show/".$review->post_id);
                 }else{
                     die("Something went wrong, please try again!");
                 }
@@ -181,9 +182,11 @@ class Reviews extends Controller {
      */
     public function delete($id){
         $review = $this->reviewModel->findReviewById($id);
+        $post_id = $review->post_id;
         if(!isLoggedIn()){
             header("Location: ". URLROOT . "/posts");
-        }elseif(strcmp($review->reviewer,$_SESSION['username']) !=0 ){
+            //strcmp($review->reviewer_id,$_SESSION['username']) !=0
+        }elseif( $review->reviewer_id != $_SESSION['user']->id){
             header("Location: ". URLROOT . "/posts");
         }
 
@@ -191,7 +194,7 @@ class Reviews extends Controller {
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
             if($this->reviewModel->deleteReview($id)){
-                header("Location: ". URLROOT ."/posts");
+                header("Location: ". URLROOT ."/posts/show/".$post_id);
             }else{
                 die('Something went wrong');
             }

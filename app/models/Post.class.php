@@ -125,11 +125,11 @@ class Post{
      */
     public function addComment($data){
         $this->db->query('INSERT INTO comments(post_id, author, content) VALUES
-        (:post_id, :author, :content)');
+        (:post_id, :author, :commentContent)');
 
         $this->db->bind(':post_id', $data['post_id']);
         $this->db->bind(':author', $data['author']);
-        $this->db->bind(':content', $data['content']);
+        $this->db->bind(':commentContent', $data['commentContent']);
 
         if($this->db->execute()){
             return true;

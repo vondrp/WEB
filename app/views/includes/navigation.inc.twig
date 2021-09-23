@@ -14,7 +14,7 @@
             </ul>
 
             <ul class="navbar-nav nav-pills ms-auto">
-                {% if session.user_id is not empty %}
+                {% if session.user is not empty %}
                 <li class="nav-item">
                     <span class="input-group">
                         <a class="nav-link" href="{{ constant('URLROOT')}}/users/profil">
@@ -24,7 +24,7 @@
                 </li>
                 <li class="nav-item">
                     <span class="input-group nav-link">
-                            <i class="fas fa-user" rel="uživatel" title="uživatel"></i> {{ session.username }}({{ session.role }})
+                            <i class="fas fa-user" rel="uživatel" title="uživatel"></i> {{ session.user.username }}({{ session.user.role }})
                     </span>
                 </li>
                 <li class="nav-item btn-login">

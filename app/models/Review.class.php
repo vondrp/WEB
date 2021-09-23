@@ -21,11 +21,11 @@ class Review{
      * @return bool     true - if action is successful, otherwise return false
      */
     public function addReview($data){
-        $this->db->query('INSERT INTO reviews(post_id, reviewer, topicRelevance, langQuality, originality, recommendation, notes) VALUES
-        (:post_id, :reviewer, :topicRelevance ,:langQuality, :originality, :recommendation, :notes)');
+        $this->db->query('INSERT INTO reviews(post_id, reviewer_id, topicRelevance, langQuality, originality, recommendation, notes) VALUES
+        (:post_id, :reviewer_id, :topicRelevance ,:langQuality, :originality, :recommendation, :notes)');
 
         $this->db->bind(':post_id', $data['post_id']);
-        $this->db->bind(':reviewer', $data['reviewer']);
+        $this->db->bind(':reviewer_id', $data['reviewer_id']);
         $this->db->bind(':recommendation', $data['recommendation'], PDO::PARAM_INT);
         $this->db->bind(':topicRelevance', $data['topicRelevance'], PDO::PARAM_INT);
         $this->db->bind(':langQuality', $data['langQuality'], PDO::PARAM_INT);

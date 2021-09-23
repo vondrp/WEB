@@ -30,7 +30,7 @@ class Posts extends Controller{
      * before sending them to model
      */
     public function create(){
-        if(!isLoggedIn()){
+        if(!editorPermissions()){
             header("Location: ".URLROOT . "/posts");
         }
         $data = [
@@ -82,12 +82,16 @@ class Posts extends Controller{
     /**
      * Controller of the post update
      * checks updated data
-     * @param $id   updated post id
+     * @param null $post_id   updated post id
      */
-    public function update($id){
-        $post = $this->postModel->findPostById($id);
-        if(!isLoggedIn() or ($post->user_id != $_SESSION['user_id']) ){
+    public function update($post_id = null){
+        // for case when no parameter is given
+        if($post_id == null){
             header("Location: ". URLROOT . "/posts");
+        }
+        $post = $this->postModel->findPostById($post_id);
+        if(!manipulatePostPermission($post) ){
+            header("Location: ". URLROOT . "/posts/show/".$post_id);
         }
         $data = [
             'post' => $post,
@@ -102,7 +106,7 @@ class Posts extends Controller{
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
             $_POST = filter_input_array(INPUT_POST);
             $data = [
-                'id' => $id,
+                'id' => $post_id,
                 'post' => $post,
                 'user_id' => $_SESSION['user_id'],
                 'title' => trim($_POST['title']),
@@ -120,8 +124,8 @@ class Posts extends Controller{
                 $data['contentError'] = 'The content of a post cannot be empty';
             }
 
-            if(($data['title'] == $this->postModel->findPostById($id)->title)
-            && ($data['content'] == $this->postModel->findPostById($id)->content) ){
+            if(($data['title'] == $this->postModel->findPostById($post_id)->title)
+            && ($data['content'] == $this->postModel->findPostById($post_id)->content) ){
 
                 $data['contentError'] = 'Nothing has been changed';
                 $data['titleError'] = 'At least change the title!';
@@ -145,20 +149,21 @@ class Posts extends Controller{
 
     /**
      * Controller method of post deleting
-     * @param $id   id of the deleted post
+     * @param null $post_id   id of the deleted post
      */
-    public function delete($id){
-        $post = $this->postModel->findPostById($id);
-        if(!isLoggedIn()){
+    public function delete($post_id = null){
+        if($post_id == null){
             header("Location: ". URLROOT . "/posts");
-        }elseif($post->user_id != $_SESSION['user_id']){
+        }
+        $post = $this->postModel->findPostById($post_id);
+        if(!manipulatePostPermission($post)){
             header("Location: ". URLROOT . "/posts");
         }
 
         if($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
-            if($this->postModel->deletePost($id)){
+            if($this->postModel->deletePost($post_id)){
                 header("Location: ". URLROOT ."/posts");
             }else{
                 die('Something went wrong');
@@ -168,9 +173,12 @@ class Posts extends Controller{
 
     /**
      * Controller of showing one specific post
-     * @param $post_id  id of the showed post
+     * @param null $post_id  id of the showed post
      */
-    public function show($post_id){
+    public function show($post_id = null){
+        if($post_id == null){
+            header("Location: ". URLROOT . "/posts");
+        }
         $post =  $this->postModel->findPostById($post_id);
         if(!$post){
             header("Location: ". URLROOT . "/posts");
@@ -195,27 +203,28 @@ class Posts extends Controller{
 
     /**
      * Create comment
-     * @param $post_id  id of the post to which is comment related
+     * @param null $post_id  id of the post to which is comment related
      */
-    public function createComment($post_id){
+    public function createComment($post_id = null){
+        if($post_id == null){
+            header("Location: ". URLROOT . "/posts");
+        }
         if(!isLoggedIn()){
             header("Location: ".URLROOT ."/posts/show/".$post_id);
         }
         $post =  $this->postModel->findPostById($post_id);
         $comments = $this->postModel->findPostComments($post_id);
         $reviews = $this->postModel->findPostReviews($post_id);
+
+        $error = '';
+
         $data = [
             'post' => $post,
             'comments'=> $comments,
             'reviews' => $reviews,
-            'content' => '',
-            'contentError' => ''
+            'commentContent' => '',
+            'commentContentError' => ''
          ];
-        /*
-        $data = [
-            'content' => '',
-            'contentError' => ''
-        ];*/
 
         //Check is form submitted
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
@@ -223,50 +232,57 @@ class Posts extends Controller{
             $data = [
                 'post_id' => $post_id,
                 'author' => $_SESSION['username'],
-                'content' => trim($_POST['content']),
-                'contentError' => '',
+                'commentContent' => trim($_POST['commentContent']),
+                'commentContentError' => '',
 
                 'post' => $post,
                 'comments'=> $comments,
                 'reviews' => $reviews
             ];
 
-            if(empty($data['content'])){
-                $data['contentError'] = 'The content of a comment cannot be empty';
+            if(empty($data['commentContent'])){
+                $data['commentContentError'] = 'The content of a comment cannot be empty';
+                $error .= '<p class="invalidFeedBack">Empty content</p>';
             }
 
-            if(empty($data['contentError']) ){
+            if(empty($data['commentContentError']) ){
                 if($this->postModel->addComment($data)){
-                    header("Location:". URLROOT ."/posts/show/".$post_id);
+                   // header("Location:". URLROOT ."/posts/show/".$post_id);
+                    $error = '<label>Comment added</label>';
+                    //findCommentById
                 }else{
                     die("Something went wrong, please try again!");
                 }
             }
+            $data = array(
+                'error' => $error
+            );
+            echo json_encode($data);
+           // echo json_encode($data2);
+
         }
-        $this->view('posts/show', $data);
+        //$this->view('posts/show', $data);
     }
 
     /**
      * Controller method of post deleting
-     * @param $id   id of the deleted comment
+     * @param null $comment_id   id of the deleted comment
      */
-    public function deleteComment($id){
-        $comment = $this->postModel->findCommentById($id);
+    public function deleteComment($comment_id = null){
+        if($comment_id == null){
+            header("Location: ". URLROOT . "/posts");
+        }
+        $comment = $this->postModel->findCommentById($comment_id);
         if(!isLoggedIn()){
             header("Location: ". URLROOT ."/posts/show/".$comment->post_id);
         }elseif($comment->author != $_SESSION['username']){
             header("Location: ". URLROOT . "/posts");
         }
-        $data = [
-            'comment' => $comment,
-            'content' => '',
-            'contentError' => ''
-        ];
 
         if($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
-            if($this->postModel->deleteComment($id)){
+            if($this->postModel->deleteComment($comment_id)){
                 header("Location: ". URLROOT ."/posts/show/".$comment->post_id);
             }else{
                 die('Something went wrong');
@@ -274,16 +290,39 @@ class Posts extends Controller{
         }
     }
 
+    //Not working for now
+    public function displayComment($post_id){
+        $comments = $this->postModel->findPostComments($post_id);
+        $this->postModel->findAllCommentsReplies($comments);
+        $output = '';
+        foreach($comments as $comment){
+            $output .= '                      
+            <div class="comments">
+                <div class="comment" id="comment_'.$comment->id.'" >
+                   <h6 style="font-weight: bold;"><i class="fas fa-comment me-1"></i> '.$comment->author.'</h6> <h6 class="text-muted">'.$comment->created_at.'</h6>
+
+             
+                    <p>'.$comment->content.'</p>
+                   
+                </div>
+            ';
+        }
+        echo $output;
+
+    }
+
     /*********
      *  REPLIES METHODS
      */
     /**
      * Create reply
-     * @param $comment_id id of the post to which is comment related
+     * @param null $comment_id id of the comment to which reply belongs
      */
-    public function createReply($comment_id){
+    public function createReply($comment_id = null){
+        if($comment_id == null){
+            header("Location: ". URLROOT . "/posts");
+        }
         $comment = $this->postModel->findCommentById($comment_id);
-
         $post_id = $comment->post_id;
 
         if(!isLoggedIn()){
@@ -302,8 +341,8 @@ class Posts extends Controller{
             'replyContent' =>'',
             'replyContentError' => '',
 
-            'content' => '',
-            'contentError' => ''
+            'commentContent' => '',
+            'commentContentError' => ''
         ];
 
         //Check is form submitted
@@ -338,10 +377,13 @@ class Posts extends Controller{
 
     /**
      * Controller method of reply deleting
-     * @param $reply_id   id of the deleted reply
-     * @param $post_id    id of the post to which is reply related
+     * @param null $reply_id   id of the deleted reply
+     * @param null $post_id    id of the post to which is reply related
      */
-    public function deleteReply($reply_id, $post_id){
+    public function deleteReply($reply_id = null, $post_id = null){
+        if($post_id == null or $reply_id == null){
+            header("Location: ". URLROOT . "/posts");
+        }
         $reply = $this->postModel->findReply($reply_id);
         if(!isLoggedIn()){
              header("Location: ". URLROOT ."/posts/show/".$post_id);

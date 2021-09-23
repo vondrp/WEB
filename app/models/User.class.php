@@ -24,9 +24,7 @@ class User{
      */
     public function getUsers(){
         $this->db->query("SELECT * FROM users");
-        $result = $this->db->resultSet();
-
-        return $result;
+        return $this->db->resultSet();
     }
 
     /**
@@ -92,14 +90,51 @@ class User{
 
     /**
      * Find all user posts
-     * @param $user_id  id of the user
+     * @param $user     user which posts we are looking for
      * @return mixed    all posts, which user created
      */
-    public function findUserPosts($user_id){
+    public function findUserPosts($user){
+        $user_id = $user->id;
         $this->db->query('SELECT * FROM posts WHERE user_id = :user_id ORDER BY created_at DESC');
 
         $this->db->bind(':user_id', $user_id);
 
         return $this->db->resultSet();
+    }
+
+    /**
+     * Update/change user data
+     * @param $data     updated data of the user
+     * @return bool     true - if update succeeded, otherwise return false
+     */
+    public function updateUserUsernameEmail($data){
+        $this->db->query('UPDATE users SET username = :username, email = :email WHERE id = :id');
+
+        $this->db->bind(':id',$data['id']);
+        $this->db->bind(':username',$data['username']);
+        $this->db->bind(':email',$data['email']);
+
+        if($this->db->execute()){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     * Update user password
+     * @param $data     update data
+     * @return bool     rue - if update succeeded, otherwise return false
+     */
+    public function changePassword($data){
+        $this->db->query('UPDATE users SET password = :password WHERE id = :id');
+
+        $this->db->bind(':id',$data['id']);
+        $this->db->bind(':password',$data['password']);
+        if($this->db->execute()){
+            return true;
+        }else{
+            return false;
+        }
     }
 }
