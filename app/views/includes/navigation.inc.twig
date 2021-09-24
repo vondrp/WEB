@@ -23,8 +23,10 @@
                     </span>
                 </li>
                 <li class="nav-item">
-                    <span class="input-group nav-link">
-                            <i class="fas fa-user" rel="uživatel" title="uživatel"></i> {{ session.user.username }}({{ session.user.role }})
+                    <span class="input-group">
+                        <a class="nav-link" href="{{ constant('URLROOT')}}/users/profil">
+                            <i class="fas fa-user" rel="uživatel" alt="user profile:"></i> {{ session.user.username }}({{ session.user.role }})
+                        </a>
                     </span>
                 </li>
                 <li class="nav-item btn-login">

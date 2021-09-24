@@ -51,7 +51,7 @@ class User{
     /**
      * Login method
      * @param $usernameOrEmail     username or email
-     * @param $password     password
+     * @param $password     password    of the user
      * @return false if login action failed
      */
     public function login($usernameOrEmail, $password){
@@ -72,10 +72,10 @@ class User{
     }
 
     /**
-     * Find user by email, Email is passsed in by the Controller
+     * Find if email is already registered
      * @param $email    email address we are looking for
      */
-    public function findUserByEmail($email){
+    public function userEmailAlreadyRegistered($email){
         //Prepare statement
         $this->db->query('SELECT * FROM users WHERE email = :email');
         //Email param will be binded with the email variable
@@ -83,6 +83,21 @@ class User{
         //Check if email is already registered
         if($this->db->rowCount() > 0){
             return true;
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     * Find user by his/her id
+     * @param $user_id    id of the user
+     */
+    public function findUserByID($user_id){
+        $this->db->query('SELECT * FROM users WHERE id = :id');
+        $this->db->bind(':id', $user_id);
+        $row = $this->db->single();
+        if(!empty($row)){
+            return $row;
         }else{
             return false;
         }
@@ -115,6 +130,10 @@ class User{
         $this->db->bind(':email',$data['email']);
 
         if($this->db->execute()){
+            if($_SESSION['user']->id == $data['id']){
+                $user = $this->findUserByID($data['id']);
+                $_SESSION['user'] = $user;
+            }
             return true;
         }else{
             return false;
@@ -122,17 +141,23 @@ class User{
     }
 
     /**
-     * Update user password
+     * Change user password
      * @param $data     update data
-     * @return bool     rue - if update succeeded, otherwise return false
+     * @return bool     true - if update succeeded, otherwise return false
      */
     public function changePassword($data){
-        $this->db->query('UPDATE users SET password = :password WHERE id = :id');
+        $hashedPassword = !empty($data['user']) ? $data['user']->password : '';
 
-        $this->db->bind(':id',$data['id']);
-        $this->db->bind(':password',$data['password']);
-        if($this->db->execute()){
-            return true;
+        if(password_verify($data['originalPassword'], $hashedPassword)) {
+            $this->db->query('UPDATE users SET password = :password WHERE id = :id');
+
+            $this->db->bind(':id', $data['id']);
+            $this->db->bind(':password', $data['newPassword']);
+            if ($this->db->execute()) {
+                return true;
+            } else {
+                return false;
+            }
         }else{
             return false;
         }

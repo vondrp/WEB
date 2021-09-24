@@ -14,9 +14,12 @@ class Reviews extends Controller {
     /**
      * Controller of the create review view
      * checks data of the new review provided by the user
-     * @param $post_id  id of the post to which review belong
+     * @param null $post_id  id of the post to which review belong
      */
-    public function create($post_id){
+    public function create($post_id = null){
+        if($post_id == null){
+            header("Location: ". URLROOT . "/posts");
+        }
         //href="{{ constant('URLROOT') }}/posts/show/{{ post.id }}
         $post = $this->postModel->findPostById($post_id);
         if(!reviewerPermissions()){
@@ -100,9 +103,12 @@ class Reviews extends Controller {
      * Controller of the update review view
      * checks upgraded data of the review provided by the user
      * before sending them to model
-     * @param $review_id    id of the upgraded review
+     * @param null $review_id    id of the upgraded review
      */
-    public function update($review_id){
+    public function update($review_id = null){
+        if($review_id == null){
+            header("Location: ". URLROOT . "/posts");
+        }
         $review = $this->reviewModel->findReviewById($review_id);
         //strcmp($review->reviewer,$_SESSION['username'] ) !=0)
         if(!isLoggedIn() or ( $review->reviewer_id != $_SESSION['user']->id))
@@ -177,11 +183,14 @@ class Reviews extends Controller {
     }
 
     /**
-     * Controller method of post deleting
-     * @param $id   id of the deleted post
+     * Controller method of review deleting
+     * @param null $review_id   id of the deleted review
      */
-    public function delete($id){
-        $review = $this->reviewModel->findReviewById($id);
+    public function delete($review_id = null){
+        if($review_id == null){
+            header("Location: ". URLROOT . "/posts");
+        }
+        $review = $this->reviewModel->findReviewById($review_id);
         $post_id = $review->post_id;
         if(!isLoggedIn()){
             header("Location: ". URLROOT . "/posts");
@@ -193,7 +202,7 @@ class Reviews extends Controller {
         if($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
-            if($this->reviewModel->deleteReview($id)){
+            if($this->reviewModel->deleteReview($review_id)){
                 header("Location: ". URLROOT ."/posts/show/".$post_id);
             }else{
                 die('Something went wrong');

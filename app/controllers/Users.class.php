@@ -4,6 +4,8 @@
  * Class Users - controller of users
  */
 class Users extends Controller{
+
+    const PASSWORD_MIN_LENGTH = 6;
     /**
      * Users constructor.
      */
@@ -11,6 +13,9 @@ class Users extends Controller{
         $this->userModel = $this->model('User');
     }
 
+    /**
+     *
+     */
     public function index(){
         if(!isLoggedIn()){
             header("Location: ".URLROOT . "/users/login");
@@ -30,7 +35,6 @@ class Users extends Controller{
      * register user
      */
     public function register(){
-        $passwordMinLength = 6;
 
         $data = [
             'username' => '',
@@ -73,17 +77,17 @@ class Users extends Controller{
                 $data['emailError'] = 'Please enter the correct format';
             }else{
                 //check if email exists
-                if($this->userModel->findUserByEmail($data['email'])){
+                if($this->userModel->userEmailAlreadyRegistered($data['email'])){
                     $data['emailError'] = 'Email is already taken';
                 }
             }
             //Validate password on length and numeric values
             if(empty($data['password'])){
-                $data['passwordError'] = 'Please enter password.';
-            }elseif ( strlen($data['password']) < $passwordMinLength ){
-                $data['passwordError'] = 'Password must be at least '. $passwordMinLength. ' characters';
+                $data['passwordError'] = 'Prosím uveďte heslo.';
+            }elseif ( strlen($data['password']) < Users::PASSWORD_MIN_LENGTH ){
+                $data['passwordError'] = 'Heslo musí být nejméně '. Users::PASSWORD_MIN_LENGTH. ' znaků dlouhé';
             }elseif( !preg_match($passwordValidation, $data['password'])){
-                $data['passwordError'] = 'Password must have at least one numeric value';
+                $data['passwordError'] = 'V hesle musí být alespoň jedno číslo';
             }
 
             //Validate confirm password
@@ -152,9 +156,8 @@ class Users extends Controller{
                 if($loggedInUser){
                     $this->createUserSession($loggedInUser);
                 }else{
-                    $data['passwordError'] = 'Password 
-                    or username is in incorrect.
-                    Please try again';
+                    $data['passwordError'] = 'Uživatelské jméno nebo heslo bylo zadáno špatně. Zkuste to prosím znovu.';
+                        //'Password or username is in incorrect.Please try again';
                    // $this->view('users/login', $data);
                 }
             }
@@ -180,11 +183,15 @@ class Users extends Controller{
 
     /**
      * Changes data of the selected user
-     * @param $user selected user
+     * @param null $user_id id of the selected user
      */
-    public function updateUserUsernameEmail($user = null){
-        if($user == null){
-
+    public function updateUserUsernameEmail($user_id = null){
+        if($user_id == null){
+            header('location: ' . URLROOT . '/users/index');
+        }
+        $user = $this->userModel->findUserById($user_id);
+        if(!$user){
+            header('location: ' . URLROOT . '/users/index');
         }
         $data = [
             'username' => '',
@@ -200,7 +207,6 @@ class Users extends Controller{
             //trim remove white space
             $data = [
                 'id' => $user->id,
-
                 'username' => trim($_POST['username']),
                 'email' => trim($_POST['email']),
                 'usernameError' => '',
@@ -214,15 +220,17 @@ class Users extends Controller{
                 $data['usernameError'] = 'Name can only contain letters and numbers';
             }
             //Validate email
-            if(empty($data['email'])){
-                $data['emailError'] = 'Please enter email address.';
+            if(strcmp($data['email'],$user->email) !=0){
+                if(empty($data['email'])){
+                    $data['emailError'] = 'Please enter email address.';
 
-            }elseif (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)){
-                $data['emailError'] = 'Please enter the correct format';
-            }else{
-                //check if email exists
-                if($this->userModel->findUserByEmail($data['email'])){
-                    $data['emailError'] = 'Email is already taken';
+                }elseif (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)){
+                    $data['emailError'] = 'Please enter the correct format';
+                }else{
+                    //check if email exists
+                    if($this->userModel->userEmailAlreadyRegistered($data['email'])){
+                        $data['emailError'] = 'Email is already taken';
+                    }
                 }
             }
 
@@ -240,13 +248,21 @@ class Users extends Controller{
         $this->view('users/index', $data);
     }
 
-    public function changePassword($user){
-
+    /**
+     * Controller method of changing password of logg in user
+     */
+    public function changePassword(){
+        if(!isLoggedIn()){
+            header("Location: ".URLROOT . "/users/login");
+        }
+        $user_id = $_SESSION['user']->id;
         $data = [
-            'password' => '',
-            'confirmPassword' => '',
-            'passwordError' => '',
-            'confirmPasswordError' => ''
+            'originalPassword' => '',
+            'newPassword' => '',
+            'confirmNewPassword' => '',
+            'originalPasswordError' => '',
+            'newPasswordError' => '',
+            'confirmNewPasswordError' => ''
         ];
         //Check for post
         if($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -254,13 +270,57 @@ class Users extends Controller{
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
             $data = [
-                'password' => trim($_POST['password']),
-                'confirmPassword' => trim($_POST['confirmPassword']),
-                'passwordError' => '',
-                'confirmPasswordError' => ''
+                'id' => $user_id,
+                'user' => $_SESSION['user'],
+                'originalPassword' => trim($_POST['originalPassword']),
+                'newPassword' => trim($_POST['newPassword']),
+                'confirmNewPassword' => trim($_POST['confirmNewPassword']),
+                'originalPasswordError' => '',
+                'newPasswordError' => '',
+                'confirmNewPasswordError' => ''
             ];
             $passwordValidation = "/^(.{0,7}|[^a-z]*|[^\d]*)$/i";
+            $hashedPassword = !empty($data['user']) ? $data['user']->password : '';
+            if(empty($data['originalPassword'])){
+                $data['originalPasswordError'] = 'Prosím uveďte své původní heslo';
+            }else if(!password_verify($data['originalPassword'], $hashedPassword)){
+                $data['originalPasswordError'] = 'Prosím uveďte své původní heslo';
+            }
+
+            //Validate password on length and numeric values
+            if(empty($data['newPassword'])){
+                $data['newPasswordError'] = 'Prosím uveďte nové heslo.';
+            }elseif ( strlen($data['newPassword']) < Users::PASSWORD_MIN_LENGTH ){
+                $data['newPasswordError'] = 'Heslo musí být nejméně '. Users::PASSWORD_MIN_LENGTH. ' znaků dlouhé';
+            }elseif( !preg_match($passwordValidation, $data['newPassword'])){
+                $data['newPasswordError'] = 'V hesle musí být alespoň jedna číslice.';
+            }
+
+            //Validate confirm password
+            if(empty($data['confirmNewPassword'])){
+                $data['confirmNewPasswordError'] = 'Prosím vložte potvrzovací heslo.';
+            }else {
+                if($data['newPassword'] != $data['confirmNewPassword']){
+                    $data['confirmNewPasswordError'] = 'Hesla se neschodují, zkuste to prosím znovu.';
+                }
+            }
+
+            //Make sure that errors are empty
+            if( empty($data['confirmNewPasswordError']) && empty($data['originalPasswordError'])
+            && empty($data['newPasswordError'])){
+
+                //hashing password
+                $data['newPassword'] = password_hash($data['newPassword'], PASSWORD_DEFAULT);
+                if($this->userModel->changePassword($data)){
+                    //Redirect to the user index page
+                    header('location: ' . URLROOT . '/users/index');
+                }else{
+                    die('Something went wrong.');
+                }
+            }
         }
+        $this->view('users/changePassword', $data);
+
     }
 
 

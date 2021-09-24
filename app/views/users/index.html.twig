@@ -4,7 +4,7 @@
     <div class="container">
         <h1>Profil uživatele</h1>
 
-        <form>
+        <form action="{{ constant('URLROOT') }}/users/updateUserUsernameEmail/{{ session.user.id }}" method="POST">
             <table class="table table-striped">
                 <tr>
                     <th>Typ informace</th>
@@ -12,31 +12,28 @@
                 </tr>
                 <tr>
                    <td>Jméno:</td>
-                    <td><input class="form-control" type="text" id="username" placeholder="Uživatelské jméno *" name="username" value="{{ session.user.username }}"> </td>
+                    <td><input class="form-control" type="text" id="username" placeholder="Uživatelské jméno *" name="username" value="{{ session.user.username }}">
+                        <span class="invalidFeedBack">{{ usernameError }}</span>
+                    </td>
                 </tr>
                 <tr>
                     <td>Email:</td>
-                    <td><input class="form-control" id="email" type="email" placeholder="Email *" name="email" value="{{ session.user.email }}"></td>
+                    <td><input class="form-control" id="email" type="email" placeholder="Email *" name="email" value="{{ session.user.email }}">
+                        <span class="invalidFeedBack">{{ emailError }}</span>
+                    </td>
                 </tr>
 
                 <tr>
                     <td>Heslo:</td>
-                    <td><input class="form-control" type="password" id="username" placeholder="Heslo *" name="password" value=""> </td>
+                    <td><a href="{{ constant('URLROOT') }}/users/changePassword">Změnit heslo</a> </td>
                 </tr>
                 <tr>
                     <td>role: </td>
                     <td>{{ session.user.role }}</td>
                 </tr>
             </table>
-            <button class="myBtn btn btn-primary float-end" id="registerButton" disabled="disabled" type="submit" value="submit">Odeslat</button>
+            <button class="myBtn btn btn-primary float-end" id="registerButton" type="submit" value="submit">Změnit údaje</button>
         </form>
-
-
-
-
-
-
-
         <table class="table table-striped">
         <thead>
         <tr>

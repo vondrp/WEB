@@ -18,14 +18,30 @@ function registrationUp(){
     let email = document.getElementById('username');
     let password = document.getElementById('password')
     let password2 = document.getElementById('password2')
-    let registBtn = document.getElementById('registerButton');
+    let registerBtn = document.getElementById('registerButton');
 
     document.getElementById('registrationForm').addEventListener('input', ()=> {
         if(username.value.length > 0 && email.value.length > 0
             && password.value.length >0 && password2.value.length > 0){
-            registBtn.removeAttribute('disabled');
+            registerBtn.removeAttribute('disabled');
         } else{
-            registBtn.setAttribute('disabled', 'disabled');
+            registerBtn.setAttribute('disabled', 'disabled');
+        }
+    });
+}
+
+function changePassword(){
+    let originalPassword = document.getElementById('originalPassword');
+    let newPassword = document.getElementById('newPassword');
+    let confirmNewPassword = document.getElementById('confirmNewPassword');
+    let changePasswordBtn = document.getElementById('changePasswordButton');
+
+    document.getElementById('changePasswordForm').addEventListener('input', ()=>{
+        if(originalPassword.value.length > 0 && newPassword.value.length>0
+        && confirmNewPassword.value.length >0){
+            changePasswordBtn.removeAttribute('disabled');
+        }else{
+            changePasswordBtn.setAttribute('disabled', 'disabled');
         }
     });
 }
