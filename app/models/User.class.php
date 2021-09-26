@@ -22,8 +22,8 @@ class User{
      * Return all users from database
      * @return mixed    all from table users
      */
-    public function getUsers(){
-        $this->db->query("SELECT * FROM users");
+    public function getAllUsers(){
+        $this->db->query("SELECT * FROM users ORDER BY role ASC ");
         return $this->db->resultSet();
     }
 
@@ -158,6 +158,37 @@ class User{
             } else {
                 return false;
             }
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     * Delete user
+     * @param $user_id  user id
+     * @return bool     true - action success, otherwise return false
+     */
+    public function deleteUser($user_id){
+        $this->db->query('DELETE FROM users WHERE id = :id');
+        $this->db->bind(':id', $user_id);
+        if($this->db->execute()){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     * Update user role
+     * @param $data
+     * @return bool    true - if update succeeded, otherwise return false
+     */
+    public function changeUserRole($data){
+        $this->db->query('UPDATE users SET role = :newRole WHERE id = :id');
+        $this->db->bind(':newRole', $data['newRole']);
+        $this->db->bind('id', $data['user_id']);
+        if($this->db->execute()){
+            return true;
         }else{
             return false;
         }

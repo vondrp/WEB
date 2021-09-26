@@ -10,7 +10,7 @@ class Pages extends Controller {
     }
 
     public function index(){
-        $users = $this->userModel->getUsers();
+        $users = $this->userModel->getAllUsers();
         /*
         if(isLoggedIn()){
             $perm = $this->userModel->getPermissions($_SESSION['user']);

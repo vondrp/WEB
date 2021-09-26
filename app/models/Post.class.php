@@ -250,6 +250,11 @@ class Post{
         return $this->db->single();
     }
 
+    /**
+     * To all the records in array give name of their author
+     * be using column user_id
+     * @param $records  array of data with column user_id
+     */
     public function findAuthors($records){
         foreach ($records as $record) {
             $record->author = $this->findUserById($record->user_id);

@@ -22,14 +22,12 @@ class Users extends Controller{
         }
 
         $userPosts = $this->userModel->findUserPosts($_SESSION['user']);
-        $users = $this->userModel->getUsers();
+        $users = $this->userModel->getAllUsers();
         $data = [
             'userPosts' => $userPosts,
             'users' => $users
         ];
         $this->view('users/index', $data);
-
-
     }
     /**
      * register user
@@ -170,6 +168,24 @@ class Users extends Controller{
             ];
         }
         $this->view('users/login', $data);
+    }
+
+    /**
+     * Controller for managing users
+     */
+    public function manageUsers(){
+        if(!isLoggedIn()){
+            header("Location: ".URLROOT . "/users/login");
+        }
+        if(strcmp($_SESSION['user']->role, 'superadmin') ==0 or strcmp($_SESSION['user']->role, 'admin') ==0){
+            $users = $this->userModel->getAllUsers();
+            $data = [
+                'users' => $users
+            ];
+            $this->view('users/manageUsers', $data);
+        }else{
+            header("Location: ".URLROOT . "/users/index");
+        }
     }
 
     /**
@@ -320,10 +336,80 @@ class Users extends Controller{
             }
         }
         $this->view('users/changePassword', $data);
-
     }
 
+    /**
+     * @param $user_id  id of the user, which role is changing
+     */
+    public function changeRole($user_id = null){
+        if($user_id == null or !isLoggedIn()){
+            header("Location: ".URLROOT . "/users/index");
+        }
+        $user = $this->userModel->findUserByID($user_id);
+        if($user == false){
+            header("Location: ".URLROOT . "/users/index");
+        }
+        $data = [
+            'user_id' => $user_id,
+            'newRole' => '',
+            'newRoleError'=> ''
+        ];
+        if(strcmp($_SESSION['user']->role, 'admin') ==0 or strcmp($_SESSION['user']->role, 'superadmin') == 0){
 
+            if($_SERVER['REQUEST_METHOD'] == 'POST') {
+                $_POST = filter_input_array(INPUT_POST);
+                $data = [
+                    'user_id' => $user_id,
+                    'newRole' => trim($_POST['role']),
+                    'newRoleError' => '',
+                ];
+
+                if(empty($data['newRole'])){
+                    $data['newRoleError'] = 'Nebyla zvolena žádná role';
+                }
+
+                if(strcmp($data['newRole'], 'superadmin') == 0 and strcmp($_SESSION['user']->role, 'admin')==0){
+                    $data['newRoleError'] = 'Nebyla zvolena žádná role';
+                }
+
+                if(strcmp($data['newRole'], $user->role) == 0){
+                    $data['newRoleError'] = 'Nezměněná role';
+                }
+
+                if(empty($data['newRoleError'])){
+                    if($this->userModel->changeUserRole($data)){
+                        header("Location:". URLROOT ."/users/manageUsers");
+                    }else{
+                        die("Something went wrong, please try again!");
+                    }
+                }else{
+                    $this->view('users/manageUsers', $data);
+                }
+
+            }
+        }else{
+            $data['newRoleError'] = 'Pro změnu role uživatele nemáte dostatečná oprávnění.';
+            $this->view('users/manageUsers', $data);
+        }
+    }
+
+    /**
+     * @param null $user_id
+     */
+    public function deleteUser($user_id = null){
+        if($user_id == null){
+            header("Location: ". URLROOT . "/users/index");
+        }
+        if($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+            if($this->userModel->deleteUser($user_id)){
+                header("Location: ". URLROOT ."/users/index");
+            }else{
+                die('Something went wrong');
+            }
+        }
+    }
     /**
      * unset all session parameters and redirect to header
      */

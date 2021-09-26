@@ -44,3 +44,17 @@
             </form>
     {% endif %}
 {% endmacro %}
+
+{% macro canDeleteUser(user) %}
+        {% if  session.user.role == 'admin' and
+            (user.role == 'normal' or user.role == 'editor' or user.role=='reviewer') %}
+                <form action="{{ constant('URLROOT')}}/users/deleteUser/{{ user.id}}" method="POST" class="delete-form">
+                    <button class="myBtn btn btn-danger" name="submit" type="submit">Smazat</button>
+                </form>
+        {% elseif session.user.role == 'superadmin' and
+            (user.role == 'normal' or user.role == 'editor' or user.role=='reviewer' or user.role == 'admin')%}
+                <form action="{{ constant('URLROOT')}}/users/deleteUser/{{ user.id}}" method="POST" class="delete-form">
+                    <button class="myBtn btn btn-danger" name="submit" type="submit">Smazat</button>
+                </form>
+        {% endif%}
+{% endmacro %}

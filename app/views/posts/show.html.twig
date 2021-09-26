@@ -26,26 +26,24 @@
                     <th scope="col">Poznámky</th>
                 </tr>
                 </thead>
-
-            {% for review in reviews %}
-
                 <tbody>
-                <tr>
-                    <th scope="row">{{ review.reviewer }}</th>
-                    <td>{{ review.topicRelevance }}</td>
-                    <td>{{ review.langQuality }}</td>
-                    <td>{{ review.originality }}</td>
-                    <td>{{ review.notes  | raw }}</td>
-                    {% if session.user is not empty  %}
-                        <td>
-                                {{ macros.canUpdateReview(review) }}
-                        </td>
-                        <td>
-                                {{ macros.canDeleteReview(review) }}
-                        </td>
-                    {% endif %}
-                </tr>
-            {% endfor %}
+                    {% for review in reviews %}
+                        <tr>
+                            <th scope="row">{{ review.reviewer }}</th>
+                            <td>{{ review.topicRelevance }}</td>
+                            <td>{{ review.langQuality }}</td>
+                            <td>{{ review.originality }}</td>
+                            <td>{{ review.notes  | raw }}</td>
+                            {% if session.user is not empty  %}
+                                <td>
+                                        {{ macros.canUpdateReview(review) }}
+                                </td>
+                                <td>
+                                        {{ macros.canDeleteReview(review) }}
+                                </td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
