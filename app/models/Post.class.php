@@ -33,11 +33,12 @@ class Post{
      * @return bool     true - if action is successful, otherwise return false
      */
     public function addPost($data){
-        $this->db->query('INSERT INTO posts(user_id, title, description, content) VALUES
-        (:user_id, :title,:description ,:content)');
+        $this->db->query('INSERT INTO posts(user_id, title, file, description, content) VALUES
+        (:user_id, :title, :file, :description ,:content)');
 
         $this->db->bind(':user_id', $data['user_id']);
         $this->db->bind(':title', $data['title']);
+        $this->db->bind(':file', $data['fileName']);
         $this->db->bind(':description', $data['description']);
         $this->db->bind(':content', $data['content']);
 

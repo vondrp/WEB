@@ -36,8 +36,10 @@ class Posts extends Controller{
         $data = [
             'title' => '',
             'content' => '',
+            'fileName' => '',
             'description' =>'',
             'titleError' => '',
+            'fileError' => '',
             'contentError' => ''
         ];
 
@@ -45,14 +47,24 @@ class Posts extends Controller{
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
             //FILTER_SANITIZE_STRING - original second parameter - destroys html tags
             $_POST = filter_input_array(INPUT_POST);
+
+            $file = $_FILES['fileToUpload'];
+            $fileName = $_FILES['fileToUpload']['name'];
+            $fileTmpName = $_FILES['fileToUpload']['tmp_name'];
+            $fileError = $_FILES['fileToUpload']['error'];
+            $fileSize = $_FILES['fileToUpload']['size'];
+
             $data = [
-                'user_id' => $_SESSION['user_id'],
+                'user_id' => $_SESSION['user']->id,
                 'title' => trim($_POST['title']),
+                'fileName' => $fileName,
                 'content' => trim($_POST['content']),
                 'description' => trim($_POST['description']),
                 'titleError' => '',
+                'fileError' =>'',
                 'contentError' => ''
             ];
+
 
             if(empty($data['title'])){
                 $data['titleError'] = 'The title of a post cannot be empty';
@@ -65,11 +77,44 @@ class Posts extends Controller{
             if(empty($data['titleError'])
                 && empty($data['contentError'])
                 && empty($data['descriptionError'])){
-                if($this->postModel->addPost($data)){
-                    header("Location:". URLROOT ."/posts");
+
+                if(!empty($data['fileName'])){
+                    $fileExt = explode('.', $fileName);
+                    $fileActualExt = mb_strtolower(end($fileExt));
+                    $allowed = array('pdf');
+                    if(in_array($fileActualExt, $allowed)){
+                        if($fileError === 0){
+                            if($fileSize < 500000){ //soubor je mensi nez 500mb
+                                $fileNameNew = uniqid('', true).".".$fileActualExt;
+                                $fileDestination = 'uploads/'.$fileNameNew;
+                                move_uploaded_file($fileTmpName,$fileDestination);
+                                $data['fileName'] = $fileNameNew;
+                            }else{
+                                $data['fileError'] = 'Soubor je příliš velký.';
+                            }
+                        } else{
+                            $data['fileError'] = 'Při nahrávání souboru došlo k chybě.';
+                        }
+                    }else{
+                        $data['fileError'] = 'Špatný typ souboru!';
+                    }
+                    if(empty($data['fileError'])){
+                        if($this->postModel->addPost($data)){
+                            header("Location:". URLROOT ."/posts");
+                        }else{
+                            die("Something went wrong, please try again!");
+                        }
+                    }else{
+                        $this->view('posts/create', $data);
+                    }
+
+
                 }else{
-                    die("Something went wrong, please try again!");
+                    $data['fileError'] = 'Nebyl vybrán žádný soubor';
+                    $this->view('posts/create', $data);
                 }
+
+
             }else{
                 $this->view('posts/create', $data);
             }
@@ -105,16 +150,20 @@ class Posts extends Controller{
         //Check is form submitted
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
             $_POST = filter_input_array(INPUT_POST);
+
             $data = [
                 'id' => $post_id,
                 'post' => $post,
                 'user_id' => $_SESSION['user_id'],
                 'title' => trim($_POST['title']),
+                'fileName' => '',
                 'content' => trim($_POST['content']),
                 'description' => trim($_POST['description']),
                 'titleError' => '',
+                'fileError' =>'',
                 'contentError' => ''
             ];
+
 
             if(empty($data['title'])){
                 $data['titleError'] = 'The title of a post cannot be empty';
@@ -132,7 +181,8 @@ class Posts extends Controller{
             }
 
             if(empty($data['titleError'])
-                && empty($data['contentError'])){
+                && empty($data['contentError'])
+                && empty($data['descriptionError'])){
                 if($this->postModel->updatePost($data)){
                     header("Location:". URLROOT ."/posts");
                 }else{
@@ -162,8 +212,9 @@ class Posts extends Controller{
 
         if($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-
+            $fileName = $post->file;
             if($this->postModel->deletePost($post_id)){
+                unlink( "uploads/".$fileName );
                 header("Location: ". URLROOT ."/posts");
             }else{
                 die('Something went wrong');

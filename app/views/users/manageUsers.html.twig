@@ -3,50 +3,54 @@
 {% import 'includes/permissions.inc.twig' as macros %}
 {% block content %}
 
-    <table class="table table-striped">
-    <thead>
-    <tr>
-        <th scope="col">Id</th>
-        <th scope="col">uživatelské jméno</th>
-        <th scope="col">email</th>
-        <th scope="col">role</th>
-    </tr>
-    </thead>
-        <tbody>
-    {% for user in users%}
-        <tr>
-            <td>{{ user.id }}</td>
-            <td>{{ user.username }}</td>
-            <td>{{ user.email }}</td>
-            {% if session.user == user or (user.role == 'superadmin' and session.user.role == 'admin')
-                or (user.role == 'admin' and session.user.role != 'superadmin')%}
-                 <td>{{ user.role }}</td>
-            {% else %}
-                <form action="{{ constant('URLROOT')}}/users/changeRole/{{ user.id }}" method="POST">
-                <td>
-                    <select class="form-control" name="role">
-                        {% if session.user.role == 'superadmin' %}
-                            <option value="1" {% if user.role == 'superadmin' %} selected="selected" {% endif %}>Super admin</option>
-                        {% endif%}
-                        <option value="2" {% if user.role == 'admin' %} selected="selected" {% endif %}>Admin</option>
-                        <option value="3" {% if user.role == 'reviewer' %} selected="selected" {% endif %}>Recenzent</option>
-                        <option value="4" {% if user.role == 'editor' %} selected="selected" {% endif %}>Autor</option>
-                        <option value="5" {% if user.role == 'normal' %} selected="selected" {% endif %}>Normal</option>
-                    </select>
-                </td>
-                {% if session.user is not empty %}
-                    <td>
-                        <button class="myBtn btn btn-danger" name="submit" type="submit">Změnit roli</button>
-                        <span class="invalidFeedBack">
-                            {{ newRoleError }}
-                        </span>
-                    </td>
-                {% endif %}
-                </form>
-            {% endif %}
-            <td>{{ macros.canDeleteUser(user) }}</td>
-        </tr>
-    {% endfor %}
-        </tbody>
-    </table>
+    <div class="container">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover mt-5">
+            <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">uživatelské jméno</th>
+                <th scope="col">email</th>
+                <th scope="col">role</th>
+            </tr>
+            </thead>
+                <tbody>
+            {% for user in users%}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    {% if session.user == user or (user.role == 'superadmin' and session.user.role == 'admin')
+                        or (user.role == 'admin' and session.user.role != 'superadmin')%}
+                         <td>{{ user.role }}</td>
+                    {% else %}
+                        <form action="{{ constant('URLROOT')}}/users/changeRole/{{ user.id }}" method="POST">
+                        <td>
+                            <select class="form-control" name="role">
+                                {% if session.user.role == 'superadmin' %}
+                                    <option value="1" {% if user.role == 'superadmin' %} selected="selected" {% endif %}>Super admin</option>
+                                {% endif%}
+                                <option value="2" {% if user.role == 'admin' %} selected="selected" {% endif %}>Admin</option>
+                                <option value="3" {% if user.role == 'reviewer' %} selected="selected" {% endif %}>Recenzent</option>
+                                <option value="4" {% if user.role == 'editor' %} selected="selected" {% endif %}>Autor</option>
+                                <option value="5" {% if user.role == 'normal' %} selected="selected" {% endif %}>Normal</option>
+                            </select>
+                        </td>
+                        {% if session.user is not empty %}
+                            <td>
+                                <button class="myBtn btn btn-danger" name="submit" type="submit">Změnit roli</button>
+                                <span class="invalidFeedBack">
+                                    {{ newRoleError }}
+                                </span>
+                            </td>
+                        {% endif %}
+                        </form>
+                    {% endif %}
+                    <td>{{ macros.canDeleteUser(user) }}</td>
+                </tr>
+            {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 {% endblock %}

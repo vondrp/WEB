@@ -9,8 +9,10 @@
         {{ macros.canUpdateDeletePost(post)}}
 
         <h2>{{ post.title }}</h2>
-
         <p>{{ post.content | raw }}</p>
+        <a target="_blank" href="{{ constant('URLROOT') }}/public/uploads/{{ post.file }}" title="">Otevřít v jiném okně</a>
+        <embed src="{{ constant('URLROOT') }}/public/uploads/{{ post.file }}" type="application/pdf" width="100%" height="600px">
+        <p>{{ post.description | raw }}</p>
         <br>
         
         <h2>Recenze</h2>

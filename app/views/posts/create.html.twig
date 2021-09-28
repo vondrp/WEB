@@ -4,12 +4,20 @@
     <div class="container center mb-2">
         <h1 class="text-center pt-5">Vytvořit nový článek</h1>
 
-        <form action="{{ constant('URLROOT')}}/posts/create" method="POST">
+        <form action="{{ constant('URLROOT')}}/posts/create" method="POST" enctype="multipart/form-data">
             <div class="form-group mb-4 form-item">
                 <label>Nadpis</label>
-                <input class="form-control" type="text" name="title" placeholder="Titulek článku *" value="{{ post.title }}">
+                <input class="form-control" type="text" name="title" placeholder="Titulek článku *" value="{{ title }}">
                 <span class="invalidFeedBack">
                     {{ titleError }}
+                </span>
+            </div>
+
+            <div class="form-group mb-4 form-item">
+                <label>Nadpis</label>
+                <input class="form-control" type="file" name="fileToUpload" placeholder="PDF soubor *" value="{{ post.file }}">
+                <span class="invalidFeedBack">
+                    {{ fileError }}
                 </span>
             </div>
 
@@ -20,7 +28,7 @@
 
             <div class="form-group mb-4 form-item ">
                 <textarea rows="12" class="form-control" id="wysiwygTextArea" type="text" name="content" placeholder="Zadejte svůj příspěvek *">
-                    {{ post.content }}
+                    {{ content }}
                 </textarea>
                 <span class="invalidFeedBack">
                     {{ contentError }}

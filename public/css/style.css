@@ -13,7 +13,8 @@ html, body{
     scroll-behavior: smooth;
 }
 body{
-    background:  linear-gradient(45deg, rgb(130, 183, 220), #f2f2f2);
+   /* background:  linear-gradient(45deg, rgb(130, 183, 220), #f2f2f2);*/
+    background:  linear-gradient(45deg, rgb(130, 183, 220), silver);
     background-repeat: no-repeat;
     background-attachment: fixed;
 }
