@@ -4,35 +4,42 @@
     <div class="container center mb-2">
         <h1 class="text-center pt-5">Vytvořit nový článek</h1>
 
-        <form action="{{ constant('URLROOT')}}/posts/create" method="POST" enctype="multipart/form-data">
+        <form action="{{ constant('URLROOT')}}/posts/create" method="POST" enctype="multipart/form-data" accept-charset="UTF-8">
             <div class="form-group mb-4 form-item">
-                <label>Nadpis</label>
+                Nadpis
                 <input class="form-control" type="text" name="title" placeholder="Titulek článku *" value="{{ title }}">
-                <span class="invalidFeedBack">
-                    {{ titleError }}
-                </span>
+                    <span class="invalidFeedBack">
+                        {{ titleError }}
+                    </span>
+
             </div>
 
             <div class="form-group mb-4 form-item">
-                <label>Nadpis</label>
-                <input class="form-control" type="file" name="fileToUpload" placeholder="PDF soubor *" value="{{ post.file }}">
+                Vložení pdf s podrobnými informacemi o příspěvku
+                <input class="form-control" type="file" accept="application/pdf" name="fileToUpload" placeholder="PDF soubor *" value="{{ post.file }}">
                 <span class="invalidFeedBack">
                     {{ fileError }}
                 </span>
+
             </div>
 
             <div class="form-group mb-4 form-item">
-                <label>Popisek</label>
-                <textarea rows="3" class="form-control " type="text" name="description" placeholder="Zadejte popisek"></textarea>
+                Popisek
+                <textarea rows="3" class="form-control" name="description" placeholder="Zadejte popisek">
+                    {{ description }}
+                </textarea>
+
             </div>
 
             <div class="form-group mb-4 form-item ">
-                <textarea rows="12" class="form-control" id="wysiwygTextArea" type="text" name="content" placeholder="Zadejte svůj příspěvek *">
+
+                <textarea rows="12" class="form-control" id="wysiwygTextArea" name="content" placeholder="Zadejte svůj příspěvek *">
                     {{ content }}
                 </textarea>
                 <span class="invalidFeedBack">
                     {{ contentError }}
                 </span>
+
             </div>
             <button class="myBtn btn btn-primary green" name="submit" type="submit">Submit</button>
         </form>

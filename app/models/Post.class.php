@@ -81,6 +81,24 @@ class Post{
     }
 
     /**
+     * Change pdf file of the post
+     * @param $data     datas containing id of the post and name of the new file
+     * @return bool     true - if update succeeded, otherwise return false
+     *
+     */
+    public function changePostPdf($data){
+        $this->db->query('UPDATE posts SET file = :file WHERE id = :id');
+
+        $this->db->bind(':id',$data['id']);
+        $this->db->bind(':file',$data['fileName']);
+        if($this->db->execute()){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    /**
      * Delete post in table posts with right id
      * @param $id       id of the post
      * @return bool     true - action success, otherwise return false

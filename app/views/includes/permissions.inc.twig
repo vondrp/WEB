@@ -9,6 +9,19 @@
             <button class="myBtn btn btn-danger fa-pull-right" name="submit" type="submit">Smazat článek</button>
         </form>
 
+        <form class="w-25 fa-pull-right"action="{{ constant('URLROOT')}}/posts/changePostFile/{{ post.id}}" method="post" enctype="multipart/form-data">
+            <div class="form-group mb-4 form-item">
+                <label>Změnit pdf soubor</label>
+                <input class="form-control" type="file" accept="application/pdf" name="fileToUpload" placeholder="PDF soubor *">
+
+                <span class="invalidFeedBack">
+                    {{ fileError }}
+                </span>
+
+            </div>
+            <button class="myBtn btn btn-primary green" name="submit" type="submit">Změnit pdf soubor</button>
+        </form>
+
     {% endif %}
 
 {% endmacro %}
@@ -40,7 +53,7 @@
 {% macro canDeleteReview(review) %}
     {% if session.user is not empty and (session.user.id == review.reviewer_id or session.user.role == 'superadmin') %}
             <form action="{{ constant('URLROOT')}}/reviews/delete/{{ review.id}}" method="POST" class="delete-form">
-                <button class="myBtn btn btn-danger" name="submit" type="submit">Smazat</button>
+                <button class="myBtn btn btn-danger" name="submit" type="submit" onclick="confirmAction()">Smazat</button>
             </form>
     {% endif %}
 {% endmacro %}

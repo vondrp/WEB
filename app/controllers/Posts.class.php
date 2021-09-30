@@ -74,54 +74,44 @@ class Posts extends Controller{
                 $data['contentError'] = 'The content of a post cannot be empty';
             }
 
+            if(!empty($data['fileName'])) {
+                $fileExt = explode('.', $fileName);
+                $fileActualExt = mb_strtolower(end($fileExt));
+                $allowed = array('pdf');
+                if (in_array($fileActualExt, $allowed)) {
+                    if ($fileError === 0) {
+                        if ($fileSize < 500000) { //soubor je mensi nez 500mb
+                            $fileNameNew = uniqid('', true) . "." . $fileActualExt;
+                            $fileDestination = 'uploads/' . $fileNameNew;
+                            $data['fileName'] = $fileNameNew;
+                        } else {
+                            $data['fileError'] = 'Soubor je příliš velký.';
+                        }
+                    } else {
+                        $data['fileError'] = 'Při nahrávání souboru došlo k chybě.';
+                    }
+                } else {
+                    $data['fileError'] = 'Špatný typ souboru!';
+                }
+            }else{
+                $data['fileError'] = 'Nebyl vybrán žádný soubor';
+            }
             if(empty($data['titleError'])
                 && empty($data['contentError'])
-                && empty($data['descriptionError'])){
-
-                if(!empty($data['fileName'])){
-                    $fileExt = explode('.', $fileName);
-                    $fileActualExt = mb_strtolower(end($fileExt));
-                    $allowed = array('pdf');
-                    if(in_array($fileActualExt, $allowed)){
-                        if($fileError === 0){
-                            if($fileSize < 500000){ //soubor je mensi nez 500mb
-                                $fileNameNew = uniqid('', true).".".$fileActualExt;
-                                $fileDestination = 'uploads/'.$fileNameNew;
-                                move_uploaded_file($fileTmpName,$fileDestination);
-                                $data['fileName'] = $fileNameNew;
-                            }else{
-                                $data['fileError'] = 'Soubor je příliš velký.';
-                            }
-                        } else{
-                            $data['fileError'] = 'Při nahrávání souboru došlo k chybě.';
-                        }
+                && empty($data['descriptionError'])
+                && empty($data['fileError'])){
+                    if($this->postModel->addPost($data)){
+                        move_uploaded_file($fileTmpName,$fileDestination);
+                        header("Location:". URLROOT ."/posts");
                     }else{
-                        $data['fileError'] = 'Špatný typ souboru!';
+                        die("Something went wrong, please try again!");
                     }
-                    if(empty($data['fileError'])){
-                        if($this->postModel->addPost($data)){
-                            header("Location:". URLROOT ."/posts");
-                        }else{
-                            die("Something went wrong, please try again!");
-                        }
-                    }else{
-                        $this->view('posts/create', $data);
-                    }
-
-
                 }else{
-                    $data['fileError'] = 'Nebyl vybrán žádný soubor';
                     $this->view('posts/create', $data);
                 }
-
-
             }else{
                 $this->view('posts/create', $data);
             }
-
-        }else{
-            $this->view('posts/create', $data);
-        }
     }
 
     /**
@@ -154,13 +144,11 @@ class Posts extends Controller{
             $data = [
                 'id' => $post_id,
                 'post' => $post,
-                'user_id' => $_SESSION['user_id'],
+                'user_id' => $_SESSION['user']->id,
                 'title' => trim($_POST['title']),
-                'fileName' => '',
                 'content' => trim($_POST['content']),
                 'description' => trim($_POST['description']),
                 'titleError' => '',
-                'fileError' =>'',
                 'contentError' => ''
             ];
 
@@ -194,6 +182,78 @@ class Posts extends Controller{
 
         }else{
             $this->view('posts/update', $data);
+        }
+    }
+
+    public function changePostFile($post_id = null){
+        if($post_id == null){
+            header("Location: ".URLROOT."/posts");
+        }
+        $post = $this->postModel->findPostById($post_id);
+        if(!manipulatePostPermission($post)){
+            header("Location: ".URLROOT."/posts/show/".$post_id);
+        }
+
+        $data = [
+            'post' => $post,
+            'title' => '',
+            'content' => '',
+            'description' => '',
+            'fileToUpload' => '',
+            'titleError' =>'',
+            'contentError' => '',
+            'fileError' => ''
+        ];
+
+        if($_SERVER['REQUEST_METHOD'] == 'POST') {
+            //$_POST = filter_input_array(INPUT_POST);
+
+            $file = $_FILES['fileToUpload'];
+            $fileName = $_FILES['fileToUpload']['name'];
+            $fileTmpName = $_FILES['fileToUpload']['tmp_name'];
+            $fileError = $_FILES['fileToUpload']['error'];
+            $fileSize = $_FILES['fileToUpload']['size'];
+
+            $data = [
+                'post' => $post,
+                'id' => $post_id,
+                'fileToUpload' => $file,
+                'fileName' => $fileName,
+                'fileError' => ''
+            ];
+
+            if(empty($data['fileToUpload'])){
+                $data['fileError'] = 'Nebyl vybrán žádný soubor.';
+            }
+            $fileExt = explode('.', $fileName);
+            $fileActualExt = mb_strtolower(end($fileExt));
+            $allowed = array('pdf');
+            if(in_array($fileActualExt, $allowed)){
+                if($fileError === 0){
+                    if($fileSize < 500000){ //soubor je mensi nez 500mb
+                        $fileNameNew = uniqid('', true).".".$fileActualExt;
+                        $fileDestination = 'uploads/'.$fileNameNew;
+                        $data['fileName'] = $fileNameNew;
+                    }else{
+                        $data['fileError'] = 'Soubor je příliš velký.';
+                    }
+                } else{
+                    $data['fileError'] = 'Při nahrávání souboru došlo k chybě.';
+                }
+            }else{
+                $data['fileError'] = 'Špatný typ souboru!';
+            }
+
+            if(empty($data['fileError'])){
+                if($this->postModel->changePostPdf($data)){
+                    move_uploaded_file($fileTmpName,$fileDestination);
+                    header("Location:". URLROOT ."/posts");
+                }else{
+                    die("Nastala chyba, zkuste to prosím znovu.");
+                }
+            }
+        }else{
+            $this->view('posts/show/'.$post_id, $data);
         }
     }
 
@@ -401,7 +461,7 @@ class Posts extends Controller{
             $_POST = filter_input_array(INPUT_POST);
             $data = [
                 'comment_id' => $comment_id,
-                'user_id' => $_SESSION['user_id'],
+                'user_id' => $_SESSION['user']->id,
                 'replyContent' => trim($_POST['replyContent']),
 
                 'replyContentError' => '',
@@ -438,7 +498,7 @@ class Posts extends Controller{
         $reply = $this->postModel->findReply($reply_id);
         if(!isLoggedIn()){
              header("Location: ". URLROOT ."/posts/show/".$post_id);
-        }elseif($reply->user_id != $_SESSION['user_id']){
+        }elseif($reply->user_id != $_SESSION['user']->id){
              header("Location: ". URLROOT . "/posts");
         }
 

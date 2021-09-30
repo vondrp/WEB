@@ -46,6 +46,15 @@ function changePassword(){
     });
 }
 
+function confirmAction() {
+    let confirmAction = confirm("Are you sure to execute this action?");
+    if (confirmAction) {
+        alert("Action successfully executed");
+    } else {
+        alert("Action canceled");
+    }
+}
+
 function openCloseEye(passwordId, openEyeId, closeEyeId){
     var x = document.getElementById(passwordId);
     var y = document.getElementById(openEyeId);
