@@ -1,0 +1,30 @@
+
+{% macro showComments(comments) %}
+    <p>počet komentářů: {{ comments|length }}</p>
+    {% for comment in comments %}
+
+        <div class="comment" id="comment_{{ comment.id }}">
+            <h6 style="font-weight: bold;"><i class="fas fa-comment me-1"></i> {{ comment.author }}</h6> <h6 class="text-muted">{{ comment.created_at }}</h6>
+            <p>{{ comment.content }}</p>
+            {% if session.user is not empty and (session.user.username == comment.author or session.user.role == 'admin')  %}
+                <button class="myBtn btn btn-danger" onclick="deleteComment({{ comment.id }})" name="submit" type="submit">Smazat komentář</button>
+            {% endif %}
+
+            {% for reply in comment.replies %}
+                <div class="replyDiv" id="reply_{{ reply.id }}">
+                    <h6 style="font-weight: bold;"><i class="fas fa-comment-dots"></i> {{ reply.author.username }}</h6> <h6 class="text-muted">{{ reply.created_at }}</h6>
+                    <p>{{ reply.content }}</p>
+                    {% if session.user is not empty and (session.user.username == comment.author or session.user.role == 'admin')  %}
+                        <button class="myBtn btn btn-danger" onclick="deleteReply({{ reply.id }}, {{ post.id }})" name="submit" type="submit">Smazat reply(ajax)</button>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            {% if session.user is not empty %}
+                <div class="reply">
+                    <button class="myBtn btn lightBtn" onclick="reply(this, {{ comment.id }})"><i class="fas fa-reply"></i> Reply</button>
+                </div>
+            {% endif %}
+        </div>
+    {% endfor %}
+{% endmacro %}

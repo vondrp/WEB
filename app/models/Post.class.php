@@ -21,10 +21,8 @@ class Post{
      */
     public function findAllPosts(){
         $this->db->query('SELECT * FROM posts ORDER BY created_at DESC ');
-
-        $results = $this->db->resultSet();
-
-        return $results;
+        //$results = $this->db->resultSet();
+        return $this->db->resultSet();
     }
 
     /**
@@ -56,8 +54,7 @@ class Post{
     public function findPostById($id){
         $this->db->query('SELECT * FROM posts WHERE id = :id');
         $this->db->bind(':id', $id);
-        $row = $this->db->single();
-        return $row;
+        return $this->db->single();
     }
 
     /**
@@ -252,6 +249,9 @@ class Post{
         $this->db->query('SELECT * FROM reviews WHERE post_id = :post_id ORDER BY created_at DESC ');
         $this->db->bind(':post_id', $post_id);
         $results = $this->db->resultSet();
+        foreach ($results as $record) {
+            $record->author = $this->findUserById($record->user_id);
+        }
         return $results;
     }
 

@@ -121,10 +121,13 @@ class Posts extends Controller{
      */
     public function update($post_id = null){
         // for case when no parameter is given
-        if($post_id == null){
+        if(empty($post_id)){
             header("Location: ". URLROOT . "/posts");
         }
         $post = $this->postModel->findPostById($post_id);
+        if(!$post){ /* $post no find failure */
+            header("Location: ". URLROOT . "/posts");
+        }
         if(!manipulatePostPermission($post) ){
             header("Location: ". URLROOT . "/posts/show/".$post_id);
         }
@@ -185,11 +188,18 @@ class Posts extends Controller{
         }
     }
 
+    /**
+     * Change PDF file enclosed to the article
+     * @param null $post_id     id of the post
+     */
     public function changePostFile($post_id = null){
         if($post_id == null){
             header("Location: ".URLROOT."/posts");
         }
         $post = $this->postModel->findPostById($post_id);
+        if(!$post){ /* $post no find failure */
+            header("Location: ". URLROOT . "/posts");
+        }
         if(!manipulatePostPermission($post)){
             header("Location: ".URLROOT."/posts/show/".$post_id);
         }
@@ -266,6 +276,9 @@ class Posts extends Controller{
             header("Location: ". URLROOT . "/posts");
         }
         $post = $this->postModel->findPostById($post_id);
+        if(!$post){ /* $post no find failure */
+            header("Location: ". URLROOT . "/posts");
+        }
         if(!manipulatePostPermission($post)){
             header("Location: ". URLROOT . "/posts");
         }
@@ -291,6 +304,7 @@ class Posts extends Controller{
             header("Location: ". URLROOT . "/posts");
         }
         $post =  $this->postModel->findPostById($post_id);
+
         if(!$post){
             header("Location: ". URLROOT . "/posts");
         }
@@ -320,10 +334,17 @@ class Posts extends Controller{
         if($post_id == null){
             header("Location: ". URLROOT . "/posts");
         }
+
+        $post =  $this->postModel->findPostById($post_id);
+
+        if(!$post){ /* $post no find failure */
+            header("Location: ". URLROOT . "/posts");
+        }
+
         if(!isLoggedIn()){
             header("Location: ".URLROOT ."/posts/show/".$post_id);
         }
-        $post =  $this->postModel->findPostById($post_id);
+
         $comments = $this->postModel->findPostComments($post_id);
         $reviews = $this->postModel->findPostReviews($post_id);
 
@@ -370,7 +391,6 @@ class Posts extends Controller{
             );
             echo json_encode($data);
            // echo json_encode($data2);
-
         }
         //$this->view('posts/show', $data);
     }
@@ -384,6 +404,10 @@ class Posts extends Controller{
             header("Location: ". URLROOT . "/posts");
         }
         $comment = $this->postModel->findCommentById($comment_id);
+        if(!$comment){
+            header("Location: ". URLROOT . "/posts");
+        }
+
         if(!isLoggedIn()){
             header("Location: ". URLROOT ."/posts/show/".$comment->post_id);
         }elseif($comment->author != $_SESSION['username']){
@@ -434,12 +458,15 @@ class Posts extends Controller{
             header("Location: ". URLROOT . "/posts");
         }
         $comment = $this->postModel->findCommentById($comment_id);
+        if(!$comment){
+            header("Location: ". URLROOT . "/posts");
+        }
+
         $post_id = $comment->post_id;
 
         if(!isLoggedIn()){
             header("Location: ".URLROOT ."/posts/show/".$post_id);
         }
-
         $post =  $this->postModel->findPostById($post_id);
         $comments = $this->postModel->findPostComments($post_id);
         $reviews = $this->postModel->findPostReviews($post_id);
@@ -495,7 +522,11 @@ class Posts extends Controller{
         if($post_id == null or $reply_id == null){
             header("Location: ". URLROOT . "/posts");
         }
+        $post = $this->postModel->findPostById($post_id);
         $reply = $this->postModel->findReply($reply_id);
+        if(!$reply or !$post){
+            header("Location: ". URLROOT . "/posts");
+        }
         if(!isLoggedIn()){
              header("Location: ". URLROOT ."/posts/show/".$post_id);
         }elseif($reply->user_id != $_SESSION['user']->id){

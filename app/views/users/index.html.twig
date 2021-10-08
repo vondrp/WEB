@@ -1,10 +1,10 @@
 {% extends('default.html.twig') %}
 
 {% block content %}
-    <div class="container">
+    <div class="container pt-3">
         <h1>Profil uživatele</h1>
-
         <form action="{{ constant('URLROOT') }}/users/updateUserUsernameEmail/{{ session.user.id }}" method="POST">
+            <div class="table-responsive">
             <table class="table table-striped">
                 <tr>
                     <th>Typ informace</th>
@@ -25,41 +25,80 @@
 
                 <tr>
                     <td>Heslo:</td>
-                    <td><a href="{{ constant('URLROOT') }}/users/changePassword">Změnit heslo</a> </td>
+                    <td><a href="{{ constant('URLROOT') }}/users/changePassword/{{ session.user.id }}">Změnit heslo</a> </td>
                 </tr>
                 <tr>
                     <td>role: </td>
                     <td>{{ session.user.role }}</td>
                 </tr>
             </table>
-            <button class="myBtn btn btn-primary float-end" id="registerButton" type="submit" value="submit">Změnit údaje</button>
+            </div>
+            <button class="myBtn btn btn-primary" id="registerButton" type="submit" value="submit">Změnit údaje</button>
         </form>
-        <table class="table table-striped">
-        <thead>
-        <tr>
-            <th scope="col">Titulek</th>
-            <th scope="col">Popis</th>
-        </tr>
-        </thead>
-        {% for post in userPosts %}
-            <tbody>
-            <td><a href="{{ constant('URLROOT') }}/posts/show/{{ post.id }}">{{ post.title }}</a></td>
-            <td>{{ post.description }}</td>
-            {% if session.user is not empty and session.user.id == post.user_id %}
-                <td>
-                    <a class="myBtn btn orange ms-3 float-end"
-                       href="{{ constant('URLROOT')}}/posts/update/{{ post.id}}">
-                        Upravit
-                    </a>
-                </td>
-                <td>
-                    <form action="{{ constant('URLROOT')}}/posts/delete/{{ post.id}}" method="POST" class="delete-form">
-                        <button class="myBtn btn btn-danger float-end ms-2" name="submit" type="submit">Smazat</button>
-                    </form>
-                </td>
-            {% endif %}
-        {% endfor %}
-            </tbody>
-        </table>
+
+        <div class="table-responsive">
+            <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">Titulek</th>
+                <th scope="col">Popis</th>
+            </tr>
+            </thead>
+            {% for post in userPosts %}
+                <tbody>
+                <td><a href="{{ constant('URLROOT') }}/posts/show/{{ post.id }}">{{ post.title }}</a></td>
+                <td>{{ post.description }}</td>
+                {% if session.user is not empty and session.user.id == post.user_id %}
+                    <td>
+                        <a class="myBtn btn orange ms-3 float-end"
+                           href="{{ constant('URLROOT')}}/posts/update/{{ post.id}}">
+                            Upravit
+                        </a>
+                    </td>
+                    <td>
+                        <form action="{{ constant('URLROOT')}}/posts/delete/{{ post.id}}" method="POST" class="delete-form">
+                            <button class="myBtn btn btn-danger float-end ms-2" name="submit" type="submit">Smazat</button>
+                        </form>
+                    </td>
+                {% endif %}
+            {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- reviews -->
+        <div class="reviews table-responsive">
+            <table class="table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">Nadpis článku</th>
+                    <th scope="col">Kvalita tématu</th>
+                    <th scope="col">Jazyk</th>
+                    <th scope="col">Originalita</th>
+                    <th scope="col">Poznámky</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for review in userReviews %}
+                    <tr>
+                        <td>{{ review.post.title }}</td>
+                        <td>{{ review.topicRelevance }}</td>
+                        <td>{{ review.langQuality }}</td>
+                        <td>{{ review.originality }}</td>
+                        <td>{{ review.notes  | raw }}</td>
+                        {% if session.user is not empty  %}
+                            <td>
+                                {{ macros.canUpdateReview(review) }}
+                            </td>
+                            <td>
+                                {{ macros.canDeleteReview(review) }}
+                            </td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
     </div>
 {% endblock %}

@@ -44,7 +44,10 @@ class Database{
         //$pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
     }
 
-    //Allows to write queries
+    /**
+     * Allows to write queries
+     * @param $sql  SQL command
+     */
     public function query($sql){
         $this->statement = $this->dbHandler->prepare($sql);
     }

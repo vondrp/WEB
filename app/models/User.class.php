@@ -104,7 +104,7 @@ class User{
     }
 
     /**
-     * Find all user posts
+     * Find all posts of the user
      * @param $user     user which posts we are looking for
      * @return mixed    all posts, which user created
      */
@@ -115,6 +115,35 @@ class User{
         $this->db->bind(':user_id', $user_id);
 
         return $this->db->resultSet();
+    }
+
+    /**
+     * Find all reviews of the user
+     * @param $user     user which reviews we are looking for
+     * @return mixed    all reviews, which user created
+     */
+    public function findUserReviews($user){
+        $user_id = $user->id;
+        $this->db->query('SELECT * FROM reviews WHERE user_id = :user_id ORDER BY created_at DESC');
+        $this->db->bind(':user_id', $user_id);
+
+        $results = $this->db->resultSet();
+
+        foreach ($results as $record) {
+            $record->post = $this->findPostById($record->post_id);
+        }
+        return $results;
+    }
+
+    /**
+     * Find post in table posts with his id
+     * @param $id       id of the post, which is being looked for
+     * @return mixed    data of post with right id
+     */
+    private function findPostById($id){
+        $this->db->query('SELECT * FROM posts WHERE id = :id');
+        $this->db->bind(':id', $id);
+        return $this->db->single();
     }
 
     /**

@@ -9,10 +9,8 @@
     {% for post in posts %}
         <div class="container-item">
 
-            {{ macros.canUpdateDeletePost(post) }}
-
-
             <h2><a href="{{ constant('URLROOT') }}/posts/show/{{ post.id }}">{{ post.title }}</a></h2>
+            {{ macros.canUpdateDeletePost(post) }}
             <p>
                 {{ post.content | raw  }}
             </p>

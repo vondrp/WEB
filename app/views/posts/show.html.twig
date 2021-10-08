@@ -2,12 +2,12 @@
 
 {% import 'includes/permissions.inc.twig' as macros %}
 
+{% import 'includes/comments.inc.twig' as commentsMacros %}
 {% block content %}
     <div class="container mt-4">
-        <a href="{{ constant('URLROOT') }}/posts/index">zpět na seznam článků</a>
-        <br>
-        {{ macros.canUpdateDeletePost(post)}}
+        <a class="mb-5" href="{{ constant('URLROOT') }}/posts/index">zpět na seznam článků</a>
 
+        {{ macros.canUpdateDeletePost(post)}}
         <h2>{{ post.title }}</h2>
         <p>{{ post.description | raw }}</p>
         <p>{{ post.content | raw }}</p>
@@ -19,7 +19,7 @@
         
         <h2>Recenze</h2>
         {{ macros.canCreateReview(post) }}
-        <div class="reviews">
+        <div class="reviews table-responsive">
             <table class="table table-striped">
                 <thead>
                 <tr>
@@ -33,7 +33,7 @@
                 <tbody>
                     {% for review in reviews %}
                         <tr>
-                            <th scope="row">{{ review.reviewer }}</th>
+                            <td>{{ review.author.username }}</td>
                             <td>{{ review.topicRelevance }}</td>
                             <td>{{ review.langQuality }}</td>
                             <td>{{ review.originality }}</td>
@@ -58,7 +58,6 @@
             <div class="addComment">
                 <!-- action="{ constant('URLROOT')}}/posts/createComment/{post.id }}"-->
             <form id="commentForm" action="{{ constant('URLROOT')}}/posts/createComment/{{ post.id }}" method="POST">
-
                 <div class="form-item">
                     <textarea class="form-control" type="text" name="commentContent" id="commentContent" placeholder="Enter you post" value="{{ comment.content }}"></textarea>
                     <span class="invalidFeedBack">
@@ -66,68 +65,37 @@
                 </span>
                 </div>
                 <div class="form-item">
-                    <button class="myBtn green btn mt-3  float-end" id="submitAddComment"name="submit" type="submit">Přidat komentář</button>
+                    <button class="myBtn green btn mt-3  float-end" id="submitAddComment" name="submit" type="submit">Přidat komentář</button>
                 </div>
                 <p class="form-message"></p>
             </form>
                 <span id="comment_message">
-
                 </span>
                 <div id="display_comment"></div>
             </div>
         {% endif %}
 
+        <button onclick="confirmAction()">testButton</button>
+        {{ macros.testTlacitka() }}
+        <script>
+            function confirmAction() {
+                let confirmAction = confirm("Are you sure to execute this action?");
+                if (confirmAction) {
+                    alert("Action successfully executed");
+                } else {
+                    alert("Action canceled");
+                }
+            }
+        </script>
+
         <div class="comments">
-            <p>počet komentářů: {{ comments|length }}</p>
-            {% for comment in comments %}
-
-                <div class="comment" id="comment_{{ comment.id }}">
-                   <h6 style="font-weight: bold;"><i class="fas fa-comment me-1"></i> {{ comment.author }}</h6> <h6 class="text-muted">{{ comment.created_at }}</h6>
-
-                    <!--
-                    { comment.created_at|time_diff }}
-                    <h6>Pokus s datem: {  comment.created_at|date("m/d/y H:i:s'") }} </h6>
-                    <p> { "now"|date('m/d/y H:i:s')}}</p>
-
-                    % set datePost = comment.created_at|date('d-m-Y') %}
-                    % set today = "now"|date('d-m-Y') %}
-                    % set difference = date(today).diff(date(datePost))%}
-                    % set leftDays = difference.days %}
-                    % if datePost == today %}
-                        <h6 class="text-muted">today </h6>
-                    % else %}
-                        <h6 class="text-muted">{ leftDays }} </h6>
-                    % endif %}
-                    -->
-
-                    <p>{{ comment.content }}</p>
-                    {% if session.user is not empty and (session.user.username == comment.author or session.user.role == 'admin')  %}
-                        <button class="myBtn btn btn-danger float-end" onclick="deleteComment({{ comment.id }})" name="submit" type="submit">Smazat komentář</button>
-                    {% endif %}
-
-                    {% for reply in comment.replies %}
-                        <div class="replyDiv" id="reply_{{ reply.id }}">
-                            <h6 style="font-weight: bold;"><i class="fas fa-comment-dots"></i> {{ reply.author.username }}</h6> <h6 class="text-muted">{{ reply.created_at }}</h6>
-                            <p>{{ reply.content }}</p>
-                            {% if session.user is not empty and (session.user.username == comment.author or session.user.role == 'admin')  %}
-                                <button class="myBtn btn btn-danger float-end" onclick="deleteReply({{ reply.id }}, {{ post.id }})" name="submit" type="submit">Smazat reply(ajax)</button>
-                            {% endif %}
-                        </div>
-                    {% endfor %}
-
-                    {% if session.user is not empty %}
-                    <div class="reply">
-                        <button class="myBtn btn lightBtn" onclick="reply(this, {{ comment.id }})"><i class="fas fa-reply"></i> Reply</button>
-                    </div>
-                    {% endif %}
-                </div>
-            {% endfor %}
+            {{ commentsMacros.showComments(comments) }}
         </div>
         <!-- action=" constant('URLROOT')}}/posts/createReply/ comment.id }}"-->
         <div class="addComment row replyRow" action=" {{constant('URLROOT')}}/posts/createReply/{{ comment.id }}" style="display:none;">
             <form id="replyForm" method="POST">
                 <div class="form-item">
-                    <textarea class="form-control" type="text" name="replyContent" placeholder="Enter you reply" value="{{ comment.content }}"></textarea>
+                    <textarea class="form-control" name="replyContent" placeholder="Enter you reply" value="{{ comment.content }}"></textarea>
                     <span class="invalidFeedBack">
                         {{ replyContentError }}
                     </span>

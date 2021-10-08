@@ -26,6 +26,7 @@
                     {% else %}
                         <form action="{{ constant('URLROOT')}}/users/changeRole/{{ user.id }}" method="POST">
                         <td>
+                            <label>
                             <select class="form-control" name="role">
                                 {% if session.user.role == 'superadmin' %}
                                     <option value="1" {% if user.role == 'superadmin' %} selected="selected" {% endif %}>Super admin</option>
@@ -35,6 +36,7 @@
                                 <option value="4" {% if user.role == 'editor' %} selected="selected" {% endif %}>Autor</option>
                                 <option value="5" {% if user.role == 'normal' %} selected="selected" {% endif %}>Normal</option>
                             </select>
+                            </label>
                         </td>
                         {% if session.user is not empty %}
                             <td>

@@ -4,7 +4,7 @@
  * Class Users - controller of users
  */
 class Users extends Controller{
-
+    /** length of the password */
     const PASSWORD_MIN_LENGTH = 6;
     /**
      * Users constructor.
@@ -14,7 +14,7 @@ class Users extends Controller{
     }
 
     /**
-     *
+     *  index page is used for user profile
      */
     public function index(){
         if(!isLoggedIn()){
@@ -22,18 +22,22 @@ class Users extends Controller{
         }
 
         $userPosts = $this->userModel->findUserPosts($_SESSION['user']);
+        $userReviews = $this->userModel->findUserReviews($_SESSION['user']);
         $users = $this->userModel->getAllUsers();
         $data = [
             'userPosts' => $userPosts,
+            'userReviews' => $userReviews,
             'users' => $users
         ];
         $this->view('users/index', $data);
     }
     /**
-     * register user
+     * registration of the user
      */
     public function register(){
-
+        if(!empty($_SESSION['user'])){
+            header("Location: ".URLROOT . "/users/index");
+        }
         $data = [
             'username' => '',
             'email' => '',
@@ -119,9 +123,10 @@ class Users extends Controller{
      * login user
      */
     public function login(){
-
+        if(!empty($_SESSION['user'])){
+            header("Location: ".URLROOT . "/users/index");
+        }
         $data = [
-            'title' => 'Login page',
             'usernameOrEmail' => '',
             'password' => '',
             'usernameOrEmailError' => '',
@@ -160,14 +165,8 @@ class Users extends Controller{
                 }
             }
         }else{
-            $data = [
-                'usernameOrEmail' => '',
-                'password' => '',
-                'usernameOrEmailError'=> '',
-                'passwordError' => ''
-            ];
+            $this->view('users/login', $data);
         }
-        $this->view('users/login', $data);
     }
 
     /**
@@ -177,7 +176,7 @@ class Users extends Controller{
         if(!isLoggedIn()){
             header("Location: ".URLROOT . "/users/login");
         }
-        if(strcmp($_SESSION['user']->role, 'superadmin') ==0 or strcmp($_SESSION['user']->role, 'admin') ==0){
+        if(strcmp($_SESSION['user']->role, 'superadmin') == 0 or strcmp($_SESSION['user']->role, 'admin') ==0){
             $users = $this->userModel->getAllUsers();
             $data = [
                 'users' => $users
@@ -202,11 +201,14 @@ class Users extends Controller{
      * @param null $user_id id of the selected user
      */
     public function updateUserUsernameEmail($user_id = null){
+        if(!isLoggedIn()){
+            header('location: ' . URLROOT . '/users/login');
+        }
         if($user_id == null){
             header('location: ' . URLROOT . '/users/index');
         }
         $user = $this->userModel->findUserById($user_id);
-        if(!$user){
+        if(!$user or ($_SESSION['user']->id != $user_id)){
             header('location: ' . URLROOT . '/users/index');
         }
         $data = [
@@ -266,12 +268,20 @@ class Users extends Controller{
 
     /**
      * Controller method of changing password of logg in user
+     * @param $user_id
      */
-    public function changePassword(){
+    public function changePassword($user_id = null){
         if(!isLoggedIn()){
             header("Location: ".URLROOT . "/users/login");
         }
-        $user_id = $_SESSION['user']->id;
+        if($user_id == null){
+            header("Location: ".URLROOT . "/users/index");
+        }
+        $user = $this->userModel->findUserByID($user_id);
+        if(!$user){
+            header("Location: ".URLROOT . "/users/index");
+        }
+        //$user_id = $_SESSION['user']->id;
         $data = [
             'originalPassword' => '',
             'newPassword' => '',
@@ -287,7 +297,7 @@ class Users extends Controller{
 
             $data = [
                 'id' => $user_id,
-                'user' => $_SESSION['user'],
+                'user' => $user,
                 'originalPassword' => trim($_POST['originalPassword']),
                 'newPassword' => trim($_POST['newPassword']),
                 'confirmNewPassword' => trim($_POST['confirmNewPassword']),
@@ -339,6 +349,7 @@ class Users extends Controller{
     }
 
     /**
+     * Change user role
      * @param $user_id  id of the user, which role is changing
      */
     public function changeRole($user_id = null){
@@ -346,7 +357,7 @@ class Users extends Controller{
             header("Location: ".URLROOT . "/users/index");
         }
         $user = $this->userModel->findUserByID($user_id);
-        if($user == false){
+        if(!$user){
             header("Location: ".URLROOT . "/users/index");
         }
         $data = [
@@ -394,12 +405,21 @@ class Users extends Controller{
     }
 
     /**
+     * Delete user from database
      * @param null $user_id
      */
     public function deleteUser($user_id = null){
+        if(!isLoggedIn()){
+            header("Location: ". URLROOT . "/users/login");
+        }
         if($user_id == null){
             header("Location: ". URLROOT . "/users/index");
         }
+        $user = $user = $this->userModel->findUserByID($user_id);
+        if(!$user){
+            header("Location: ".URLROOT . "/users/index");
+        }
+
         if($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
