@@ -52,14 +52,14 @@
 
 {# macro find out if session user can update selected review#}
 {% macro canUpdateReview(review) %}
-    {% if session.user is not empty and (session.user.id == review.reviewer_id or session.user.role == 'superadmin') %}
+    {% if (session.user is not empty) and ( session.user.id == review.user_id or session.user.role == 'superadmin') %}
         <a class="orange btn myBtn" href="{{ constant('URLROOT')}}/reviews/update/{{ review.id }}">Upravit</a>
     {% endif %}
 {% endmacro %}
 
 {# macro find out if session user can delete selected review#}
 {% macro canDeleteReview(review) %}
-    {% if session.user is not empty and (session.user.id == review.reviewer_id or session.user.role == 'superadmin') %}
+    {% if session.user is not empty and (session.user.id == review.user_id or session.user.role == 'superadmin') %}
             <form action="{{ constant('URLROOT')}}/reviews/delete/{{ review.id}}" method="POST" class="delete-form">
                 <button class="myBtn btn btn-danger" name="submit" type="submit" onclick="confirmAction()">Smazat</button>
             </form>

@@ -1,4 +1,8 @@
 <?php
+
+/**
+ * Class Reviews is controller of the reviews
+ */
 class Reviews extends Controller {
 
     /**
@@ -10,6 +14,16 @@ class Reviews extends Controller {
         $this->postModel = $this->model('Post');
     }
 
+    /**
+     * Base page of the reviews controller
+     * actually not exists - redirect to home index page
+     */
+    public function index(){
+        $data = [
+            'title' => 'Home page',
+        ];
+        $this->view('pages/index', $data);
+    }
 
     /**
      * Controller of the create review view
@@ -22,6 +36,9 @@ class Reviews extends Controller {
         }
         //href="{{ constant('URLROOT') }}/posts/show/{{ post.id }}
         $post = $this->postModel->findPostById($post_id);
+        if(!$post){
+            header("Location: ". URLROOT . "/posts");
+        }
         if(!reviewerPermissions()){
             header("Location: ".URLROOT . "/posts/show/".$post_id);
         }
@@ -45,7 +62,7 @@ class Reviews extends Controller {
 
             $data = [
                 'post_id' => $post_id,
-                'reviewer_id' => $_SESSION['user']->id,
+                'user_id' => $_SESSION['user']->id,
                 'topicRelevance' => trim($_POST['topicRelevance']),
                 'langQuality' => trim($_POST['langQuality']),
                 'originality' => trim($_POST['originality']),
@@ -78,10 +95,24 @@ class Reviews extends Controller {
                 && empty($data['langQualityError'])
                 && empty($data['originalityError'])
                 && empty($data['recommendationError'])){
-                if($this->reviewModel->addReview($data)){
-                    header("Location:". URLROOT ."/posts/show/".$post_id);
+
+                $alreadyReviewed = $this->reviewModel->hasAlreadyReviewedArticle($post_id, $data['user_id']);
+                if(!$alreadyReviewed){
+                    if($this->reviewModel->addReview($data)){
+                        header("Location:". URLROOT ."/posts/show/".$post_id);
+                    }else{
+                        die("Something went wrong, please try again!");
+                    }
                 }else{
-                    die("Something went wrong, please try again!");
+                    if($this->reviewModel->deleteReview($alreadyReviewed->id)){
+                        if($this->reviewModel->addReview($data)){
+                            header("Location:". URLROOT ."/posts/show/".$post_id);
+                        }else{
+                            die("Something went wrong, please try again!");
+                        }
+                    }else{
+                        die('Something went wrong');
+                    }
                 }
             }else{
                 $this->view('reviews/create', $data);
@@ -110,8 +141,11 @@ class Reviews extends Controller {
             header("Location: ". URLROOT . "/posts");
         }
         $review = $this->reviewModel->findReviewById($review_id);
+        if(!$review){
+            header("Location: ". URLROOT . "/posts");
+        }
         //strcmp($review->reviewer,$_SESSION['username'] ) !=0)
-        if(!isLoggedIn() or ( $review->reviewer_id != $_SESSION['user']->id))
+        if(!isLoggedIn() or ( $review->user_id != $_SESSION['user']->id))
         {
             header("Location: ".URLROOT . "/posts/show/".$review->post_id);
         }
@@ -195,7 +229,7 @@ class Reviews extends Controller {
         if(!isLoggedIn()){
             header("Location: ". URLROOT . "/posts");
             //strcmp($review->reviewer_id,$_SESSION['username']) !=0
-        }elseif( $review->reviewer_id != $_SESSION['user']->id){
+        }elseif( $review->user_id != $_SESSION['user']->id){
             header("Location: ". URLROOT . "/posts");
         }
 

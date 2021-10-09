@@ -34,10 +34,19 @@
                     {% for review in reviews %}
                         <tr>
                             <td>{{ review.author.username }}</td>
-                            <td>{{ review.topicRelevance }}</td>
-                            <td>{{ review.langQuality }}</td>
-                            <td>{{ review.originality }}</td>
-                            <td>{{ review.notes  | raw }}</td>
+                            <td>{% for i in 1..review.topicRelevance %}
+                                    <i class="star fas fa-star"></i>
+                                {% endfor %}
+                            </td>
+                            <td>{% for i in 1..review.langQuality %}
+                                    <i class="star fas fa-star"></i>
+                                {% endfor %}
+                            </td>
+                            <td>{% for i in 1..review.originality %}
+                                    <i class="star fas fa-star"></i>
+                                {% endfor %}
+                            </td>
+                            <td class="tableCellLongText">{{ review.notes  | raw }}</td>
                             {% if session.user is not empty  %}
                                 <td>
                                         {{ macros.canUpdateReview(review) }}
@@ -59,10 +68,10 @@
                 <!-- action="{ constant('URLROOT')}}/posts/createComment/{post.id }}"-->
             <form id="commentForm" action="{{ constant('URLROOT')}}/posts/createComment/{{ post.id }}" method="POST">
                 <div class="form-item">
-                    <textarea class="form-control" type="text" name="commentContent" id="commentContent" placeholder="Enter you post" value="{{ comment.content }}"></textarea>
+                    <textarea class="form-control" type="text" name="commentContent" id="commentContent" placeholder="Enter you post">{{ comment.content }}</textarea>
                     <span class="invalidFeedBack">
                         {{ commentContentError }}
-                </span>
+                    </span>
                 </div>
                 <div class="form-item">
                     <button class="myBtn green btn mt-3  float-end" id="submitAddComment" name="submit" type="submit">Přidat komentář</button>
@@ -95,7 +104,7 @@
         <div class="addComment row replyRow" action=" {{constant('URLROOT')}}/posts/createReply/{{ comment.id }}" style="display:none;">
             <form id="replyForm" method="POST">
                 <div class="form-item">
-                    <textarea class="form-control" name="replyContent" placeholder="Enter you reply" value="{{ comment.content }}"></textarea>
+                    <textarea class="form-control" name="replyContent" placeholder="Enter you reply">{{ comment.content }}</textarea>
                     <span class="invalidFeedBack">
                         {{ replyContentError }}
                     </span>

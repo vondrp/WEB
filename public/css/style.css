@@ -92,7 +92,7 @@ h2{
     color:white;
 }
 .navbar{
-    box-shadow: 0px 0px 10px #1a1a1a;
+    box-shadow: 0 0 0.5em #1a1a1a;
 }
 
 #wysiwygTextArea{
@@ -170,7 +170,7 @@ h2{
     margin-top: 0.5em;
 }
 .aboutSection{
-    background:url(../img/blueGray.jpg);
+    background-image:url(../img/blueGray.jpg);
     color:white;
     /* Create the parallax scrolling effect */
     background-attachment: fixed;
@@ -185,4 +185,74 @@ h2{
     font-size:2em;
     text-transform: uppercase;
     padding-top: 0.2em;
+}
+
+.tableCellLongText {
+   /* max-width: 0px; /* tweak me please */
+    max-width: 15em;
+    white-space : nowrap;
+    overflow : hidden;
+}
+.tableCellLongText:hover{
+    text-overflow: ellipsis;
+    white-space: normal;
+}
+
+.expand-small-on-hover:hover {
+    max-width : 200px;
+    text-overflow: ellipsis;
+}
+
+.expand-maximum-on-hover:hover {
+    max-width : initial;
+}
+
+.container-review{
+    /*background: #111;
+    border: 1px solid #444;
+    */
+    padding: 0.5em 1em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+}
+/*
+    review section - stars
+ */
+.star-widget input{
+    display:none;
+}
+
+.star-widget label{
+    font-size: 1.5em;
+    color: #444;
+    padding: 0.2em;
+    float: right; /*  necessary other wise the stars are flipped  */
+    transition: all 0.2s ease;
+}
+
+.star-widget input:not(:checked) ~ label:hover,
+input:not(:checked) ~ label:hover ~ label
+{
+    color: #fd4;
+}
+
+
+.star-widget input:checked ~ label{
+    color: #fd4;
+}
+
+.star{
+    color: #fd4;
+}
+/*
+.star-widget input#rate-5:checked ~ label{
+    color: #fe7;
+    text-shadow: 0 0 20px #952;
+}*/
+
+.star-form-group .invalidFeedBack{
+    float:right;
 }

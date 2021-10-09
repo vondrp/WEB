@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Class Review is model part of the reviews
+ * - works directly width database
+ * it´s methods are called from controller
+ */
 class Review{
 
     /**
@@ -21,11 +26,11 @@ class Review{
      * @return bool     true - if action is successful, otherwise return false
      */
     public function addReview($data){
-        $this->db->query('INSERT INTO reviews(post_id, reviewer_id, topicRelevance, langQuality, originality, recommendation, notes) VALUES
-        (:post_id, :reviewer_id, :topicRelevance ,:langQuality, :originality, :recommendation, :notes)');
+        $this->db->query('INSERT INTO reviews(post_id, user_id, topicRelevance, langQuality, originality, recommendation, notes) VALUES
+        (:post_id, :user_id, :topicRelevance ,:langQuality, :originality, :recommendation, :notes)');
 
         $this->db->bind(':post_id', $data['post_id']);
-        $this->db->bind(':reviewer_id', $data['reviewer_id']);
+        $this->db->bind(':user_id', $data['user_id']);
         $this->db->bind(':recommendation', $data['recommendation'], PDO::PARAM_INT);
         $this->db->bind(':topicRelevance', $data['topicRelevance'], PDO::PARAM_INT);
         $this->db->bind(':langQuality', $data['langQuality'], PDO::PARAM_INT);
@@ -85,7 +90,26 @@ class Review{
     public function findReviewById($id){
         $this->db->query('SELECT * FROM reviews WHERE id = :id');
         $this->db->bind(':id', $id);
+        return $this->db->single();
+    }
+
+    /**
+     * Find out if user has already reviewed article
+     * @param $post_id  id of the post
+     * @param $user_id  id of the user
+     * @return false|mixed  false - user has NOT reviewed selected post, otherwise return record of the review
+     */
+    public function hasAlreadyReviewedArticle($post_id, $user_id){
+        $this->db->query('SELECT * FROM reviews WHERE user_id = :user_id AND post_id = :post_id');
+        $this->db->bind(':user_id', $user_id);
+        $this->db->bind(':post_id', $post_id);
+
         $row = $this->db->single();
-        return $row;
+        if(!empty($row)){
+            return $row;
+        }else{
+            return false;
+        }
+
     }
 }

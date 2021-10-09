@@ -92,6 +92,11 @@ class User{
      * Find user by his/her id
      * @param $user_id    id of the user
      */
+    /**
+     * Find user by his/her id
+     * @param $user_id  id of the user
+     * @return false|mixed  return false if user was no find, otherwise return user record
+     */
     public function findUserByID($user_id){
         $this->db->query('SELECT * FROM users WHERE id = :id');
         $this->db->bind(':id', $user_id);

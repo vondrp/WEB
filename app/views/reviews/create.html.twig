@@ -5,73 +5,97 @@
         <h1 class="text-center pt-5">Vytvořit novou recenzi</h1>
 
         <form action="{{ constant('URLROOT')}}/reviews/create/{{ post.id }}" method="POST">
-            <div class="form-group mb-4 form-item">
-                <label>Relevance tématu</label>
-                <select class="form-control" name="topicRelevance">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3 = vcelku relevantní</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                </select>
+            <div class="container container-review">
+                <div class="star-form-group mb-3">
+                    <h3>Relevance tématu</h3>
+                    <div class="star-widget">
+                        <input type="hidden" name="topicRelevance" value="0" checked="checked"> <!-- necessary - checkbox send nothing if nothing is selected-->
+                        <input type="radio" value="5" name="topicRelevance" id="tR-rate-5" >
+                        <label for="tR-rate-5" class="fas fa-star"></label>
+                        <input type="radio" value="4" name="topicRelevance" id="tR-rate-4">
+                        <label for="tR-rate-4" class="fas fa-star"></label>
+                        <input type="radio" value="3" name="topicRelevance" id="tR-rate-3">
+                        <label for="tR-rate-3" class="fas fa-star"></label>
+                        <input type="radio" value="2" name="topicRelevance" id="tR-rate-2">
+                        <label for="tR-rate-2" class="fas fa-star"></label>
+                        <input type="radio" value="1" name="topicRelevance" id="tR-rate-1">
+                        <label for="tR-rate-1" class="fas fa-star"></label>
+                    </div>
+                    <span class="invalidFeedBack">
+                        {{ topicRelevanceError }}
+                    </span>
+                </div>
 
-                <span class="invalidFeedBack">
-                    {{ topicRelevanceError }}
-                </span>
-            </div>
+                <div class="star-form-group mb-3">
+                    <h3>Kvalita jazyka</h3>
+                    <div class="star-widget">
+                        <input type="hidden" name="langQuality" value="0" checked="checked">
+                        <input type="radio" value="5" name="langQuality" id="lQ-rate-5" >
+                        <label for="lQ-rate-5" class="fas fa-star"></label>
+                        <input type="radio" value="4" name="langQuality" id="lQ-rate-4">
+                        <label for="lQ-rate-4" class="fas fa-star"></label>
+                        <input type="radio" value="3" name="langQuality" id="lQ-rate-3">
+                        <label for="lQ-rate-3" class="fas fa-star"></label>
+                        <input type="radio" value="2" name="langQuality" id="lQ-rate-2">
+                        <label for="lQ-rate-2" class="fas fa-star"></label>
+                        <input type="radio" value="1" name="langQuality" id="lQ-rate-1">
+                        <label for="lQ-rate-1" class="fas fa-star"></label>
+                    </div>
+                    <span class="invalidFeedBack">
+                        {{ langQualityError }}
+                    </span>
+                </div>
 
-            <div class="form-group mb-4 form-item">
-                <label>Kvalita jazyku</label>
-                <select class="form-control" name="langQuality">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5 = jazyk jako prezident Zeman</option>
-                </select>
-                <span class="invalidFeedBack">
-                    {{ langQualityError }}
-                </span>
-            </div>
+                <div class="star-form-group mb-3">
+                    <h3>Originalita</h3>
+                    <div class="star-widget">
+                        <input type="hidden" name="originality" value="0" checked="checked">
+                        <input type="radio" value="5" name="originality" id="og-rate-5" >
+                        <label for="og-rate-5" class="fas fa-star"></label>
+                        <input type="radio" value="4" name="originality" id="og-rate-4">
+                        <label for="og-rate-4" class="fas fa-star"></label>
+                        <input type="radio" value="3" name="originality" id="og-rate-3">
+                        <label for="og-rate-3" class="fas fa-star"></label>
+                        <input type="radio" value="2" name="originality" id="og-rate-2">
+                        <label for="og-rate-2" class="fas fa-star"></label>
+                        <input type="radio" value="1" name="originality" id="og-rate-1">
+                        <label for="og-rate-1" class="fas fa-star"></label>
+                    </div>
+                    <span class="invalidFeedBack">
+                        {{ originalityError }}
+                    </span>
+                </div>
 
-            <div class="form-group mb-4 form-item">
-                <label>Originalita</label>
-                <select class="form-control" name="originality">
-                    <option value="1">1 = jedinečné</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5 = naprosto neoriginální</option>
-                </select>
-                <span class="invalidFeedBack">
-                    {{ originalityError }}
-                </span>
-            </div>
+                <div class="mb-3">
+                    <h3>Doporučení</h3>
+                    <div class="star-widget">
+                        <input type="hidden" name="recommendation" value="0" checked="checked">
+                        <input type="radio" value="5" name="recommendation" id="rd-rate-5" >
+                        <label for="rd-rate-5" class="fas fa-star"></label>
+                        <input type="radio" value="4" name="recommendation" id="rd-rate-4">
+                        <label for="rd-rate-4" class="fas fa-star"></label>
+                        <input type="radio" value="3" name="recommendation" id="rd-rate-3">
+                        <label for="rd-rate-3" class="fas fa-star"></label>
+                        <input type="radio" value="2" name="recommendation" id="rd-rate-2">
+                        <label for="rd-rate-2" class="fas fa-star"></label>
+                        <input type="radio" value="1" name="recommendation" id="rd-rate-1">
+                        <label for="rd-rate-1" class="fas fa-star"></label>
+                    </div>
+                    <span class="invalidFeedBack">
+                        {{ originalityError }}
+                    </span>
+                </div>
 
-            <div class="form-group mb-4 form-item">
-                <label>Doporučení</label>
-                <select class="form-control" name="recommendation">
-                    <option value="1">1 = určitě vydat</option>
-                    <option value="2">2 = spíše vydat</option>
-                    <option value="3">3 = lze vydat </option>
-                    <option value="4">4 = radši nevydávat</option>
-                    <option value="5">5 = nevydat</option>
-                </select>
-                <span class="invalidFeedBack">
-                    {{ recommendationError }}
-                </span>
-            </div>
-
-            <div class="form-group mb-4 form-item ">
-                <label>Poznámky</label>
-                <textarea rows="12" class="form-control" id="wysiwygTextArea" type="text" name="notes" placeholder="Zadejte své poznámky *">
-                    {{ notes }}
-                </textarea>
-                <span class="invalidFeedBack">
+                <div class="form-group mb-4 form-item ">
+                    <p>Poznámka (maximálně 255 znaků)</p>
+                    <!-- id="wysiwygTextArea" -->
+                        <textarea maxlength="255" rows="12" class="form-control" type="text" name="notes" placeholder="Zadejte své poznámky *">{{ notes }}</textarea>
+                    <span class="invalidFeedBack">
                     {{ notesError }}
                 </span>
+                </div>
+                <button class="myBtn btn btn-primary green" name="submit" type="submit">Odeslat recenzi</button>
             </div>
-            <button class="myBtn btn btn-primary green" name="submit" type="submit">Submit</button>
         </form>
     </div>
 {% endblock %}
