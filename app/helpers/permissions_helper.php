@@ -42,3 +42,18 @@
             return false;
         }
     }
+
+    /**
+     * Find out is user in session have permission to manipulate selected user
+     * @param $user     $user which profile is going to be manipulated with
+     * @return bool     true - have permission, false - not permission
+     */
+    function manipulateUserProfilePermissions($user){
+        if(isLoggedIn() and ( ($_SESSION['user']->role == 'superadmin')
+                or ($_SESSION['user']->role == 'admin' and $user->role !== 'superadmin')
+                or $_SESSION['user']->id == $user->id) ){
+            return true;
+        } else{
+            return false;
+        }
+    }

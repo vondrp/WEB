@@ -46,19 +46,10 @@ function changePassword(){
     });
 }
 
-function confirmAction() {
-    let confirmAction = confirm("Are you sure to execute this action?");
-    if (confirmAction) {
-        alert("Action successfully executed");
-    } else {
-        alert("Action canceled");
-    }
-}
-
 function openCloseEye(passwordId, openEyeId, closeEyeId){
-    var x = document.getElementById(passwordId);
-    var y = document.getElementById(openEyeId);
-    var z = document.getElementById(closeEyeId);
+    let x = document.getElementById(passwordId);
+    let y = document.getElementById(openEyeId);
+    let z = document.getElementById(closeEyeId);
 
     if(x.type === 'password'){
         x.type = "text";
@@ -73,3 +64,30 @@ function openCloseEye(passwordId, openEyeId, closeEyeId){
     }
 }
 
+function confirmAction() {
+    let confirmAction = confirm("Určitě chcete tuto akci podniknout?");
+    if (confirmAction) {
+        alert("Akce úspěšně provedena");
+    } else {
+        alert("Akce zrušena");
+    }
+}
+
+/**
+ *
+ * @param instanceType  string of the type of instance, which is going to be delated
+ */
+function confirmAction(instanceType, actionType = null) {
+    let question = "Určitě chcete tuto akci podniknout?";
+
+    if(actionType === "delete"){
+        question = "Určitě chcete "+instanceType+ " smazat?";
+    }
+    let confirmAction = confirm(question);
+    if (confirmAction) {
+        return true;
+    } else {
+        alert("Akce zrušena");
+        return false;
+    }
+}

@@ -110,11 +110,11 @@ class User{
 
     /**
      * Find all posts of the user
-     * @param $user     user which posts we are looking for
+     * @param $user_id     user which posts we are looking for
      * @return mixed    all posts, which user created
      */
-    public function findUserPosts($user){
-        $user_id = $user->id;
+    public function findUserPosts($user_id){
+       // $user_id = $user->id;
         $this->db->query('SELECT * FROM posts WHERE user_id = :user_id ORDER BY created_at DESC');
 
         $this->db->bind(':user_id', $user_id);
@@ -124,11 +124,11 @@ class User{
 
     /**
      * Find all reviews of the user
-     * @param $user     user which reviews we are looking for
+     * @param $user_id     user which reviews we are looking for
      * @return mixed    all reviews, which user created
      */
-    public function findUserReviews($user){
-        $user_id = $user->id;
+    public function findUserReviews($user_id){
+        //$user_id = $user->id;
         $this->db->query('SELECT * FROM reviews WHERE user_id = :user_id ORDER BY created_at DESC');
         $this->db->bind(':user_id', $user_id);
 

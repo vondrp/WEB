@@ -4,7 +4,7 @@
 {% block content %}
     <div class="container pt-3">
         <h1>Profil uživatele</h1>
-        <form action="{{ constant('URLROOT') }}/users/updateUserUsernameEmail/{{ session.user.id }}" method="POST">
+        <form action="{{ constant('URLROOT') }}/users/updateUserUsernameEmail/{{ user.id }}" method="POST">
             <div class="table-responsive">
             <table class="table table-striped">
                 <tr>
@@ -13,20 +13,20 @@
                 </tr>
                 <tr>
                    <td>Jméno:</td>
-                    <td><input class="form-control" type="text" id="username" placeholder="Uživatelské jméno *" name="username" value="{{ session.user.username }}">
+                    <td><input class="form-control" type="text" id="username" placeholder="Uživatelské jméno *" name="username" value="{{ user.username }}">
                         <span class="invalidFeedBack">{{ usernameError }}</span>
                     </td>
                 </tr>
                 <tr>
                     <td>Email:</td>
-                    <td><input class="form-control" id="email" type="email" placeholder="Email *" name="email" value="{{ session.user.email }}">
+                    <td><input class="form-control" id="email" type="email" placeholder="Email *" name="email" value="{{ user.email }}">
                         <span class="invalidFeedBack">{{ emailError }}</span>
                     </td>
                 </tr>
 
                 <tr>
                     <td>Heslo:</td>
-                    <td><a href="{{ constant('URLROOT') }}/users/changePassword/{{ session.user.id }}">Změnit heslo</a> </td>
+                    <td>{{ macros.canChangeUserPassword(user) }}</td>
                 </tr>
                 <tr>
                     <td>role: </td>
@@ -34,7 +34,9 @@
                 </tr>
             </table>
             </div>
-            <button class="myBtn btn btn-primary" id="registerButton" type="submit" value="submit">Změnit údaje</button>
+            {% if (session.user.role is same as('superadmin')) or (session.user.role is same as('admin') and user.role is not same as('superadmin')) or (session.user.id == user.id) %}
+                <button class="myBtn btn btn-primary" id="registerButton" type="submit" value="submit">Změnit údaje</button>
+            {% endif %}
         </form>
 
         {% if userPosts is not empty %}
@@ -52,19 +54,6 @@
                 <td><a href="{{ constant('URLROOT') }}/posts/show/{{ post.id }}">{{ post.title }}</a></td>
                 <td class="tableCellLongText">{{ post.description }}</td>
                 {% if session.user is not empty and session.user.id == post.user_id %}
-                    <!--
-                    <td>
-                        <a class="myBtn btn orange ms-3 float-end"
-                           href="{{ constant('URLROOT')}}/posts/update/{{ post.id}}">
-                            Upravit
-                        </a>
-                    </td>
-                    <td>
-                        <form action="{{ constant('URLROOT')}}/posts/delete/{{ post.id}}" method="POST" class="delete-form">
-                            <button class="myBtn btn btn-danger float-end ms-2" name="submit" type="submit">Smazat</button>
-                        </form>
-                    </td>
-                    -->
                     <td>
                         {{ macros.canUpdateDeletePost(post)}}
                     </td>

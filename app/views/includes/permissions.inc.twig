@@ -1,8 +1,7 @@
 {% macro canUpdateDeletePost(post)  %}
-
     <div class="container mb-4">
         <div class="row">
-            {% if session.user is not empty and (session.user.id == post.user_id or session.user.role == 'superadmin') %}
+            {% if session.user is not empty and (session.user.id == post.user_id or (session.user.role is same as('superadmin')) ) %}
             <div class="col-sm-12 col-md-6 col-lg-3 mb-2">
                 <a class="orange btn myBtn"
                    href="{{ constant('URLROOT')}}/posts/update/{{ post.id}}">
@@ -11,7 +10,7 @@
             </div>
             <div class="col-sm-12 col-md-6 col-lg-3 mb-2">
                 <form action="{{ constant('URLROOT')}}/posts/delete/{{ post.id}}" method="POST" class="delete-form">
-                    <button class="myBtn btn btn-danger" name="submit" type="submit">Smazat článek</button>
+                    <button onclick="return confirmAction('článek', 'delete');" class="myBtn btn btn-danger" name="submit" type="submit">Smazat článek</button>
                 </form>
             </div>
             <div class="col-sm-12 col-md-6 col-lg-6">
@@ -35,14 +34,14 @@
 {% endmacro %}
 
 {% macro canCreatePost() %}
-    {% if session.user is not empty and (session.user.role == 'editor' or session.user.role == 'superadmin')%}
+    {% if session.user is not empty and (session.user.role is same as('editor') or session.user.role is same as('superadmin'))%}
         <a class="myBtn btn green mb-3" href="{{constant('URLROOT')}}/posts/create">Create</a>
     {% endif %}
 {% endmacro %}
 
 
 {% macro canCreateReview(post) %}
-    {% if session.user is not empty and (session.user.role == 'reviewer' or session.user.role == 'superadmin') %}
+    {% if session.user is not empty and ( (session.user.role is same as('reviewer')) or (session.user.role is same as('superadmin')) ) %}
         <a class="green btn myBtn"
            href="{{ constant('URLROOT')}}/reviews/create/{{ post.id}}">
             Vytvořit recenzi
@@ -52,34 +51,34 @@
 
 {# macro find out if session user can update selected review#}
 {% macro canUpdateReview(review) %}
-    {% if (session.user is not empty) and ( session.user.id == review.user_id or session.user.role == 'superadmin') %}
+    {% if (session.user is not empty) and ( session.user.id == review.user_id or (session.user.role is same as('superadmin')) ) %}
         <a class="orange btn myBtn" href="{{ constant('URLROOT')}}/reviews/update/{{ review.id }}">Upravit</a>
     {% endif %}
 {% endmacro %}
 
 {# macro find out if session user can delete selected review#}
 {% macro canDeleteReview(review) %}
-    {% if session.user is not empty and (session.user.id == review.user_id or session.user.role == 'superadmin') %}
+    {% if session.user is not empty and (session.user.id == review.user_id or (session.user.role is same as('superadmin')) ) %}
             <form action="{{ constant('URLROOT')}}/reviews/delete/{{ review.id}}" method="POST" class="delete-form">
-                <button class="myBtn btn btn-danger" name="submit" type="submit" onclick="confirmAction()">Smazat</button>
+                <button onclick="return confirmAction('recenze', 'delete')" class="myBtn btn btn-danger" name="submit" type="submit">Smazat</button>
             </form>
     {% endif %}
 {% endmacro %}
 
 {% macro canDeleteUser(user) %}
-        {% if  session.user.role == 'admin' and
-            (user.role == 'normal' or user.role == 'editor' or user.role=='reviewer') %}
-                <form action="{{ constant('URLROOT')}}/users/deleteUser/{{ user.id}}" method="POST" class="delete-form">
-                    <button class="myBtn btn btn-danger" name="submit" type="submit">Smazat</button>
-                </form>
-        {% elseif session.user.role == 'superadmin' and
-            (user.role == 'normal' or user.role == 'editor' or user.role=='reviewer' or user.role == 'admin')%}
-                <form action="{{ constant('URLROOT')}}/users/deleteUser/{{ user.id}}" method="POST" class="delete-form">
-                    <button class="myBtn btn btn-danger" name="submit" type="submit">Smazat</button>
-                </form>
-        {% endif%}
+
+        {% if ( (session.user.role is same as('admin')) and (user.role is not same as('superadmin'))
+            ) or (session.user.role is same as('superadmin'))%}
+        <form action="{{ constant('URLROOT')}}/users/deleteUser/{{ user.id}}" method="POST" class="delete-form">
+            <button onclick="return confirmAction('uživatel', 'delete');" class="myBtn btn btn-danger" name="submit" type="submit">Smazat</button>
+        </form>
+        {% endif %}
 {% endmacro %}
 
-{% macro testTlacitka() %}
-    <button onclick="confirmAction()">testButtonVPermissions</button>
+{# macro which enabled change user password with right permissions #}
+{% macro canChangeUserPassword(user) %}
+    {% if user.id == session.user.id or (session.user.role is same as('superadmin'))
+        or ((session.user.role is same as('admin')) and (user.role is not same as('superadmin'))) %}
+            <a href="{{ constant('URLROOT') }}/users/changePassword/{{ user.id }}">Změnit heslo</a>
+    {% endif %}
 {% endmacro %}

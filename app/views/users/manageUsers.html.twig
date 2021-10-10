@@ -12,6 +12,7 @@
                 <th scope="col">uživatelské jméno</th>
                 <th scope="col">email</th>
                 <th scope="col">role</th>
+                <th scope="col">profil</th>
             </tr>
             </thead>
                 <tbody>
@@ -20,33 +21,35 @@
                     <td>{{ user.id }}</td>
                     <td>{{ user.username }}</td>
                     <td>{{ user.email }}</td>
-                    {% if session.user == user or (user.role == 'superadmin' and session.user.role == 'admin')
-                        or (user.role == 'admin' and session.user.role != 'superadmin')%}
-                         <td>{{ user.role }}</td>
-                    {% else %}
+                    {% if ( (session.user.role is same as('admin')) and (user.role is not same as('superadmin'))
+                        ) or (session.user.role is same as('superadmin'))%}
                         <form action="{{ constant('URLROOT')}}/users/changeRole/{{ user.id }}" method="POST">
-                        <td>
-                            <label>
-                            <select class="form-control" name="role">
-                                {% if session.user.role == 'superadmin' %}
-                                    <option value="1" {% if user.role == 'superadmin' %} selected="selected" {% endif %}>Super admin</option>
-                                {% endif%}
-                                <option value="2" {% if user.role == 'admin' %} selected="selected" {% endif %}>Admin</option>
-                                <option value="3" {% if user.role == 'reviewer' %} selected="selected" {% endif %}>Recenzent</option>
-                                <option value="4" {% if user.role == 'editor' %} selected="selected" {% endif %}>Autor</option>
-                                <option value="5" {% if user.role == 'normal' %} selected="selected" {% endif %}>Normal</option>
-                            </select>
-                            </label>
-                        </td>
-                        {% if session.user is not empty %}
                             <td>
-                                <button class="myBtn btn btn-danger" name="submit" type="submit">Změnit roli</button>
-                                <span class="invalidFeedBack">
-                                    {{ newRoleError }}
-                                </span>
+                                <label>
+                                    <select class="form-control" name="role">
+                                        {% if session.user.role == 'superadmin' %}
+                                            <option value="1" {% if user.role == 'superadmin' %} selected="selected" {% endif %}>Super admin</option>
+                                        {% endif%}
+                                        <option value="2" {% if user.role == 'admin' %} selected="selected" {% endif %}>Admin</option>
+                                        <option value="3" {% if user.role == 'reviewer' %} selected="selected" {% endif %}>Recenzent</option>
+                                        <option value="4" {% if user.role == 'editor' %} selected="selected" {% endif %}>Autor</option>
+                                        <option value="5" {% if user.role == 'normal' %} selected="selected" {% endif %}>Normal</option>
+                                    </select>
+                                </label>
                             </td>
-                        {% endif %}
+                            <td><a href="{{ constant('URLROOT')}}/users/index/{{ user.id }}">Údaje</a></td>
+                            {% if session.user is not empty %}
+                                <td>
+                                    <button class="myBtn btn btn-danger" name="submit" type="submit">Změnit roli</button>
+                                    <span class="invalidFeedBack">
+                                        {{ newRoleError }}
+                                    </span>
+                                </td>
+                            {% endif %}
                         </form>
+                    {% else %}
+                        <td>{{ user.role }}</td>
+                        <td> <a href="{{ constant('URLROOT')}}/users/index/{{ user.id }}">Údaje</a></td>
                     {% endif %}
                     <td>{{ macros.canDeleteUser(user) }}</td>
                 </tr>

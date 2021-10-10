@@ -84,11 +84,10 @@
             </div>
         {% endif %}
 
-        <button onclick="confirmAction()">testButton</button>
-        {{ macros.testTlacitka() }}
+        <!--
         <script>
             function confirmAction() {
-                let confirmAction = confirm("Are you sure to execute this action?");
+                let confirmAction = confirm("Chcete změnu - soubor show?");
                 if (confirmAction) {
                     alert("Action successfully executed");
                 } else {
@@ -96,7 +95,7 @@
                 }
             }
         </script>
-
+        -->
         <div class="comments">
             {{ commentsMacros.showComments(comments) }}
         </div>
@@ -132,13 +131,15 @@
          */
         function deleteReply (reply_id, post_id) {
             let replyId = "reply_"+reply_id;
-            $.ajax({
-                url:"{{ constant('URLROOT')}}/posts/deleteReply/"+reply_id+"/"+post_id,    //the page containing php script
-                type: "post",    //request type,
-                success: function(response) {
-                    $("#"+replyId).remove();
-                }
-            });
+            if(confirmAction('odpověď', 'delete')) {
+                $.ajax({
+                    url: "{{ constant('URLROOT') }}/posts/deleteReply/" + reply_id + "/" + post_id,    //the page containing php script
+                    type: "post",    //request type,
+                    success: function (response) {
+                        $("#" + replyId).remove();
+                    }
+                });
+            }
         }
 
         /**
@@ -147,15 +148,17 @@
          */
         function deleteComment (comment_id) {
             let commentId = "comment_"+comment_id;
-            $.ajax({
-                url:"{{ constant('URLROOT')}}/posts/deleteComment/"+comment_id,    //the page containing php script
-                type: "post",    //request type,
-                success: function() {
-                    $("#"+commentId).remove();
-                }
-            });
+            if(confirmAction('komentář', 'delete')){
+                $.ajax({
+                    url:"{{ constant('URLROOT')}}/posts/deleteComment/"+comment_id,    //the page containing php script
+                    type: "post",    //request type,
+                    success: function() {
+                        $("#"+commentId).remove();
+                    }
+                });
+            }
         }
-
+        <!--
         $(document).ready(function(){
             $("#commentForm").submit(function (event){
                 event.preventDefault();
@@ -174,6 +177,7 @@
                 });
             });
         });
+        -->
        // load_comment();
         function load_comment(){
             $.ajax({

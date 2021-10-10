@@ -14,23 +14,37 @@ class Users extends Controller{
     }
 
     /**
-     *  index page is used for user profile
+     * index page is used for user profile
+     * @param null $user_id     id of the user, if not provided, user in session is showed
      */
-    public function index(){
+    public function index($user_id = null){
         if(!isLoggedIn()){
             header("Location: ".URLROOT . "/users/login");
         }
 
-        $userPosts = $this->userModel->findUserPosts($_SESSION['user']);
-        $userReviews = $this->userModel->findUserReviews($_SESSION['user']);
-        $users = $this->userModel->getAllUsers();
+        if($user_id == null){
+            $user = $this->userModel->findUserByID($_SESSION['user']->id);
+            $userPosts = $this->userModel->findUserPosts($_SESSION['user']->id);
+            $userReviews = $this->userModel->findUserReviews($_SESSION['user']->id);
+        }else{
+            $user = $this->userModel->findUserByID($user_id);
+            if(!$user){
+                $user = $this->userModel->findUserByID($_SESSION['user']->id);
+                $userPosts = $this->userModel->findUserPosts($_SESSION['user']->id);
+                $userReviews = $this->userModel->findUserReviews($_SESSION['user']->id);
+            }else{
+                $userPosts = $this->userModel->findUserPosts($user_id);
+                $userReviews = $this->userModel->findUserReviews($user_id);
+            }
+        }
         $data = [
+            'user' => $user,
             'userPosts' => $userPosts,
             'userReviews' => $userReviews,
-            'users' => $users
         ];
         $this->view('users/index', $data);
     }
+
     /**
      * registration of the user
      */
@@ -176,6 +190,12 @@ class Users extends Controller{
         if(!isLoggedIn()){
             header("Location: ".URLROOT . "/users/login");
         }
+        $users = $this->userModel->getAllUsers();
+        $data = [
+            'users' => $users
+        ];
+        $this->view('users/manageUsers', $data);
+        /*
         if(strcmp($_SESSION['user']->role, 'superadmin') == 0 or strcmp($_SESSION['user']->role, 'admin') ==0){
             $users = $this->userModel->getAllUsers();
             $data = [
@@ -184,7 +204,7 @@ class Users extends Controller{
             $this->view('users/manageUsers', $data);
         }else{
             header("Location: ".URLROOT . "/users/index");
-        }
+        }*/
     }
 
     /**
@@ -208,7 +228,8 @@ class Users extends Controller{
             header('location: ' . URLROOT . '/users/index');
         }
         $user = $this->userModel->findUserById($user_id);
-        if(!$user or ($_SESSION['user']->id != $user_id)){
+
+        if (!$user or !manipulateUserProfilePermissions($user)){
             header('location: ' . URLROOT . '/users/index');
         }
         $data = [
@@ -216,6 +237,7 @@ class Users extends Controller{
             'email' => '',
             'usernameError' => '',
             'emailError'=> '',
+            'message' => ''
         ];
         //REQUEST METHOD
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
@@ -229,25 +251,26 @@ class Users extends Controller{
                 'email' => trim($_POST['email']),
                 'usernameError' => '',
                 'emailError'=> '',
+                'message' => ''
             ];
             $nameValidation = "/^[a-zA-Z0-9]*$/";
             //Validate username on letters/numbers
             if(empty($data['username'])){
-                $data['usernameError'] = 'Please enter username';
+                $data['usernameError'] = 'Prosím uveďte uživatelské jméno';
             }elseif(!preg_match($nameValidation, $data['username'])){
-                $data['usernameError'] = 'Name can only contain letters and numbers';
+                $data['usernameError'] = 'Jméno může obsahovat pouze číslice a písmena bez diakritiky.';
             }
             //Validate email
             if(strcmp($data['email'],$user->email) !=0){
                 if(empty($data['email'])){
-                    $data['emailError'] = 'Please enter email address.';
+                    $data['emailError'] = 'Prosím uveďte emailovou adresu.';
 
                 }elseif (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)){
-                    $data['emailError'] = 'Please enter the correct format';
+                    $data['emailError'] = 'Prosím vložte správný formát emailu.';
                 }else{
                     //check if email exists
                     if($this->userModel->userEmailAlreadyRegistered($data['email'])){
-                        $data['emailError'] = 'Email is already taken';
+                        $data['emailError'] = 'Email je již zabraný.';
                     }
                 }
             }
@@ -257,7 +280,8 @@ class Users extends Controller{
                 //Update user username and email
                 if($this->userModel->updateUserUsernameEmail($data)){
                     //Redirect to the user index page page
-                    header('location: ' . URLROOT . '/users/index');
+                    $data['message'] = "Změna se provedla úspěšně";
+                    header('location: ' . URLROOT . '/users/index/'.$user_id);
                 }else{
                     die('Something went wrong.');
                 }
@@ -278,7 +302,7 @@ class Users extends Controller{
             header("Location: ".URLROOT . "/users/index");
         }
         $user = $this->userModel->findUserByID($user_id);
-        if(!$user){
+        if(!$user or !manipulateUserProfilePermissions($user)){
             header("Location: ".URLROOT . "/users/index");
         }
         //$user_id = $_SESSION['user']->id;
@@ -357,7 +381,7 @@ class Users extends Controller{
             header("Location: ".URLROOT . "/users/index");
         }
         $user = $this->userModel->findUserByID($user_id);
-        if(!$user){
+        if(!$user or !manipulateUserProfilePermissions($user)){
             header("Location: ".URLROOT . "/users/index");
         }
         $data = [
@@ -416,8 +440,8 @@ class Users extends Controller{
             header("Location: ". URLROOT . "/users/index");
         }
         $user = $user = $this->userModel->findUserByID($user_id);
-        if(!$user){
-            header("Location: ".URLROOT . "/users/index");
+        if (!$user or !manipulateUserProfilePermissions($user)){
+            header('location: ' . URLROOT . '/users/index');
         }
 
         if($_SERVER['REQUEST_METHOD'] == 'POST') {

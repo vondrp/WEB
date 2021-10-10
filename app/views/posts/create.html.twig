@@ -7,7 +7,7 @@
         <form action="{{ constant('URLROOT')}}/posts/create" method="POST" enctype="multipart/form-data" accept-charset="UTF-8">
             <div class="form-group mb-4 form-item">
                 Nadpis
-                <input class="form-control" type="text" name="title" placeholder="Titulek článku *" value="{{ title }}">
+                <input class="form-control"  type="text" name="title" placeholder="Titulek článku *" value="{{ title }}" required>
                     <span class="invalidFeedBack">
                         {{ titleError }}
                     </span>
@@ -16,7 +16,7 @@
 
             <div class="form-group mb-4 form-item">
                 Vložení pdf s podrobnými informacemi o příspěvku
-                <input class="form-control" type="file" accept="application/pdf" name="fileToUpload" placeholder="PDF soubor *" value="{{ post.file }}">
+                <input class="form-control" type="file" accept="application/pdf" name="fileToUpload" placeholder="PDF soubor *" value="{{ post.file }}" required>
                 <span class="invalidFeedBack">
                     {{ fileError }}
                 </span>
@@ -41,7 +41,7 @@
                 </span>
 
             </div>
-            <button class="myBtn btn btn-primary green" name="submit" type="submit">Submit</button>
+            <button class="myBtn btn btn-primary green" name="submit" type="submit">Odeslat</button>
         </form>
     </div>
 {% endblock %}
