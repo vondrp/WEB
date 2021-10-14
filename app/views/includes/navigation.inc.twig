@@ -1,4 +1,4 @@
-<nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
         <div class="navbar-header">
             <a class="navbar-brand" href="{{ constant('URLROOT')}}/pages/index"><i class="fas fa-home pe-2"></i>Domů</a>
@@ -10,7 +10,10 @@
             <ul class="navbar-nav nav-pills ">
                 <!--<li class="nav-item"><a class="nav-link" href=" constant('URLROOT')/pages/about">About</a></li> -->
                 <li class="nav-item"><a class="nav-link" href=" {{ constant('URLROOT')}}/pages/index#about">O nás</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ constant('URLROOT')}}/posts/index">Blog</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ constant('URLROOT')}}/posts/index">Příspěvky</a></li>
+                {% if session.user is not empty and session.user.role is not same as('normal') %}
+                    <li class="nav-item"><a class="nav-link" href="{{ constant('URLROOT')}}/posts/unpublished">Nevydané příspěvky</a></li>
+                {% endif %}
             </ul>
 
             <ul class="navbar-nav nav-pills ms-auto">

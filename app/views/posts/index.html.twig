@@ -2,19 +2,32 @@
 
 {% import 'includes/permissions.inc.twig' as macros %}
 {% block content %}
-
-<div class="container mt-4">
+<div class="articles container mt-4 justify-content-center align-items-center gx-5">
     {{ macros.canCreatePost() }}
+    {% if posts[0].published ==0 %}
+        <h1>Nevydané příspěvky</h1>
+    {% else %}
+        <h1>Příspěvky</h1>
+    {% endif %}
+    <div class="row article-row">
+        {% for post in posts %}
+            <div class="container-item article col-sm-12 col-md-7 col-lg-5">
+                <h2><a href="{{ constant('URLROOT') }}/posts/show/{{ post.id }}">{{ post.title }}</a></h2>
+                <p>
+                    {{ post.description  }}
+                </p>
+                <p class="p-down">{{ post.author.username }} | {{ post.created_at }}</p>
+            </div>
+        {% endfor %}
+    </div>
 
-    {% for post in posts %}
-        <div class="container-item">
+    <!--  make whole div clickable  -->
+    <script>
+        $(".article").click(function() {
+        window.location = $(this).find("a").attr("href");
+        return false;
+        });
+    </script>
 
-            <h2><a href="{{ constant('URLROOT') }}/posts/show/{{ post.id }}">{{ post.title }}</a></h2>
-            {{ macros.canUpdateDeletePost(post) }}
-            <p>
-                {{ post.content | raw  }}
-            </p>
-        </div>
-    {% endfor %}
 </div>
 {% endblock %}

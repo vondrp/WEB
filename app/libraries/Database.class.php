@@ -33,7 +33,7 @@ class Database{
             PDO::ATTR_PERSISTENT => true, /* attribute persistence, preventing driver crashing
                              and giving timeouts, when attempt to connect to database
                             + check if already connection with database */
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION //turn on errors in the form of exceptions
         );
         try{
             $this->dbHandler = new PDO($conn, $this->dbUser, $this->dbPass, $options);

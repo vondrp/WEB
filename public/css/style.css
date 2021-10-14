@@ -3,30 +3,127 @@
 }
 html, body{
     height: 100%;
-    /*
-    width:100%;
-    padding:0;
-    */
     margin:0;
     font-family: 'Lato', sans-serif;
     display:flex;
     flex-direction:column;
     font-size:1.2em;
     position: relative;
-
     scroll-behavior: smooth;
 }
 body{
    /* background:  linear-gradient(45deg, rgb(130, 183, 220), #f2f2f2);*/
-    background:  linear-gradient(45deg, rgb(130, 183, 220), silver);
+    /*background:  linear-gradient(45deg, rgb(130, 183, 220), silver);*/
+    background: url("../img/backSite.jpg");
     background-repeat: no-repeat;
     background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
 }
+.mainSiteContent{
+    /* min-height: calc(100vh - 3em - 3em); /* 3em is height of the footer, 3em approximate height of navbar
+                                            (cannot be specified exactly - cause of hamburger situation)*/
+    min-height: 28em;
+    padding-top:3em;
+    margin-bottom: 0;
+}
+
+
 h2{
     overflow-wrap: break-word;
 }
 
+.articles h1{
+    text-align: center;
+}
+.article-row{
+    /*background-color: bisque;*/
+    display: flex;
+    justify-content: center;
+    vertical-align: middle;
+}
+.article{
+    display:flex;
+    overflow: hidden;
+    /*border: 0.2em groove darkgrey;*/
+    height: 13em;
+    box-shadow:0 0.5em 1em rgba(0,0,0, 0.5);
+   /* position:relative; */
+    margin:1em;
+    color: rgb(155, 142, 121);
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    flex-direction: column;
+    /*background-color: rgb(33, 37, 41);*/
+    background-color:rgba(0, 0, 0, 0.7);
+    padding: 0.5em;
+    border-radius: 0.3em;
+
+}
+
+.article:hover{
+    cursor: pointer;
+    background-color:rgba(204, 204, 204, 0.8);
+    /*background-color: #cccccc;*/
+    transition: background-color 1s;
+    color: black;
+}
+
+.article:hover a{
+    text-shadow: 0.1em 0.1em 0.1em black;
+    font-weight: bold;
+    transition: font-weight 1s;
+}
+.article a{
+    text-decoration: none;
+    color: white;
+}
+
+.article h2{
+    max-height: 50%;
+    overflow: hidden;
+}
+.article h2+p{
+    max-height: 50%;
+    overflow: hidden;
+}
+@media only screen and (max-width: 576px) {
+    .article h2+p{
+        display:none;
+    }
+    .tableCellLongText{
+        max-width: 5em;
+    }
+}
+
+.show_desc{
+    text-align: justify;
+}
+.content-style{
+    background-color:rgba(204, 204, 204, 0.8);
+    border-radius: 0.5em;
+    padding: 1em 2em;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    box-shadow: 0 0.5em 1em rgba(0,0,0,0.5);
+}
+
 /** forms */
+.form_back_style{
+    background-color:rgba(0, 0, 0, 0.7);
+    padding: 1em 2em;
+    border-radius: 0.5em;
+    color: white;
+    box-shadow: 0 0.5em 1em rgba(0,0,0,0.5);
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+.form_back_style form .fas{
+    color: black;
+}
+
 .container-login{
     width: 100%;
     float:none;
@@ -73,6 +170,7 @@ h2{
     color:#ff0000;
 }
 
+
 /* buttons */
 .myBtn{
     text-decoration: none;
@@ -91,6 +189,7 @@ h2{
 .myBtn a:hover{
     color:white;
 }
+
 .navbar{
     box-shadow: 0 0 0.5em #1a1a1a;
 }
@@ -100,7 +199,8 @@ h2{
 }
 
 .green{
-    background-color: #4CAF50;
+    background-color: #337a34;
+    border-color: darkgreen;
 }
 
 .green:hover{
@@ -108,21 +208,21 @@ h2{
     transition: 0.20s ease-in-out;
 }
 
-.red{
-    background-color: red;
+.btn-danger{
+    background-color: #990e0e;
 }
 
-.red:hover{
-    background-color: darkred;
+.btn-danger:hover{
+    background-color: #f52a2a;
     transition: 0.20s ease-in-out;
 }
 
 .orange{
-    background-color: orange;
+    background-color: #ffa500;
 }
 
 .orange:hover{
-    background-color: darkorange;
+    background-color: #a95b00;
     transition: 0.20s ease-in-out;
 }
 
@@ -130,16 +230,8 @@ h2{
     border: 0.1em ridge #cccccc;
 }
 /*  footer */
-.mainSiteContent{
-   /* min-height: calc(100vh - 3em - 3em); /* 3em is height of the footer, 3em approximate height of navbar
-                                           (cannot be specified exactly - cause of hamburger situation)*/
-    min-height: 22em;
-}
-
 .divFooter{
-    /*height:3em; */
     width:100%;
-    margin-top:0.5em;
 }
 
 .addComment{
@@ -188,15 +280,17 @@ h2{
 }
 
 .tableCellLongText {
-   /* max-width: 0px; /* tweak me please */
-    max-width: 15em;
+    max-width: 14em;
+    word-break: break-word;
     white-space : nowrap;
     overflow : hidden;
 }
+
 .tableCellLongText:hover{
     text-overflow: ellipsis;
     white-space: normal;
 }
+
 
 .expand-small-on-hover:hover {
     max-width : 200px;
@@ -236,16 +330,16 @@ h2{
 .star-widget input:not(:checked) ~ label:hover,
 input:not(:checked) ~ label:hover ~ label
 {
-    color: #fd4;
+    color: #f5d213;
 }
 
 
 .star-widget input:checked ~ label{
-    color: #fd4;
+    color: #f5d213;/*#fd4;*/
 }
 
 .star{
-    color: #fd4;
+    color: #f5d213;
 }
 /*
 .star-widget input#rate-5:checked ~ label{

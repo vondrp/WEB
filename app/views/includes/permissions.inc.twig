@@ -1,3 +1,7 @@
+
+{# if user is session has permission to manipulate with posts
+    all links and form are going to be showed up
+#}
 {% macro canUpdateDeletePost(post)  %}
     <div class="container mb-4">
         <div class="row">
@@ -33,15 +37,33 @@
     </div>
 {% endmacro %}
 
+{#  if user in session have permission to published/unpublished post - necessary form will appered #}
+{% macro canPublishedPost(post) %}
+    {% if (session.user is not empty) and ((session.user.role is same as('admin'))  or (session.user.role is same as('superadmin')))
+        and (session.user.id is not same as(post.user_id)) %}
+        <form class="mb-3"action="{{ constant('URLROOT')}}/posts/changePostPublishedStatus/{{ post.id}}" method="POST" class="delete-form">
+            <button onclick="return confirmAction()" class="myBtn btn btn-primary" name="submit" type="submit">
+                    {% if post.published == 0 %}
+                        Vydat
+                    {% else %}
+                        Zrušit vydání
+                    {% endif %}
+            </button>
+        </form>
+    {% endif %}
+{% endmacro %}
+
+{# to user in session with permission showed link for creating a new post #}
 {% macro canCreatePost() %}
     {% if session.user is not empty and (session.user.role is same as('editor') or session.user.role is same as('superadmin'))%}
         <a class="myBtn btn green mb-3" href="{{constant('URLROOT')}}/posts/create">Create</a>
     {% endif %}
 {% endmacro %}
 
-
+{# to user in session with permission showed link for creating a new review of the post#}
 {% macro canCreateReview(post) %}
-    {% if session.user is not empty and ( (session.user.role is same as('reviewer')) or (session.user.role is same as('superadmin')) ) %}
+    {% if session.user is not empty and ( (session.user.role is same as('reviewer')) or (session.user.role is same as('superadmin')) )
+        and (session.user.id != post.user_id) %}
         <a class="green btn myBtn"
            href="{{ constant('URLROOT')}}/reviews/create/{{ post.id}}">
             Vytvořit recenzi
@@ -65,12 +87,14 @@
     {% endif %}
 {% endmacro %}
 
+{# show form for deleting a user, if right condition are met #}
 {% macro canDeleteUser(user) %}
 
-        {% if ( (session.user.role is same as('admin')) and (user.role is not same as('superadmin'))
-            ) or (session.user.role is same as('superadmin'))%}
+        {% if ( (session.user.role is same as('admin')) and (user.role is not same as('superadmin')) )
+            or (session.user.role is same as('superadmin'))
+            or (session.user.id == user.id)%}
         <form action="{{ constant('URLROOT')}}/users/deleteUser/{{ user.id}}" method="POST" class="delete-form">
-            <button onclick="return confirmAction('uživatel', 'delete');" class="myBtn btn btn-danger" name="submit" type="submit">Smazat</button>
+            <button onclick="return confirmAction('uživatel', 'delete');" class="myBtn btn btn-danger red" name="submit" type="submit">Smazat</button>
         </form>
         {% endif %}
 {% endmacro %}

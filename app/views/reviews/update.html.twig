@@ -1,7 +1,7 @@
 {% extends('default.html.twig') %}
 
 {% block content %}
-    <div class="container center mb-2">
+    <div class="container center form_back_style">
         <h1 class="text-center pt-5">Upravit recenzi</h1>
 
         <form action="{{ constant('URLROOT')}}/reviews/update/{{ review.id }}" method="POST">

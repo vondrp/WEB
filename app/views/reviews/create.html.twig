@@ -1,12 +1,12 @@
 {% extends('default.html.twig') %}
 
 {% block content %}
-    <div class="container center mb-2">
+    <div class="container center form_back_style">
         <h1 class="text-center pt-5">Vytvořit novou recenzi</h1>
 
         <form action="{{ constant('URLROOT')}}/reviews/create/{{ post.id }}" method="POST">
             <div class="container container-review">
-                <div class="star-form-group mb-3">
+                <div class="star-form-group mb-3" >
                     <h3>Relevance tématu</h3>
                     <div class="star-widget">
                         <input type="hidden" name="topicRelevance" value="0" checked="checked"> <!-- necessary - checkbox send nothing if nothing is selected-->

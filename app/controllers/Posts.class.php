@@ -15,15 +15,30 @@ class Posts extends Controller{
 
     /**
      * Controller of the index view
+     * show overview of published posts
      */
     public function index(){
-        $posts = $this->postModel->findAllPosts();
+        $posts = $this->postModel->findAllPublishedPosts();
         $data = [
           'posts' => $posts,
         ];
         $this->view('posts/index', $data);
     }
 
+    /**
+     * Controller of view with unpublished posts
+     */
+    public function unpublished(){
+        if(!isLoggedIn() and strcmp($_SESSION['user']->role, 'normal')){
+            header("Location: ".URLROOT . "/posts");
+        }
+
+        $posts = $this->postModel->findAllUnpublishedPosts();
+        $data = [
+            'posts' => $posts,
+        ];
+        $this->view('posts/index', $data);
+    }
     /**
      * Controller of the create view
      * checks data of the new post provided by the user
@@ -80,7 +95,7 @@ class Posts extends Controller{
                 $allowed = array('pdf');
                 if (in_array($fileActualExt, $allowed)) {
                     if ($fileError === 0) {
-                        if ($fileSize < 500000) { //soubor je mensi nez 500mb
+                        if ($fileSize < 5000000) { //soubor je mensi nez 500mb + 0
                             $fileNameNew = uniqid('', true) . "." . $fileActualExt;
                             $fileDestination = 'uploads/' . $fileNameNew;
                             $data['fileName'] = $fileNameNew;
@@ -157,18 +172,20 @@ class Posts extends Controller{
 
 
             if(empty($data['title'])){
-                $data['titleError'] = 'The title of a post cannot be empty';
+                $data['titleError'] = 'Je třeba uvést nadpis.';
             }
 
             if(empty($data['content'])){
-                $data['contentError'] = 'The content of a post cannot be empty';
+                $data['contentError'] = 'Článek nemůže být úplně prázdný.';
             }
 
-            if(($data['title'] == $this->postModel->findPostById($post_id)->title)
-            && ($data['content'] == $this->postModel->findPostById($post_id)->content) ){
+            if(($data['title'] == $post->title)
+            && ($data['content'] == $post->content)
+            && ($data['description'] == $post->description)){
 
-                $data['contentError'] = 'Nothing has been changed';
-                $data['titleError'] = 'At least change the title!';
+                $data['contentError'] = 'Nic nebylo změněno.';
+                $data['titleError'] = 'Změntě aspoň například nadpis!';
+                $data['descriptionError'] = 'Stačí změnit popis.';
             }
 
             if(empty($data['titleError'])
@@ -186,6 +203,50 @@ class Posts extends Controller{
         }else{
             $this->view('posts/update', $data);
         }
+    }
+
+    /**
+     * Change status of post publish to opposite one to current one
+     * @param null $post_id     id of the post
+     */
+    public function changePostPublishedStatus($post_id = null){
+        if($post_id == null){
+            header("Location: ".URLROOT."/posts");
+        }
+        $post = $this->postModel->findPostById($post_id);
+        if(!$post){ /* $post no find failure */
+            header("Location: ". URLROOT . "/posts");
+        }
+
+        if(!adminPermissions()){
+            header("Location: ".URLROOT."/posts/show/".$post_id);
+        }
+
+        $data = [
+            'post' => $post
+        ];
+        if($_SERVER['REQUEST_METHOD'] == 'POST') {
+            if($post->published == 1) {
+                $published = 0;
+            }else{
+                $published = 1;
+            }
+            $data = [
+                'post' => $post,
+                'post_id' => $post_id,
+                'published' => $published
+            ];
+            if($this->postModel->publishPost($data)){
+                if($published = 1){
+                    header("Location:". URLROOT ."/posts");
+                }else{
+                    header("Location:". URLROOT ."/posts/unpublished");
+                }
+            }else{
+                die("Something went wrong, please try again!");
+            }
+        }
+        $this->view('posts/show', $data);
     }
 
     /**
@@ -240,7 +301,7 @@ class Posts extends Controller{
             $allowed = array('pdf');
             if(in_array($fileActualExt, $allowed)){
                 if($fileError === 0){
-                    if($fileSize < 500000){ //soubor je mensi nez 500mb
+                    if($fileSize < 5000000){
                         $fileNameNew = uniqid('', true).".".$fileActualExt;
                         $fileDestination = 'uploads/'.$fileNameNew;
                         $data['fileName'] = $fileNameNew;
@@ -263,7 +324,7 @@ class Posts extends Controller{
                 }
             }
         }else{
-            $this->view('posts/show/'.$post_id, $data);
+            $this->view('posts/show', $data);
         }
     }
 
@@ -308,6 +369,10 @@ class Posts extends Controller{
         if(!$post){
             header("Location: ". URLROOT . "/posts");
         }
+        if( ($post->published == 0) and (!isLoggedIn() or strcmp($_SESSION['user']->role, 'normal') ==0) ){
+            header("Location: ". URLROOT . "/posts");
+        }
+
         $comments = $this->postModel->findPostComments($post_id);
         $this->postModel->findAllCommentsReplies($comments);
         $reviews = $this->postModel->findPostReviews($post_id);
@@ -336,7 +401,6 @@ class Posts extends Controller{
         }
 
         $post =  $this->postModel->findPostById($post_id);
-
         if(!$post){ /* $post no find failure */
             header("Location: ". URLROOT . "/posts");
         }
@@ -351,25 +415,28 @@ class Posts extends Controller{
         $error = '';
 
         $data = [
+            'post_id' => $post_id,
+            'author' => '',
+            'commentContent' => '',
+            'commentContentError' => '',
+
             'post' => $post,
             'comments'=> $comments,
             'reviews' => $reviews,
-            'commentContent' => '',
-            'commentContentError' => ''
-         ];
+        ];
 
         //Check is form submitted
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
             $_POST = filter_input_array(INPUT_POST);
             $data = [
                 'post_id' => $post_id,
-                'author' => $_SESSION['username'],
+                'author' => $_SESSION['user']->username,
                 'commentContent' => trim($_POST['commentContent']),
                 'commentContentError' => '',
 
                 'post' => $post,
                 'comments'=> $comments,
-                'reviews' => $reviews
+                'reviews' => $reviews,
             ];
 
             if(empty($data['commentContent'])){
@@ -380,17 +447,28 @@ class Posts extends Controller{
             if(empty($data['commentContentError']) ){
                 if($this->postModel->addComment($data)){
                    // header("Location:". URLROOT ."/posts/show/".$post_id);
-                    $error = '<label>Comment added</label>';
-                    //findCommentById
+                    //header("Location:". URLROOT ."/posts/show/".$post_id);
+                    //$comments = $this->postModel->findPostComments($post_id);
+                    $error .= '<label>Comment added</label>';
+                    //$data['comments'] = $comments;
+                    //$data['commentContent'] = '';
                 }else{
                     die("Something went wrong, please try again!");
                 }
             }
-            $data = array(
-                'error' => $error
+            $newComments = $this->postModel->findPostComments($post_id);
+            $dataComm = array(
+                'comments' => $newComments
             );
-            echo json_encode($data);
-           // echo json_encode($data2);
+            //$twig = $this->loadTwig();
+
+            //$rel = $twig->render('includes/comments.inc.twig', $dataComm);
+           // $reloadComments = '{{ commentsMacros.showComments(comments) }}';
+            $data2 = array(
+                'error' => $error
+                //'reloadComments' => $rel
+            );
+            echo json_encode($data2);
         }
         //$this->view('posts/show', $data);
     }
@@ -423,27 +501,6 @@ class Posts extends Controller{
                 die('Something went wrong');
             }
         }
-    }
-
-    //Not working for now
-    public function displayComment($post_id){
-        $comments = $this->postModel->findPostComments($post_id);
-        $this->postModel->findAllCommentsReplies($comments);
-        $output = '';
-        foreach($comments as $comment){
-            $output .= '                      
-            <div class="comments">
-                <div class="comment" id="comment_'.$comment->id.'" >
-                   <h6 style="font-weight: bold;"><i class="fas fa-comment me-1"></i> '.$comment->author.'</h6> <h6 class="text-muted">'.$comment->created_at.'</h6>
-
-             
-                    <p>'.$comment->content.'</p>
-                   
-                </div>
-            ';
-        }
-        echo $output;
-
     }
 
     /*********

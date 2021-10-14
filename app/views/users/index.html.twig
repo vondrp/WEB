@@ -2,7 +2,7 @@
 
 {% import 'includes/permissions.inc.twig' as macros %}
 {% block content %}
-    <div class="container pt-3">
+    <div class="container content-style">
         <h1>Profil uživatele</h1>
         <form action="{{ constant('URLROOT') }}/users/updateUserUsernameEmail/{{ user.id }}" method="POST">
             <div class="table-responsive">
@@ -51,7 +51,7 @@
             </thead>
             {% for post in userPosts %}
                 <tbody>
-                <td><a href="{{ constant('URLROOT') }}/posts/show/{{ post.id }}">{{ post.title }}</a></td>
+                <td class="tableCellLongText"><a href="{{ constant('URLROOT') }}/posts/show/{{ post.id }}">{{ post.title }}</a></td>
                 <td class="tableCellLongText">{{ post.description }}</td>
                 {% if session.user is not empty and session.user.id == post.user_id %}
                     <td>
@@ -81,7 +81,7 @@
                 <tbody>
                 {% for review in userReviews %}
                     <tr>
-                        <td><a href="{{ constant('URLROOT') }}/posts/show/{{ review.post.id }}">{{ review.post.title }}</a></td>
+                        <td class="tableCellLongText"><a href="{{ constant('URLROOT') }}/posts/show/{{ review.post.id }}">{{ review.post.title }}</a></td>
                         <td>{% for i in 1..review.topicRelevance %}
                                 <i class="star fas fa-star"></i>
                             {% endfor %}</td>

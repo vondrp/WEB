@@ -45,6 +45,7 @@ class Users extends Controller{
         $this->view('users/index', $data);
     }
 
+
     /**
      * registration of the user
      */
@@ -174,8 +175,7 @@ class Users extends Controller{
                     $this->createUserSession($loggedInUser);
                 }else{
                     $data['passwordError'] = 'Uživatelské jméno nebo heslo bylo zadáno špatně. Zkuste to prosím znovu.';
-                        //'Password or username is in incorrect.Please try again';
-                   // $this->view('users/login', $data);
+                    $this->view('users/login', $data);
                 }
             }
         }else{
@@ -232,7 +232,14 @@ class Users extends Controller{
         if (!$user or !manipulateUserProfilePermissions($user)){
             header('location: ' . URLROOT . '/users/index');
         }
+
+        $userPosts = $this->userModel->findUserPosts($user_id);
+        $userReviews = $this->userModel->findUserReviews($user_id);
+
         $data = [
+            'user' => $user,
+            'userPosts' => $userPosts,
+            'userReviews' => $userReviews,
             'username' => '',
             'email' => '',
             'usernameError' => '',
@@ -249,6 +256,9 @@ class Users extends Controller{
                 'id' => $user->id,
                 'username' => trim($_POST['username']),
                 'email' => trim($_POST['email']),
+                'user' => $user,
+                'userPosts' => $userPosts,
+                'userReviews' => $userReviews,
                 'usernameError' => '',
                 'emailError'=> '',
                 'message' => ''
@@ -285,9 +295,12 @@ class Users extends Controller{
                 }else{
                     die('Something went wrong.');
                 }
+            }else{
+                $this->view('users/index', $data);
             }
+        }else{
+            $this->view('users/index', $data);
         }
-        $this->view('users/index', $data);
     }
 
     /**
@@ -363,11 +376,14 @@ class Users extends Controller{
                 $data['newPassword'] = password_hash($data['newPassword'], PASSWORD_DEFAULT);
                 if($this->userModel->changePassword($data)){
                     //Redirect to the user index page
-                    header('location: ' . URLROOT . '/users/index');
+                    $this->view();
+                    header('location: ' . URLROOT . '/users/manageUsers');
                 }else{
                     die('Something went wrong.');
                 }
             }
+        }else{
+
         }
         $this->view('users/changePassword', $data);
     }
@@ -421,6 +437,8 @@ class Users extends Controller{
                     $this->view('users/manageUsers', $data);
                 }
 
+            }else{
+                $this->view('users/manageUsers', $data);
             }
         }else{
             $data['newRoleError'] = 'Pro změnu role uživatele nemáte dostatečná oprávnění.';

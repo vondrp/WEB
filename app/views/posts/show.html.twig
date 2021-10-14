@@ -4,12 +4,17 @@
 
 {% import 'includes/comments.inc.twig' as commentsMacros %}
 {% block content %}
-    <div class="container mt-4">
-        <a class="mb-5" href="{{ constant('URLROOT') }}/posts/index">zpět na seznam článků</a>
+    <div class="container mt-4 content-style">
+        {% if post.published == 1 %}
+            <a class="mb-5" href="{{ constant('URLROOT') }}/posts/index">zpět na seznam článků</a>
+        {% else %}
+            <a class="mb-5" href="{{ constant('URLROOT') }}/posts/unpublished">zpět na seznam nevydaných článků</a>
+        {% endif %}
 
+        {{ macros.canPublishedPost(post) }}
         {{ macros.canUpdateDeletePost(post)}}
         <h2>{{ post.title }}</h2>
-        <p>{{ post.description | raw }}</p>
+        <p class="show_desc">{{ post.description | raw }}</p>
         <p>{{ post.content | raw }}</p>
         {% if post.file != '' %}
             <a target="_blank" href="{{ constant('URLROOT') }}/public/uploads/{{ post.file }}" title="">Otevřít v jiném okně</a>
@@ -23,7 +28,7 @@
             <table class="table table-striped">
                 <thead>
                 <tr>
-                    <th scope="col">Autor recenze</th>
+                    <th scope="col" class="limited_table_colum">Nadpis příspěvku</th>
                     <th scope="col">Kvalita tématu</th>
                     <th scope="col">Jazyk</th>
                     <th scope="col">Originalita</th>
@@ -46,7 +51,7 @@
                                     <i class="star fas fa-star"></i>
                                 {% endfor %}
                             </td>
-                            <td class="tableCellLongText">{{ review.notes  | raw }}</td>
+                            <td class="tableCellLongText" >{{ review.notes  | raw }}</td>
                             {% if session.user is not empty  %}
                                 <td>
                                         {{ macros.canUpdateReview(review) }}
@@ -66,41 +71,29 @@
             <h3>Vložte nový příspěvek</h3>
             <div class="addComment">
                 <!-- action="{ constant('URLROOT')}}/posts/createComment/{post.id }}"-->
-            <form id="commentForm" action="{{ constant('URLROOT')}}/posts/createComment/{{ post.id }}" method="POST">
-                <div class="form-item">
-                    <textarea class="form-control" type="text" name="commentContent" id="commentContent" placeholder="Enter you post">{{ comment.content }}</textarea>
-                    <span class="invalidFeedBack">
-                        {{ commentContentError }}
-                    </span>
-                </div>
-                <div class="form-item">
-                    <button class="myBtn green btn mt-3  float-end" id="submitAddComment" name="submit" type="submit">Přidat komentář</button>
-                </div>
-                <p class="form-message"></p>
-            </form>
+                <form id="commentForm" action="{{ constant('URLROOT')}}/posts/createComment/{{ post.id }}"  method="POST">
+                    <div class="form-item">
+                        <textarea class="form-control" type="text" name="commentContent" id="commentContent" placeholder="Vložte svůj komentář"></textarea>
+                        <span class="invalidFeedBack">
+                            {{ commentContentError }}
+                        </span>
+                    </div>
+                    <div class="form-item">
+                        <button class="myBtn green btn mt-3  float-end" name="submit" type="submit">Přidat komentář</button>
+                    </div>
+                    <p class="form-message"></p>
+                </form>
                 <span id="comment_message">
                 </span>
                 <div id="display_comment"></div>
             </div>
         {% endif %}
 
-        <!--
-        <script>
-            function confirmAction() {
-                let confirmAction = confirm("Chcete změnu - soubor show?");
-                if (confirmAction) {
-                    alert("Action successfully executed");
-                } else {
-                    alert("Action canceled");
-                }
-            }
-        </script>
-        -->
-        <div class="comments">
+        <div class="comments" id="commentSection">
             {{ commentsMacros.showComments(comments) }}
         </div>
         <!-- action=" constant('URLROOT')}}/posts/createReply/ comment.id }}"-->
-        <div class="addComment row replyRow" action=" {{constant('URLROOT')}}/posts/createReply/{{ comment.id }}" style="display:none;">
+        <div class="addComment row replyRow" action="{{constant('URLROOT')}}/posts/createReply/{{ comment.id }}" style="display:none;">
             <form id="replyForm" method="POST">
                 <div class="form-item">
                     <textarea class="form-control" name="replyContent" placeholder="Enter you reply">{{ comment.content }}</textarea>
@@ -117,6 +110,37 @@
 
     </div>
     <script>
+
+        $(document).ready(submitCommentForm());
+
+        /**
+         * with use of ajax create a new comment
+         */
+        function submitCommentForm(){
+            $('#commentForm').on('submit', function (event){
+                event.preventDefault();
+                var form_data = $(this).serialize();
+                $.ajax({
+                    url: "{{ constant('URLROOT')}}/posts/createComment/{{ post.id }}",
+                    method: "POST",
+                    data: form_data,
+                    dataType: "JSON",
+                    success:function (data2){
+                        if(data2.error != ''){
+                            $('#commentForm')[0].reset();
+                            $('#comment_message').html(data2.error);
+                           // $("#commentSection").html(data2.reloadComments);
+                        }
+                    }
+                });
+            });
+        }
+
+        /**
+         * Place reply form under the caller
+         * @param caller        button, which want the reply form
+         * @param comment_id    id of the comment
+         */
         function reply(caller, comment_id){
             $(".replyRow").insertBefore($(caller));
             $("#replyForm").attr('action',"{{ constant('URLROOT')}}/posts/createReply/"+ comment_id )  ;
@@ -158,36 +182,7 @@
                 });
             }
         }
-        <!--
-        $(document).ready(function(){
-            $("#commentForm").submit(function (event){
-                event.preventDefault();
-                var form_data = $(this).serialize();
-                $.ajax({
-                   url: "{{ constant('URLROOT')}}/posts/createComment/{{ post.id }}",
-                    method: "POST",
-                    data: form_data,
-                    dataType: "json",
-                    success:function (data){
-                       if(data.error != ''){
-                           $("#commentForm")[0].reset();
-                           $('#comment_message').html(data.error);
-                       }
-                    }
-                });
-            });
-        });
-        -->
-       // load_comment();
-        function load_comment(){
-            $.ajax({
-                url: "{{ constant('URLROOT')}}/posts/displayComment/{{ post.id }}",
-                method: "POST",
-                success:function (data){
-                    $('#display_comment').html(data);
-                }
-            })
-        }
+
     </script>
 
 {% endblock %}

@@ -1,7 +1,7 @@
 {% extends('default.html.twig') %}
 
 {% block content %}
-<div class="container center">
+<div class="container center form_back_style">
     <h1 class="text-center pt-5 ">Úprava příspěvku</h1>
 
     <form
@@ -9,7 +9,7 @@
             method="POST">
         <div class="form-gorup mb-4 form-item">
             <label>Nadpis</label>
-            <input class="form-control" type="text" name="title" placeholder="Titulek článku *"
+            <input maxlength="255" class="form-control" type="text" name="title" placeholder="Titulek článku *"
                    value="{{ post.title }}" required>
             <span class="invalidFeedBack">
                 {{ titleError }}
@@ -17,17 +17,13 @@
         </div>
 
         <div class="form-group mb-4 form-item">
-            <label>Popis článku</label>
-            <textarea class="form-control" type="text" name="description" placeholder="Zadejte popisek">
-                {{ post.description }}
-            </textarea>
+            <label>Popis článku (maximálně 255 znaků)</label>
+            <textarea maxlength="255" class="form-control" type="text" name="description" placeholder="Zadejte popisek">{{ post.description }}</textarea>
         </div>
 
         <div class="form-group mb-4 form-item">
             <label>Článek</label>
-            <textarea class="form-control" type="text" id="wysiwygTextArea" name="content" placeholder="Zadejte svůj příspěvek *">
-                {{ post.content }}
-            </textarea>
+            <textarea class="form-control" type="text" id="wysiwygTextArea" name="content" placeholder="Zadejte svůj příspěvek *">{{ post.content }}</textarea>
             <span class="invalidFeedBack">
                 {{ contentError }}
             </span>

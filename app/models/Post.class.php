@@ -21,8 +21,29 @@ class Post{
      */
     public function findAllPosts(){
         $this->db->query('SELECT * FROM posts ORDER BY created_at DESC ');
-        //$results = $this->db->resultSet();
-        return $this->db->resultSet();
+        $results = $this->db->resultSet();
+        $this->findAuthors($results);
+        return $results;
+    }
+
+    /**
+     * @return mixed    return all published posts in posts table
+     */
+    public function findAllPublishedPosts(){
+        $this->db->query('SELECT * FROM posts WHERE published=1 ORDER BY created_at DESC ');
+        $results = $this->db->resultSet();
+        $this->findAuthors($results);
+        return $results;
+    }
+
+    /**
+     * @return mixed    return all unpublished posts in posts table
+     */
+    public function findAllUnpublishedPosts(){
+        $this->db->query('SELECT * FROM posts WHERE published=0 ORDER BY created_at DESC ');
+        $results = $this->db->resultSet();
+        $this->findAuthors($results);
+        return $results;
     }
 
     /**
@@ -69,6 +90,24 @@ class Post{
         $this->db->bind(':title',$data['title']);
         $this->db->bind(':description',$data['description']);
         $this->db->bind(':content',$data['content']);
+
+        if($this->db->execute()){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     * Publish / unpublished post
+     * @param $data     data of the post for publishing - id, published value
+     * @return bool     true - if update succeeded, otherwise return false
+     */
+    public function publishPost($data){
+        $this->db->query('UPDATE posts SET published = :publish WHERE id = :id');
+
+        $this->db->bind(':id',$data['post_id']);
+        $this->db->bind(':publish',$data['published']);
 
         if($this->db->execute()){
             return true;
