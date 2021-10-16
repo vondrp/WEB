@@ -14,7 +14,7 @@ html, body{
 body{
    /* background:  linear-gradient(45deg, rgb(130, 183, 220), #f2f2f2);*/
     /*background:  linear-gradient(45deg, rgb(130, 183, 220), silver);*/
-    background: url("../img/backSite.jpg");
+    background: url("../img/geometric.jpg");
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: cover;
@@ -239,7 +239,7 @@ h2{
     overflow: auto;
 }
 .comment{
-    border-left: 0.2em solid darkgrey;
+    border-left: 0.2em groove #818080;
     border-bottom: 0.1em ridge darkgrey;
     margin-bottom: 1em;
     padding:0.5em;
@@ -253,7 +253,7 @@ h2{
 .replyDiv{
     margin-top: 0.5em;
     border-top: 0.1em ridge darkgrey;
-    border-left: 0.2em solid darkgrey;
+    border-left: 0.2em groove #818080;
     overflow:auto;
     margin-left:1em;
 }

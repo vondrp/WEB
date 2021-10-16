@@ -90,16 +90,28 @@ class User{
 
     /**
      * Find user by his/her id
-     * @param $user_id    id of the user
-     */
-    /**
-     * Find user by his/her id
      * @param $user_id  id of the user
      * @return false|mixed  return false if user was no find, otherwise return user record
      */
     public function findUserByID($user_id){
         $this->db->query('SELECT * FROM users WHERE id = :id');
         $this->db->bind(':id', $user_id);
+        $row = $this->db->single();
+        if(!empty($row)){
+            return $row;
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     * Find user by his email
+     * @param $email        email of the user we are looking for
+     * @return false|mixed  return user data, when user nor found return false
+     */
+    public function findUserByEmail($email){
+        $this->db->query('SELECT * FROM users WHERE email = :email');
+        $this->db->bind(':email', $email);
         $row = $this->db->single();
         if(!empty($row)){
             return $row;
@@ -180,9 +192,6 @@ class User{
      * @return bool     true - if update succeeded, otherwise return false
      */
     public function changePassword($data){
-        $hashedPassword = !empty($data['user']) ? $data['user']->password : '';
-
-        if(password_verify($data['originalPassword'], $hashedPassword)) {
             $this->db->query('UPDATE users SET password = :password WHERE id = :id');
 
             $this->db->bind(':id', $data['id']);
@@ -192,8 +201,82 @@ class User{
             } else {
                 return false;
             }
+    }
+
+    /**
+     * processes database part of the password reset request
+     * @param $data     email, token, selector, expires
+     * @return bool     true - successful, otherwise false
+     */
+    public function passwordResetAppeal($data){
+        $this->db->query('DELETE FROM pwdReset WHERE pwdResetEmail = :email');
+        $this->db->bind(':email', $data['email']);
+        $this->db->execute();
+
+            $this->db->query('INSERT INTO pwdReset (pwdResetEmail, pwdResetSelector, pwdResetToken, pwdResetExpires) 
+                VALUES (:email, :selector, :token, :expires)');
+
+            $hashedToken = password_hash($data['token'], PASSWORD_DEFAULT);
+
+            //Bindvalues
+            $this->db->bind(':email', $data['email']);
+            $this->db->bind(':selector', $data['selector']);
+            $this->db->bind(':token', $hashedToken);
+            $this->db->bind(':expires', $data['expires']);
+            //Execute function
+            if($this->db->execute()){
+                return true;
+            }else{
+                return false;
+            }
+    }
+
+    public function createNewPassword($data){
+        $this->db->query("SELECT * FROM pwdReset WHERE pwdResetSelector = :pwdResetSelector AND pwdResetExpires >= :pwdResetExpires");
+
+        $this->db->bind(':pwdResetSelector', $data['selector']);
+        $this->db->bind(':pwdResetExpires', $data['currentDate']);
+
+        $row= $this->db->single();
+        if(!empty($row)){
+            $tokenBin = hex2bin($data['validator']);
+            $tokenCheck = password_verify($tokenBin, $row->pwdResetToken);
+            if(!$tokenCheck){
+                //return false;
+                return "Token validace ".$tokenCheck;
+            }else /*if($tokenCheck === true)*/{
+                $tokenEmail = $row->pwdResetEmail;
+                $this->db->query("SELECT * FROM users WHERE email = :pwdResetEmail");
+
+                $this->db->bind(':pwdResetEmail', $tokenEmail);
+                $user= $this->db->single();
+                if(!empty($user)){
+                    $newPwdHash = password_hash($data['password'], PASSWORD_DEFAULT);
+
+                    $this->db->query("UPDATE users SET password = :pwdResetPassword WHERE email = :pwdResetEmail");
+
+                    $this->db->bind(':pwdResetPassword', $newPwdHash);
+                    $this->db->bind(':pwdResetEmail', $tokenEmail);
+
+                    if($this->db->execute()){
+                        $this->db->query('DELETE FROM pwdReset WHERE pwdResetEmail = :email');
+                        $this->db->bind(':email', $tokenEmail);
+                        if($this->db->execute()){
+                            return "OK";
+                        }else{
+                            return "Vymazani z pwdReset";//false;
+                        }
+                    }else{
+                        return "Zmena hesla v users."; //false;
+                    }
+                }else{
+                    //return false;
+                    return "Nenalezen v users";
+                }
+            }
         }else{
-            return false;
+            //return false;
+            return "Nenalezen v pdwReset";
         }
     }
 

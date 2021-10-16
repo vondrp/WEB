@@ -15,7 +15,7 @@ class Database{
     private $statement;
 
     /**
-     * @var $dbHandler  dbHandler whenever prepare a statement - use this statement
+     * @var dbHandler prepare a statement
      */
     private $dbHandler;
     /**

@@ -109,10 +109,10 @@ class Users extends Controller{
 
             //Validate confirm password
             if(empty($data['confirmPassword'])){
-                $data['confirmPasswordError'] = 'Please enter password.';
+                $data['confirmPasswordError'] = 'Prosím napište potvrzovací heslo';
             }else {
                 if($data['password'] != $data['confirmPassword']){
-                    $data['confirmPasswordError'] = 'Passwords do not match, please try again';
+                    $data['confirmPasswordError'] = 'Hesla se neshodují, zkuste to prosím znovu';
                 }
             }
 
@@ -347,7 +347,7 @@ class Users extends Controller{
             if(empty($data['originalPassword'])){
                 $data['originalPasswordError'] = 'Prosím uveďte své původní heslo';
             }else if(!password_verify($data['originalPassword'], $hashedPassword)){
-                $data['originalPasswordError'] = 'Prosím uveďte své původní heslo';
+                $data['originalPasswordError'] = 'Vaše původní heslo je zadané špatně.';
             }
 
             //Validate password on length and numeric values
@@ -364,28 +364,166 @@ class Users extends Controller{
                 $data['confirmNewPasswordError'] = 'Prosím vložte potvrzovací heslo.';
             }else {
                 if($data['newPassword'] != $data['confirmNewPassword']){
-                    $data['confirmNewPasswordError'] = 'Hesla se neschodují, zkuste to prosím znovu.';
+                    $data['confirmNewPasswordError'] = 'Hesla se neshodují, zkuste to prosím znovu.';
                 }
             }
 
             //Make sure that errors are empty
             if( empty($data['confirmNewPasswordError']) && empty($data['originalPasswordError'])
             && empty($data['newPasswordError'])){
-
                 //hashing password
                 $data['newPassword'] = password_hash($data['newPassword'], PASSWORD_DEFAULT);
                 if($this->userModel->changePassword($data)){
-                    //Redirect to the user index page
-                    $this->view();
                     header('location: ' . URLROOT . '/users/manageUsers');
                 }else{
                     die('Something went wrong.');
                 }
+            }else{
+                $this->view('users/changePassword', $data);
             }
         }else{
-
+            $this->view('users/changePassword', $data);
         }
-        $this->view('users/changePassword', $data);
+    }
+
+    /**
+     * Controller to view resetPassword
+     * - makes available services to change user
+     * password - this controller specifically check
+     * email provided by user and it it is found
+     * in database - add to table for passwords reset
+     * new record and send user email with information
+     * how to change mail
+     */
+    public function resetPassword(){
+        if(isLoggedIn()){
+            header("Location: ".URLROOT . "/users/index");
+        }
+        $data =[
+          'email' => '',
+          'emailError' => ''
+        ];
+
+        if($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $email = trim($_POST['email']);
+            $data = [
+                'email' => $email,
+                'emailError' => ''
+            ];
+
+            if(empty($data['email'])){
+                $data['emailError'] = "Nebyl zadán email";
+            }else{
+                $user = $this->userModel->findUserByEmail($email);
+                if(!$user){
+                    $data['emailError'] = "Pro zadaný email neexistuje uživatelský účet.";
+                }
+            }
+
+            if(empty($data['emailError'])){
+                // tutorial - https://www.youtube.com/watch?v=wUkKCMEYj9M
+                $selector = bin2hex(random_bytes(8));
+                $token = random_bytes(32);
+                //link which is going to be send to user
+                $url = URLROOT . '/users/createNewPassword?selector='.$selector.'&validator='.bin2hex($token);
+                $expires = date("U") + 1800; //one hour from now
+                $data['token'] = $token;
+                $data['selector'] = $selector;
+                $data['expires'] = $expires;
+                if($this->userModel->passwordResetAppeal($data)){
+
+                    $to = $email;
+                    $subject = 'Restartování heslo pro webovou konferenci';
+                    $message ='<p>Dostali jsme žádost o změnu hesla. Odkaz pro resetování hesla je níže. Pokud jste žádost neprovedli, tento email ignorujte.</p>';
+                    $message .='<br>Tady odkaz pro resetování hesla:</br>';
+                    $message .='<a href="'.$url.'">'.$url.'</a></p>';
+                    $headers = "From: : vondrp@students.zcu.cz\r\n";
+                    $headers .= "Reply-To: vondrp@students.zcu.cz\r\n";
+                    $headers .= "Content-type: text/html\r\n";
+
+                    mail($to, $subject, $message, $headers);
+                    $data['success'] = 'Zkontrolujte si e-mail';
+                    $this->view('users/resetPassword', $data);
+                }else{
+                    die('Something went wrong.');
+                }
+            }else{
+                $this->view('users/resetPassword', $data);
+            }
+        }else{
+            $this->view('users/resetPassword', $data);
+        }
+
+    }
+
+    /**
+     * From a link with selector and validator
+     * which user got to his email by resetPassword
+     * user can on this site change his password
+     */
+    public function createNewPassword(){
+        if($_SERVER['REQUEST_METHOD'] == 'POST'){
+            //Sanitize post data                                             
+            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+            $currentDate = date("U");
+            $data = [
+                'selector' => $_POST['selector'],
+                'validator' => $_POST['validator'],
+                'password' => trim($_POST['password']),
+                'passwordRepeat' => trim($_POST['password-repeat']),
+                'passwordError' => '',
+                'passwordRepeatError' => '',
+                'currentDate' => $currentDate
+            ];
+            $passwordValidation = "/^(.{0,7}|[^a-z]*|[^\d]*)$/i";
+            //Validate password on length and numeric values
+            if(empty($data['password'])){
+                $data['passwordError'] = 'Prosím uveďte heslo.';
+            }elseif ( strlen($data['password']) < Users::PASSWORD_MIN_LENGTH ){
+                $data['passwordError'] = 'Heslo musí být nejméně '. Users::PASSWORD_MIN_LENGTH. ' znaků dlouhé';
+            }elseif( !preg_match($passwordValidation, $data['password'])){
+                $data['passwordError'] = 'V hesle musí být alespoň jedno číslo';
+            }
+
+            //Validate confirm password
+            if(empty($data['passwordRepeat'])){
+                $data['passwordRepeatError'] = 'Prosím uveďte potvrzovací heslo.';
+            }else {
+                if($data['password'] != $data['passwordRepeat']){
+                    $data['passwordRepeatError'] = 'Hesla se neshodují, zkuste to prosím znovu.';
+                }
+            }
+            if(empty($data['passwordError']) && empty($data['passwordRepeatError'])){
+                $result = $this->userModel->createNewPassword($data);
+                if(strcmp($result, "OK")==0){
+                    header("Location: ".URLROOT . "/users/login");
+                }else{
+                    die('Something went wrong. Something: '.$result.' '.$data['token']);
+                }
+            }else{
+                $this->view('users/createNewPassword', $data);
+            }
+        }else{
+            $data = [
+                'selector' => '',
+                'validator' => '',
+                'message' => ''
+            ];
+            $selector = $_GET["selector"];
+            $validator= $_GET["validator"];
+
+            if(empty($selector) or empty($validator)){
+                $data['message'] = 'Váš požadavek nelze ověřit';
+            }else if(ctype_xdigit($selector) === false && ctype_xdigit($validator) === false){
+                //check is hexadecimal  token are infact hexadecimal tokens
+                $data['message'] = 'Nastala chyba při ověřování selectoru a tokenu z url adresy.';
+            }else{
+                $data['validator'] = $validator;
+                $data['selector'] = $selector;
+            }
+            $this->view('users/createNewPassword', $data);
+        }
     }
 
     /**
