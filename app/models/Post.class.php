@@ -75,7 +75,9 @@ class Post{
     public function findPostById($id){
         $this->db->query('SELECT * FROM posts WHERE id = :id');
         $this->db->bind(':id', $id);
-        return $this->db->single();
+        $row = $this->db->single();
+        $row->author = $this->findUserById($row->user_id);
+        return $row;
     }
 
     /**

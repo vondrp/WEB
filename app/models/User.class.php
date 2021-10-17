@@ -231,6 +231,11 @@ class User{
             }
     }
 
+    /**
+     * Change forgotten password
+     * @param $data     selector, currentDate, validator, password
+     * @return string   infromation if OK or some specific error
+     */
     public function createNewPassword($data){
         $this->db->query("SELECT * FROM pwdReset WHERE pwdResetSelector = :pwdResetSelector AND pwdResetExpires >= :pwdResetExpires");
 

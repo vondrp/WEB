@@ -56,7 +56,7 @@
 {# to user in session with permission showed link for creating a new post #}
 {% macro canCreatePost() %}
     {% if session.user is not empty and (session.user.role is same as('editor') or session.user.role is same as('superadmin'))%}
-        <a class="myBtn btn green mb-3" href="{{constant('URLROOT')}}/posts/create">Create</a>
+        <a class="myBtn btn green mb-3" href="{{constant('URLROOT')}}/posts/create">Vytvořit příspěvek</a>
     {% endif %}
 {% endmacro %}
 
@@ -104,5 +104,15 @@
     {% if user.id == session.user.id or (session.user.role is same as('superadmin'))
         or ((session.user.role is same as('admin')) and (user.role is not same as('superadmin'))) %}
             <a href="{{ constant('URLROOT') }}/users/changePassword/{{ user.id }}">Změnit heslo</a>
+    {% endif %}
+{% endmacro %}
+
+{% macro canChangeUserPasswordTable(user)%}
+    {% if user.id == session.user.id or (session.user.role is same as('superadmin'))
+        or ((session.user.role is same as('admin')) and (user.role is not same as('superadmin'))) %}
+    <tr>
+        <td>Heslo:</td>
+        <td><a href="{{ constant('URLROOT') }}/users/changePassword/{{ user.id }}">Změnit heslo</a></td>
+    </tr>
     {% endif %}
 {% endmacro %}

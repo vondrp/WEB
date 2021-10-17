@@ -4,13 +4,17 @@
 
 {% import 'includes/comments.inc.twig' as commentsMacros %}
 {% block content %}
+
     <div class="container mt-4 content-style">
         {% if post.published == 1 %}
             <a class="mb-5" href="{{ constant('URLROOT') }}/posts/index">zpět na seznam článků</a>
         {% else %}
             <a class="mb-5" href="{{ constant('URLROOT') }}/posts/unpublished">zpět na seznam nevydaných článků</a>
         {% endif %}
-
+        <p>
+            Autor:
+            <a href="{{ constant('URLROOT')}}/users/index/{{ post.author.id }}">{{ post.author.username }}</a>
+        </p>
         {{ macros.canPublishedPost(post) }}
         {{ macros.canUpdateDeletePost(post)}}
         <h2>{{ post.title }}</h2>

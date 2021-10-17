@@ -18,17 +18,23 @@ class Users extends Controller{
      * @param null $user_id     id of the user, if not provided, user in session is showed
      */
     public function index($user_id = null){
-        if(!isLoggedIn()){
+        /*if(!isLoggedIn()){
             header("Location: ".URLROOT . "/users/login");
-        }
+        }*/
 
         if($user_id == null){
+            if(!isLoggedIn()){
+                header("Location: ".URLROOT . "/users/login");
+            }
             $user = $this->userModel->findUserByID($_SESSION['user']->id);
             $userPosts = $this->userModel->findUserPosts($_SESSION['user']->id);
             $userReviews = $this->userModel->findUserReviews($_SESSION['user']->id);
         }else{
             $user = $this->userModel->findUserByID($user_id);
             if(!$user){
+                if(!isLoggedIn()){
+                    header("Location: ".URLROOT . "/users/login");
+                }
                 $user = $this->userModel->findUserByID($_SESSION['user']->id);
                 $userPosts = $this->userModel->findUserPosts($_SESSION['user']->id);
                 $userReviews = $this->userModel->findUserReviews($_SESSION['user']->id);

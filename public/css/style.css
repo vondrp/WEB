@@ -63,7 +63,6 @@ body{
     background-color:rgba(0, 0, 0, 0.7);
     padding: 0.5em;
     border-radius: 0.3em;
-
 }
 
 .article:hover{
@@ -92,6 +91,12 @@ body{
     max-height: 50%;
     overflow: hidden;
 }
+@media only screen and (min-width: 576px){
+    .article{
+        min-width: 15em;
+    }
+}
+
 @media only screen and (max-width: 576px) {
     .article h2+p{
         display:none;
