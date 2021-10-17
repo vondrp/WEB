@@ -14,30 +14,34 @@ html, body{
 body{
    /* background:  linear-gradient(45deg, rgb(130, 183, 220), #f2f2f2);*/
     /*background:  linear-gradient(45deg, rgb(130, 183, 220), silver);*/
-    background: url("../img/geometric.jpg");
+    background-image: url("../img/geometric.jpg");
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: cover;
     background-position: center;
 }
 .mainSiteContent{
-    /* min-height: calc(100vh - 3em - 3em); /* 3em is height of the footer, 3em approximate height of navbar
-                                            (cannot be specified exactly - cause of hamburger situation)*/
     min-height: 28em;
     padding-top:3em;
     margin-bottom: 0;
 }
 
-
-h2{
-    overflow-wrap: break-word;
+/* ARTICLES*/
+.articles{
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
 }
-
 .articles h1{
-    text-align: center;
+    text-transform: uppercase;
+    background:black;
+    color:white;
+    padding:0.3em 0.5em;
+    opacity:0.8;
+    box-shadow:0 0.5em 1em rgba(0,0,0, 0.5);
+    border-radius: 0.3em;
 }
 .article-row{
-    /*background-color: bisque;*/
     display: flex;
     justify-content: center;
     vertical-align: middle;
@@ -96,7 +100,7 @@ h2{
         max-width: 5em;
     }
 }
-
+/*  ARTICLES END*/
 .show_desc{
     text-align: justify;
 }
@@ -190,14 +194,6 @@ h2{
     color:white;
 }
 
-.navbar{
-    box-shadow: 0 0 0.5em #1a1a1a;
-}
-
-#wysiwygTextArea{
-    height: 20em;
-}
-
 .green{
     background-color: #337a34;
     border-color: darkgreen;
@@ -234,6 +230,7 @@ h2{
     width:100%;
 }
 
+/* COMMENTS */
 .addComment{
     margin-bottom: 2em;
     overflow: auto;
@@ -261,6 +258,8 @@ h2{
 .reply{
     margin-top: 0.5em;
 }
+
+/* ABOUT SECTION */
 .aboutSection{
     background-image:url(../img/blueGray.jpg);
     color:white;
@@ -279,6 +278,7 @@ h2{
     padding-top: 0.2em;
 }
 
+/* TABLES */
 .tableCellLongText {
     max-width: 14em;
     word-break: break-word;
@@ -302,9 +302,6 @@ h2{
 }
 
 .container-review{
-    /*background: #111;
-    border: 1px solid #444;
-    */
     padding: 0.5em 1em;
     display: flex;
     align-items: center;
@@ -349,4 +346,48 @@ input:not(:checked) ~ label:hover ~ label
 
 .star-form-group .invalidFeedBack{
     float:right;
+}
+
+/*  HEADER*/
+.mainHeader {
+    background-image: url("../img/bannerTechnology.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: 50% 50%;
+    background-attachment: fixed;
+
+    /*min-height: 15em;*/
+    text-align:center;
+    padding: 2em;
+
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+}
+
+.mainHeader h1{
+    font-size:2.5em;
+    text-transform: uppercase;
+    background:black;
+    color:white;
+    padding:0.3em 0.5em;
+    opacity:0.8;
+}
+
+.mainHeader h1+h2{
+    font-size:1.5em;
+    text-transform: uppercase;
+    color:white;
+    padding:0.3em 0.5em;
+    background:black;
+    opacity:0.8;
+}
+/*  HEADER STYLE END*/
+
+.navbar{
+    box-shadow: 0 0 0.5em #1a1a1a;
+}
+
+#wysiwygTextArea{
+    height: 20em;
 }

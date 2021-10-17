@@ -1,26 +1,37 @@
 {% extends("default.html.twig") %}
 
+
 {% block content%}
-    <div>
-        <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Suspendisse sagittis ultrices augue. Aliquam erat volutpat. Fusce wisi. Integer rutrum, orci vestibulum ullamcorper ultricies, lacus quam ultricies odio, vitae placerat pede sem sit amet enim. Integer pellentesque quam vel velit. Nullam sapien sem, ornare ac, nonummy non, lobortis a enim. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Praesent vitae arcu tempor neque lacinia pretium. Fusce consectetuer risus a nunc. In rutrum. Maecenas libero. Aliquam erat volutpat. Pellentesque pretium lectus id turpis. Mauris elementum mauris vitae tortor. Duis ante orci, molestie vitae vehicula venenatis, tincidunt ac pede. Pellentesque pretium lectus id turpis. Nullam justo enim, consectetuer nec, ullamcorper ac, vestibulum in, elit. Etiam posuere lacus quis dolor. Nulla quis diam.</p>
 
-        <p>Nulla non lectus sed nisl molestie malesuada. Nulla quis diam. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos hymenaeos. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Pellentesque pretium lectus id turpis. Donec quis nibh at felis congue commodo. Vivamus luctus egestas leo. Nulla pulvinar eleifend sem. Vivamus luctus egestas leo. Aliquam erat volutpat. Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur? Nulla est. Duis pulvinar. Aenean id metus id velit ullamcorper pulvinar. Ut tempus purus at lorem. In rutrum. Proin mattis lacinia justo. Curabitur bibendum justo non orci. Aenean placerat. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-    </div>
+    {% block header %}
+            <header class="mainHeader">
+                <h1>Konference</h1>
+                <h2>technologie</h2>
+            </header>
 
-    <span id="about"></span>
-    <br>
-    <br>
-    <div class="aboutSection">
-        <h1>About</h1>
-        <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nulla turpis magna, cursus sit amet, suscipit a, interdum id, felis. Duis condimentum augue id magna semper rutrum. Maecenas sollicitudin. Aliquam erat volutpat. Integer vulputate sem a nibh rutrum consequat. Praesent vitae arcu tempor neque lacinia pretium. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Sed elit dui, pellentesque a, faucibus vel, interdum nec, diam. Aliquam erat volutpat. Etiam ligula pede, sagittis quis, interdum ultricies, scelerisque eu. Vivamus porttitor turpis ac leo. Aliquam erat volutpat. Maecenas libero. In laoreet, magna id viverra tincidunt, sem odio bibendum justo, vel imperdiet sapien wisi sed libero. Nullam sit amet magna in magna gravida vehicula. Nunc auctor. Integer lacinia. Morbi scelerisque luctus velit. Fusce consectetuer risus a nunc.</p>
-    </div>
+    {% endblock %}
+    <div class="container mt-4 content-style">
+        <div>
+            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Suspendisse sagittis ultrices augue. Aliquam erat volutpat. Fusce wisi. Integer rutrum, orci vestibulum ullamcorper ultricies, lacus quam ultricies odio, vitae placerat pede sem sit amet enim. Integer pellentesque quam vel velit. Nullam sapien sem, ornare ac, nonummy non, lobortis a enim. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Praesent vitae arcu tempor neque lacinia pretium. Fusce consectetuer risus a nunc. In rutrum. Maecenas libero. Aliquam erat volutpat. Pellentesque pretium lectus id turpis. Mauris elementum mauris vitae tortor. Duis ante orci, molestie vitae vehicula venenatis, tincidunt ac pede. Pellentesque pretium lectus id turpis. Nullam justo enim, consectetuer nec, ullamcorper ac, vestibulum in, elit. Etiam posuere lacus quis dolor. Nulla quis diam.</p>
+
+            <p>Nulla non lectus sed nisl molestie malesuada. Nulla quis diam. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos hymenaeos. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Pellentesque pretium lectus id turpis. Donec quis nibh at felis congue commodo. Vivamus luctus egestas leo. Nulla pulvinar eleifend sem. Vivamus luctus egestas leo. Aliquam erat volutpat. Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur? Nulla est. Duis pulvinar. Aenean id metus id velit ullamcorper pulvinar. Ut tempus purus at lorem. In rutrum. Proin mattis lacinia justo. Curabitur bibendum justo non orci. Aenean placerat. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+        </div>
+
+        <span id="about"></span>
+        <br>
+        <br>
+        <div class="aboutSection">
+            <h1>About</h1>
+            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nulla turpis magna, cursus sit amet, suscipit a, interdum id, felis. Duis condimentum augue id magna semper rutrum. Maecenas sollicitudin. Aliquam erat volutpat. Integer vulputate sem a nibh rutrum consequat. Praesent vitae arcu tempor neque lacinia pretium. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Sed elit dui, pellentesque a, faucibus vel, interdum nec, diam. Aliquam erat volutpat. Etiam ligula pede, sagittis quis, interdum ultricies, scelerisque eu. Vivamus porttitor turpis ac leo. Aliquam erat volutpat. Maecenas libero. In laoreet, magna id viverra tincidunt, sem odio bibendum justo, vel imperdiet sapien wisi sed libero. Nullam sit amet magna in magna gravida vehicula. Nunc auctor. Integer lacinia. Morbi scelerisque luctus velit. Fusce consectetuer risus a nunc.</p>
+        </div>
 
 
 
-    <div>
-        <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Suspendisse sagittis ultrices augue. Aliquam erat volutpat. Fusce wisi. Integer rutrum, orci vestibulum ullamcorper ultricies, lacus quam ultricies odio, vitae placerat pede sem sit amet enim. Integer pellentesque quam vel velit. Nullam sapien sem, ornare ac, nonummy non, lobortis a enim. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Praesent vitae arcu tempor neque lacinia pretium. Fusce consectetuer risus a nunc. In rutrum. Maecenas libero. Aliquam erat volutpat. Pellentesque pretium lectus id turpis. Mauris elementum mauris vitae tortor. Duis ante orci, molestie vitae vehicula venenatis, tincidunt ac pede. Pellentesque pretium lectus id turpis. Nullam justo enim, consectetuer nec, ullamcorper ac, vestibulum in, elit. Etiam posuere lacus quis dolor. Nulla quis diam.</p>
+        <div>
+            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Suspendisse sagittis ultrices augue. Aliquam erat volutpat. Fusce wisi. Integer rutrum, orci vestibulum ullamcorper ultricies, lacus quam ultricies odio, vitae placerat pede sem sit amet enim. Integer pellentesque quam vel velit. Nullam sapien sem, ornare ac, nonummy non, lobortis a enim. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Praesent vitae arcu tempor neque lacinia pretium. Fusce consectetuer risus a nunc. In rutrum. Maecenas libero. Aliquam erat volutpat. Pellentesque pretium lectus id turpis. Mauris elementum mauris vitae tortor. Duis ante orci, molestie vitae vehicula venenatis, tincidunt ac pede. Pellentesque pretium lectus id turpis. Nullam justo enim, consectetuer nec, ullamcorper ac, vestibulum in, elit. Etiam posuere lacus quis dolor. Nulla quis diam.</p>
 
-        <p>Nulla non lectus sed nisl molestie malesuada. Nulla quis diam. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos hymenaeos. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Pellentesque pretium lectus id turpis. Donec quis nibh at felis congue commodo. Vivamus luctus egestas leo. Nulla pulvinar eleifend sem. Vivamus luctus egestas leo. Aliquam erat volutpat. Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur? Nulla est. Duis pulvinar. Aenean id metus id velit ullamcorper pulvinar. Ut tempus purus at lorem. In rutrum. Proin mattis lacinia justo. Curabitur bibendum justo non orci. Aenean placerat. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+            <p>Nulla non lectus sed nisl molestie malesuada. Nulla quis diam. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos hymenaeos. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Pellentesque pretium lectus id turpis. Donec quis nibh at felis congue commodo. Vivamus luctus egestas leo. Nulla pulvinar eleifend sem. Vivamus luctus egestas leo. Aliquam erat volutpat. Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur? Nulla est. Duis pulvinar. Aenean id metus id velit ullamcorper pulvinar. Ut tempus purus at lorem. In rutrum. Proin mattis lacinia justo. Curabitur bibendum justo non orci. Aenean placerat. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+        </div>
     </div>
 
 {% endblock %}
