@@ -457,17 +457,30 @@ class Posts extends Controller{
                 }
             }
             $newComments = $this->postModel->findPostComments($post_id);
+
+            $reloadComments = '{{ commentsMacros.showComments(comments) }}';
+
+            //$twig = $this->loadTwig();
+            //$rel = $twig->render('includes/comments.inc.twig', $dataComm);
+           // $rel = $twig->render($reloadComments, $dataComm);
+
+            /*
+            $data2 = array(
+                'error' => $error,
+                'reloadComments' => $rel
+            );*/
+
             $dataComm = array(
                 'comments' => $newComments
             );
-            //$twig = $this->loadTwig();
-
-            //$rel = $twig->render('includes/comments.inc.twig', $dataComm);
-           // $reloadComments = '{{ commentsMacros.showComments(comments) }}';
+            ob_start();
+            $this->view('posts/comm', $dataComm);
+            $rel = ob_get_clean();
             $data2 = array(
-                'error' => $error
-                //'reloadComments' => $rel
+                'error' => $error,
+                'reloadComments' => $rel
             );
+
             echo json_encode($data2);
         }
         //$this->view('posts/show', $data);
