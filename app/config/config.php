@@ -11,3 +11,7 @@
     define('URLROOT', 'http://localhost/WEB');
     //Sitename
     define('SITENAME', 'WEB semestralka');
+
+    //web email page
+    define('WEB_EMAIL', 'vondrp@students.zcu.cz');
+?>

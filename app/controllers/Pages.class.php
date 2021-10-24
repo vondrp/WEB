@@ -9,6 +9,9 @@ class Pages extends Controller {
         // Really nothing
     }
 
+    /**
+     * controller to pages/index - home page
+     */
     public function index(){
         $data = [
             'title' => 'Home page',
@@ -16,3 +19,4 @@ class Pages extends Controller {
         $this->view('pages/index', $data);
     }
 }
+?>

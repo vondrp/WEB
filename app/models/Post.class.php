@@ -1,6 +1,8 @@
 <?php
 /**
- * Class Post
+ * Class Post is model part of MVC model
+ * - it is controlled by controller Posts,
+ * which used it for view
  */
 class Post{
     /**
@@ -249,6 +251,7 @@ class Post{
             return false;
         }
     }
+
     /**
      * Return all replies form table replies relatable to the selected comment
      * @param $comment_id      id of the comment
@@ -262,7 +265,7 @@ class Post{
     }
 
     /**
-     * Assing to all comments in an array their replies
+     * Assign to all comments in an array their replies
      * @param $comments     array of comments
      */
     public function findAllCommentsReplies($comments){
@@ -272,6 +275,11 @@ class Post{
         }
     }
 
+    /**
+     * Find reply with his id
+     * @param int $reply_id     id of a reply
+     * @return mixed            reply record
+     */
     public function findReply($reply_id){
         $this->db->query('SELECT * FROM replies WHERE id = :id');
         $this->db->bind(':id', $reply_id);

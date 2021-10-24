@@ -2,7 +2,7 @@
 
 /**
  * Class Review is model part of the reviews
- * - works directly width database
+ * - works directly with database
  * it´s methods are called from controller
  */
 class Review{
@@ -113,6 +113,7 @@ class Review{
     }
 
     /**
+     * Find all users with role reviewer
      * @return mixed    all users with role reviewer
      */
     public function findAllReviewers(){
@@ -207,7 +208,6 @@ class Review{
         }
         return $results;
     }
-
 
     /**
      * Find post in table posts with his id

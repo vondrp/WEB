@@ -1,7 +1,7 @@
 <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand" href="{{ constant('URLROOT')}}/pages/index"><i class="fas fa-home pe-2"></i>Domů</a>
+            <a class="navbar-brand" href="{{ constant('URLROOT')}}/pages/index"><i class="fas fa-home pe-2" title="domovní stránka"></i></a>
         </div>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -10,9 +10,9 @@
             <ul class="navbar-nav nav-pills ">
                 <!--<li class="nav-item"><a class="nav-link" href=" constant('URLROOT')/pages/about">About</a></li> -->
                 <li class="nav-item"><a class="nav-link" href=" {{ constant('URLROOT')}}/pages/index#about">O konferenci</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ constant('URLROOT')}}/posts/index">Příspěvky</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ constant('URLROOT')}}/posts/index">Články</a></li>
                 {% if session.user is not empty and session.user.role is not same as('normal') %}
-                    <li class="nav-item"><a class="nav-link" href="{{ constant('URLROOT')}}/posts/unpublished">Nevydané příspěvky</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ constant('URLROOT')}}/posts/unpublished">Nevydané články</a></li>
                 {% endif %}
             </ul>
 
@@ -32,9 +32,9 @@
                         <span class="input-group">
                             <a class="nav-link" href="{{ constant('URLROOT')}}/users/manageUsers">
                                         {% if session.user.role == 'superadmin' or session.user.role == 'admin' %}
-                                            <i class="fas fa-users-cog"></i> Správa uživatelů
+                                            <i class="fas fa-users-cog"></i> Správa profilů
                                         {% else %}
-                                            <i class="fas fa-users"></i> Seznam uživatelů
+                                            <i class="fas fa-users"></i> Seznam profilů
                                         {% endif %}
                                 </a>
                         </span>

@@ -74,6 +74,7 @@ class User{
     /**
      * Find if email is already registered
      * @param $email    email address we are looking for
+     * @return bool     true - if email was found, otherwise false
      */
     public function userEmailAlreadyRegistered($email){
         //Prepare statement
@@ -140,7 +141,6 @@ class User{
      * @return mixed    all reviews, which user created
      */
     public function findUserReviews($user_id){
-        //$user_id = $user->id;
         $this->db->query('SELECT * FROM reviews WHERE user_id = :user_id 
     AND recommendation != 0 ORDER BY created_at DESC');
         $this->db->bind(':user_id', $user_id);
@@ -153,6 +153,11 @@ class User{
         return $results;
     }
 
+    /**
+     * Find all user(reviewer) reviews, which are empty
+     * @param int $user_id     id of the user
+     * @return mixed           array set of all users with role reviewer
+     */
     public function findUserUndoneReviews($user_id){
         //$user_id = $user->id;
         $this->db->query('SELECT * FROM reviews WHERE user_id = :user_id AND recommendation = 0
@@ -160,7 +165,6 @@ class User{
         $this->db->bind(':user_id', $user_id);
 
         $results = $this->db->resultSet();
-
         foreach ($results as $record) {
             $record->post = $this->findPostById($record->post_id);
         }
@@ -233,7 +237,7 @@ class User{
 
             $hashedToken = password_hash($data['token'], PASSWORD_DEFAULT);
 
-            //Bindvalues
+            //Bind values
             $this->db->bind(':email', $data['email']);
             $this->db->bind(':selector', $data['selector']);
             $this->db->bind(':token', $hashedToken);
@@ -317,7 +321,7 @@ class User{
 
     /**
      * Update user role
-     * @param $data
+     * @param $data     newRole of the user, user_id - id of the user
      * @return bool    true - if update succeeded, otherwise return false
      */
     public function changeUserRole($data){

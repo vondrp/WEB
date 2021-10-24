@@ -11,7 +11,6 @@ class Reviews extends Controller {
      */
     public function __construct(){
         $this->reviewModel = $this->model('Review');
-        //$this->postModel = $this->model('Post');
     }
 
     /**
@@ -34,7 +33,7 @@ class Reviews extends Controller {
         if($post_id == null){
             header("Location: ". URLROOT . "/posts");
         }
-        //href="{{ constant('URLROOT') }}/posts/show/{{ post.id }}
+
         $post = $this->reviewModel->findPostById($post_id);
         if(!$post){
             header("Location: ". URLROOT . "/posts");
@@ -101,17 +100,17 @@ class Reviews extends Controller {
                     if($this->reviewModel->addReview($data)){
                         header("Location:". URLROOT ."/posts/show/".$post_id);
                     }else{
-                        die("Something went wrong, please try again!");
+                        die("Došlo k chybě, zkuste to prosím znovu.");
                     }
                 }else{
                     if($this->reviewModel->deleteReview($alreadyReviewed->id)){
                         if($this->reviewModel->addReview($data)){
                             header("Location:". URLROOT ."/posts/show/".$post_id);
                         }else{
-                            die("Something went wrong, please try again!");
+                            die("Došlo k chybě, zkuste to prosím znovu.");
                         }
                     }else{
-                        die('Something went wrong');
+                        die("Došlo k chybě, zkuste to prosím znovu.");
                     }
                 }
             }else{
@@ -204,7 +203,7 @@ class Reviews extends Controller {
                 if($this->reviewModel->updateReview($data)){
                     header("Location:". URLROOT ."/posts/show/".$review->post_id);
                 }else{
-                    die("Something went wrong, please try again!");
+                    die("Došlo k chybě, zkuste to prosím znovu.");
                 }
             }else{
                 $this->view('reviews/update', $data);
@@ -239,7 +238,7 @@ class Reviews extends Controller {
             if($this->reviewModel->deleteReview($review_id)){
                 header("Location: ". URLROOT ."/posts/show/".$post_id);
             }else{
-                die('Something went wrong');
+                die("Došlo k chybě, zkuste to prosím znovu.");
             }
         }
     }
@@ -292,7 +291,7 @@ class Reviews extends Controller {
                 if($this->reviewModel->threeReviewersForPost($data)){
                     header("Location:". URLROOT ."/reviews/assignReviews");
                 }else{
-                    die("Something went wrong, please try again!");
+                    die("Došlo k chybě, zkuste to prosím znovu.");
                 }
             }else{
                 $this->view('reviews/assignReviews', $data);
@@ -302,3 +301,4 @@ class Reviews extends Controller {
         }
     }
 }
+?>

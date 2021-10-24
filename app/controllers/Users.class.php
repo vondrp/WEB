@@ -51,7 +51,6 @@ class Users extends Controller{
         $this->view('users/index', $data);
     }
 
-
     /**
      * registration of the user
      */
@@ -89,19 +88,19 @@ class Users extends Controller{
             $passwordValidation = "/^(.{0,7}|[^a-z]*|[^\d]*)$/i";
             //Validate username on letters/numbers
             if(empty($data['username'])){
-                $data['usernameError'] = 'Please enter username';
+                $data['usernameError'] = 'Prosím uveďte uživatelské jméno.';
             }elseif(!preg_match($nameValidation, $data['username'])){
-                $data['usernameError'] = 'Name can only contain letters and numbers';
+                $data['usernameError'] = 'Jméno může pouze obsahovat písmena bez diakritiky a čísla.';
             }
             //Validate email
             if(empty($data['email'])){
-                $data['emailError'] = 'Please enter email address.';
+                $data['emailError'] = 'Prosím uveďte emailovou adresu.';
             }elseif (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)){
-                $data['emailError'] = 'Please enter the correct format';
+                $data['emailError'] = 'Prosím uveďte email ve správné formě.';
             }else{
                 //check if email exists
                 if($this->userModel->userEmailAlreadyRegistered($data['email'])){
-                    $data['emailError'] = 'Email is already taken';
+                    $data['emailError'] = 'Pro zadaný email již účet existuje.';
                 }
             }
             //Validate password on length and numeric values
@@ -134,7 +133,7 @@ class Users extends Controller{
                     $user = $this->userModel->findUserByEmail($data['email']);
                     createUserSession($user);
                 }else{
-                    die('Something went wrong.');
+                    die("Došlo k chybě, zkuste to prosím znovu.");
                 }
             }
         }
@@ -291,7 +290,7 @@ class Users extends Controller{
                     $data['message'] = "Změna se provedla úspěšně";
                     header('location: ' . URLROOT . '/users/index/'.$user_id);
                 }else{
-                    die('Something went wrong.');
+                    die("Došlo k chybě, zkuste to prosím znovu.");
                 }
             }else{
                 $this->view('users/index', $data);
@@ -374,7 +373,7 @@ class Users extends Controller{
                 if($this->userModel->changePassword($data)){
                     header('location: ' . URLROOT . '/users/manageUsers');
                 }else{
-                    die('Something went wrong.');
+                    die("Došlo k chybě, zkuste to prosím znovu.");
                 }
             }else{
                 $this->view('users/changePassword', $data);
@@ -435,15 +434,15 @@ class Users extends Controller{
                     $message ='<p>Dostali jsme žádost o změnu hesla. Odkaz pro resetování hesla je níže. Pokud jste žádost neprovedli, tento email ignorujte.</p>';
                     $message .='<br>Tady odkaz pro resetování hesla:</br>';
                     $message .='<a href="'.$url.'">'.$url.'</a></p>';
-                    $headers = "From: : vondrp@students.zcu.cz\r\n";
-                    $headers .= "Reply-To: vondrp@students.zcu.cz\r\n";
+                    $headers = "From: ". WEB_EMAIL."\r\n";
+                    $headers .= "Reply-To: ".WEB_EMAIL."\r\n";
                     $headers .= "Content-type: text/html\r\n";
 
                     mail($to, $subject, $message, $headers);
                     $data['success'] = 'Zkontrolujte si e-mail';
                     $this->view('users/resetPassword', $data);
                 }else{
-                    die('Something went wrong.');
+                    die("Došlo k chybě, zkuste to prosím znovu.");
                 }
             }else{
                 $this->view('users/resetPassword', $data);
@@ -497,7 +496,7 @@ class Users extends Controller{
                 if(strcmp($result, "OK")==0){
                     header("Location: ".URLROOT . "/users/login");
                 }else{
-                    die('Something went wrong. Something: '.$result.' '.$data['token']);
+                    die("Došlo k chybě: ".$result." ".$data['token']." zkuste to prosím znovu.");
                 }
             }else{
                 $this->view('users/createNewPassword', $data);
@@ -567,7 +566,7 @@ class Users extends Controller{
                     if($this->userModel->changeUserRole($data)){
                         header("Location:". URLROOT ."/users/manageUsers");
                     }else{
-                        die("Something went wrong, please try again!");
+                        die("Došlo k chybě, zkuste to prosím znovu.");
                     }
                 }else{
                     $this->view('users/manageUsers', $data);
@@ -604,7 +603,7 @@ class Users extends Controller{
             if($this->userModel->deleteUser($user_id)){
                 header("Location: ". URLROOT ."/users/index");
             }else{
-                die('Something went wrong');
+                die("Došlo k chybě, zkuste to prosím znovu.");
             }
         }
     }
@@ -616,3 +615,4 @@ class Users extends Controller{
         header('location: ' . URLROOT .'/users/login');
     }
 }
+?>

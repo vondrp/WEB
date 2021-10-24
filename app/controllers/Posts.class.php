@@ -27,6 +27,8 @@ class Posts extends Controller{
 
     /**
      * Controller of view with unpublished posts
+     * - every logged in user with exception role='normal'
+     * have permission to see
      */
     public function unpublished(){
         if(!isLoggedIn() and strcmp($_SESSION['user']->role, 'normal')){
@@ -39,6 +41,7 @@ class Posts extends Controller{
         ];
         $this->view('posts/index', $data);
     }
+
     /**
      * Controller of the create view
      * checks data of the new post provided by the user
@@ -82,11 +85,11 @@ class Posts extends Controller{
 
 
             if(empty($data['title'])){
-                $data['titleError'] = 'The title of a post cannot be empty';
+                $data['titleError'] = 'Příspěvek musí mít nadpis';
             }
 
             if(empty($data['content'])){
-                $data['contentError'] = 'The content of a post cannot be empty';
+                $data['contentError'] = ' Uveďte aspoň stručný obsah';
             }
 
             if(!empty($data['fileName'])) {
@@ -119,7 +122,7 @@ class Posts extends Controller{
                         move_uploaded_file($fileTmpName,$fileDestination);
                         header("Location:". URLROOT ."/posts");
                     }else{
-                        die("Something went wrong, please try again!");
+                        die("Došlo k chybě, zkuste to prosím znovu.");
                     }
                 }else{
                     $this->view('posts/create', $data);
@@ -194,7 +197,7 @@ class Posts extends Controller{
                 if($this->postModel->updatePost($data)){
                     header("Location:". URLROOT ."/posts");
                 }else{
-                    die("Something went wrong, please try again!");
+                    die("Došlo k chybě, zkuste to prosím znovu.");
                 }
             }else{
                 $this->view('posts/update', $data);
@@ -243,7 +246,7 @@ class Posts extends Controller{
                     header("Location:". URLROOT ."/posts/unpublished");
                 }
             }else{
-                die("Something went wrong, please try again!");
+                die("Došlo k chybě, zkuste to prosím znovu.");
             }
         }
         $this->view('posts/show', $data);
@@ -351,7 +354,7 @@ class Posts extends Controller{
                 unlink( "uploads/".$fileName );
                 header("Location: ". URLROOT ."/posts");
             }else{
-                die('Something went wrong');
+                die("Došlo k chybě, zkuste to prosím znovu.");
             }
         }
     }
@@ -453,22 +456,10 @@ class Posts extends Controller{
                     //$data['comments'] = $comments;
                     //$data['commentContent'] = '';
                 }else{
-                    die("Something went wrong, please try again!");
+                    die("Došlo k chybě, zkuste to prosím znovu.");
                 }
             }
             $newComments = $this->postModel->findPostComments($post_id);
-
-            $reloadComments = '{{ commentsMacros.showComments(comments) }}';
-
-            //$twig = $this->loadTwig();
-            //$rel = $twig->render('includes/comments.inc.twig', $dataComm);
-           // $rel = $twig->render($reloadComments, $dataComm);
-
-            /*
-            $data2 = array(
-                'error' => $error,
-                'reloadComments' => $rel
-            );*/
 
             $dataComm = array(
                 'comments' => $newComments
@@ -482,8 +473,9 @@ class Posts extends Controller{
             );
 
             echo json_encode($data2);
+        }else{
+            $this->view('posts/show', $data);
         }
-        //$this->view('posts/show', $data);
     }
 
     /**
@@ -511,7 +503,7 @@ class Posts extends Controller{
             if($this->postModel->deleteComment($comment_id)){
                 header("Location: ". URLROOT ."/posts/show/".$comment->post_id);
             }else{
-                die('Something went wrong');
+                die("Došlo k chybě, zkuste to prosím znovu.");
             }
         }
     }
@@ -576,7 +568,7 @@ class Posts extends Controller{
                 if($this->postModel->addReply($data)){
                     header("Location:". URLROOT ."/posts/show/".$post_id);
                 }else{
-                    die("Something went wrong, please try again!");
+                    die("Došlo k chybě, zkuste to prosím znovu.");
                 }
             }
         }
@@ -609,9 +601,9 @@ class Posts extends Controller{
             if($this->postModel->deleteReply($reply_id)){
                header("Location: ". URLROOT ."/posts/show/".$post_id);
             }else{
-                die('Something went wrong');
+                die("Došlo k chybě, zkuste to prosím znovu.");
             }
         }
     }
-
 }
+?>
