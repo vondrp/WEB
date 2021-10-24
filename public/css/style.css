@@ -393,6 +393,15 @@ input:not(:checked) ~ label:hover ~ label
     box-shadow: 0 0 0.5em #1a1a1a;
 }
 
+.home-icon{
+    color: silver;
+}
+
+.home-icon:hover{
+    color:white;
+}
+
+
 #wysiwygTextArea{
     height: 20em;
 }

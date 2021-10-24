@@ -23,6 +23,12 @@
         {% if post.file != '' %}
             <a target="_blank" href="{{ constant('URLROOT') }}/public/uploads/{{ post.file }}" title="">Otevřít v jiném okně</a>
             <embed src="{{ constant('URLROOT') }}/public/uploads/{{ post.file }}" type="application/pdf" width="100%" height="600px">
+
+            <object data="{{ constant('URLROOT') }}/public/uploads/{{ post.file }}" type="application/pdf" width="100%" height="800px">
+                <p>It appears you don't have a PDF plugin for this browser.
+                    No biggie... you can <a href="resume.pdf">click here to
+                        download the PDF file.</a></p>
+            </object>
         {% endif %}
         <br>
         
