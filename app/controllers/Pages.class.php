@@ -6,24 +6,13 @@
 class Pages extends Controller {
 
     public function __construct(){
-        $this->userModel = $this->model('User');
+        // Really nothing
     }
 
     public function index(){
-        $users = $this->userModel->getAllUsers();
-        /*
-        if(isLoggedIn()){
-            $perm = $this->userModel->getPermissions($_SESSION['user']);
-        }*/
-
         $data = [
             'title' => 'Home page',
-            'users' => $users
         ];
         $this->view('pages/index', $data);
-    }
-
-    public function about(){
-        echo "About";
     }
 }

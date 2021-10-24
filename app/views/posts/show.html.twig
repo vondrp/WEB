@@ -32,7 +32,7 @@
             <table class="table table-striped">
                 <thead>
                 <tr>
-                    <th scope="col" class="limited_table_colum">Nadpis příspěvku</th>
+                    <th scope="col" class="limited_table_colum">Autor recenze</th>
                     <th scope="col">Kvalita tématu</th>
                     <th scope="col">Jazyk</th>
                     <th scope="col">Originalita</th>
@@ -42,7 +42,11 @@
                 <tbody>
                     {% for review in reviews %}
                         <tr>
-                            <td>{{ review.author.username }}</td>
+                            <td>
+                                <a href="{{ constant('URLROOT') }}/users/index/{{ review.user_id }}">
+                                    {{ review.author.username }}
+                                </a>
+                            </td>
                             <td>{% for i in 1..review.topicRelevance %}
                                     <i class="star fas fa-star"></i>
                                 {% endfor %}

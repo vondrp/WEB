@@ -24,7 +24,6 @@
                     </td>
                 </tr>
                 {{ macros.canChangeUserPasswordTable(user) }}
-
                 <tr>
                     <td>role: </td>
                     <td>{{ user.role }}</td>
@@ -35,6 +34,36 @@
                 <button class="myBtn btn btn-primary" id="registerButton" type="submit" value="submit">Změnit údaje</button>
             {% endif %}
         </form>
+
+        {% if userUndoneReviews is not empty %}
+            <h3 class="mt-3">Přiřazené recenze k vyhodnocení</h3>
+            <div class="reviews table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col">Nadpis článku</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for review in userUndoneReviews %}
+                        <tr>
+                            <td class="tableCellLongText"><a href="{{ constant('URLROOT') }}/posts/show/{{ review.post.id }}">{{ review.post.title }}</a></td>
+                            {% if session.user is not empty  %}
+                                <td>
+                                    {{ macros.canUpdateReview(review) }}
+                                </td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+
+
+
+
+
 
         {% if userPosts is not empty %}
         <h3 class="mt-3">Příspěvky</h3>
@@ -48,10 +77,10 @@
             </thead>
             {% for post in userPosts %}
                 <tbody>
-                <td class="tableCellLongText"><a href="{{ constant('URLROOT') }}/posts/show/{{ post.id }}">{{ post.title }}</a></td>
-                <td class="tableCellLongText">{{ post.description }}</td>
+                <td class="tableCellLongText" valign="middle" align="center"><a href="{{ constant('URLROOT') }}/posts/show/{{ post.id }}">{{ post.title }}</a></td>
+                <td class="tableCellLongText" valign="middle" align="justify">{{ post.description }}</td>
                 {% if session.user is not empty and session.user.id == post.user_id %}
-                    <td>
+                    <td valign="middle" align="center">
                         {{ macros.canUpdateDeletePost(post)}}
                     </td>
                 {% endif %}

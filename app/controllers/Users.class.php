@@ -18,17 +18,14 @@ class Users extends Controller{
      * @param null $user_id     id of the user, if not provided, user in session is showed
      */
     public function index($user_id = null){
-        /*if(!isLoggedIn()){
-            header("Location: ".URLROOT . "/users/login");
-        }*/
-
         if($user_id == null){
             if(!isLoggedIn()){
                 header("Location: ".URLROOT . "/users/login");
             }
             $user = $this->userModel->findUserByID($_SESSION['user']->id);
             $userPosts = $this->userModel->findUserPosts($_SESSION['user']->id);
-            $userReviews = $this->userModel->findUserReviews($_SESSION['user']->id);
+            $userFinishReviews = $this->userModel->findUserReviews($_SESSION['user']->id);
+            $userUndoneReviews = $this->userModel->findUserUndoneReviews($_SESSION['user']->id);
         }else{
             $user = $this->userModel->findUserByID($user_id);
             if(!$user){
@@ -37,16 +34,19 @@ class Users extends Controller{
                 }
                 $user = $this->userModel->findUserByID($_SESSION['user']->id);
                 $userPosts = $this->userModel->findUserPosts($_SESSION['user']->id);
-                $userReviews = $this->userModel->findUserReviews($_SESSION['user']->id);
+                $userFinishReviews = $this->userModel->findUserReviews($_SESSION['user']->id);
+                $userUndoneReviews = $this->userModel->findUserUndoneReviews($_SESSION['user']->id);
             }else{
                 $userPosts = $this->userModel->findUserPosts($user_id);
-                $userReviews = $this->userModel->findUserReviews($user_id);
+                $userFinishReviews = $this->userModel->findUserReviews($user_id);
+                $userUndoneReviews = $this->userModel->findUserUndoneReviews($user_id);
             }
         }
         $data = [
             'user' => $user,
             'userPosts' => $userPosts,
-            'userReviews' => $userReviews,
+            'userReviews' => $userFinishReviews,
+            'userUndoneReviews' => $userUndoneReviews
         ];
         $this->view('users/index', $data);
     }
@@ -131,7 +131,8 @@ class Users extends Controller{
                 //Register user from model function
                 if($this->userModel->register($data)){
                     //Redirect to the login page
-                    header('location: ' . URLROOT . '/users/login');
+                    $user = $this->userModel->findUserByEmail($data['email']);
+                    createUserSession($user);
                 }else{
                     die('Something went wrong.');
                 }
@@ -166,12 +167,12 @@ class Users extends Controller{
             ];
             //Validate usernameOrEmail
             if(empty($data['usernameOrEmail'])){
-                $data['usernameOrEmailError'] = 'Please enter a username or email';
+                $data['usernameOrEmailError'] = 'Prosím uveďtě uživatelské jméno nebo email';
             }
 
             //Validate password
             if(empty($data['password'])){
-                $data['passwordError'] = 'Please enter a password';
+                $data['passwordError'] = 'Prosím uveďte heslo';
             }
             //Check if all errors are empty
             if(empty($data['usernameOrEmailError'])
@@ -179,6 +180,7 @@ class Users extends Controller{
                 $loggedInUser = $this->userModel->login($data['usernameOrEmail'], $data['password']);
                 if($loggedInUser){
                     $this->createUserSession($loggedInUser);
+
                 }else{
                     $data['passwordError'] = 'Uživatelské jméno nebo heslo bylo zadáno špatně. Zkuste to prosím znovu.';
                     $this->view('users/login', $data);
@@ -201,16 +203,6 @@ class Users extends Controller{
             'users' => $users
         ];
         $this->view('users/manageUsers', $data);
-        /*
-        if(strcmp($_SESSION['user']->role, 'superadmin') == 0 or strcmp($_SESSION['user']->role, 'admin') ==0){
-            $users = $this->userModel->getAllUsers();
-            $data = [
-                'users' => $users
-            ];
-            $this->view('users/manageUsers', $data);
-        }else{
-            header("Location: ".URLROOT . "/users/index");
-        }*/
     }
 
     /**
@@ -219,7 +211,7 @@ class Users extends Controller{
      */
     private function createUserSession($user){
         $_SESSION['user'] = $user;
-        header('location:' .URLROOT . '/pages/index');
+        header('location:' .URLROOT . '/users/index');
     }
 
     /**

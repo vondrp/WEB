@@ -287,7 +287,9 @@ class Post{
      * @return mixed        post comments
      */
     public function findPostReviews($post_id){
-        $this->db->query('SELECT * FROM reviews WHERE post_id = :post_id ORDER BY created_at DESC ');
+        $this->db->query('SELECT * FROM reviews WHERE post_id = :post_id 
+        AND topicRelevance != 0 AND langQuality !=0 AND originality !=0
+        AND recommendation !=0 ORDER BY created_at DESC ');
         $this->db->bind(':post_id', $post_id);
         $results = $this->db->resultSet();
         foreach ($results as $record) {
@@ -296,13 +298,15 @@ class Post{
         return $results;
     }
 
-    /*********
+
+    /*
      * FIND USERS METHODS
      */
 
     /**
      * Find user by his id
-     * @param $user_id    id of the user we are looking for
+     * @param int $user_id    id of the user we are looking for
+     * @return mixed          return record of the user
      */
     public function findUserById($user_id){
         $this->db->query('SELECT * FROM users WHERE id = :id');

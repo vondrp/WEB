@@ -1,0 +1,88 @@
+{% extends('default.html.twig') %}
+
+{% import 'includes/permissions.inc.twig' as macros %}
+{% block content %}
+    <div class="container content-style">
+
+        <h3>Články s méně než třemi recenzemi</h3>
+
+        {% for post in posts %}
+        <div class="form_back_style">
+        <form method="post" action="{{ constant('URLROOT')}}/reviews/assignReviews" >
+            <input type="hidden" name="post_id" value="{{ post.id }}" />
+            <div class="table-responsive">
+                <table class="table table-secondary">
+                    <thead>
+                    <tr>
+                        <th>Článek</th>
+                        <th>recenzenti</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    {%  for i in 1..3 %}
+                    <tr>
+                        {% if i == 1 %}
+                            <td class="tableCellLongText" rowspan="4" valign="middle" align="center">
+                                <a href="{{ constant('URLROOT') }}/posts/show/{{ post.id }}">
+                                    {{ post.title }}
+                                </a>
+                            </td>
+                        {% endif %}
+                        <td>
+                            <select name="reviewerID_{{ i }}" class="form-select">
+                                <option selected value="0"> -- vyberte recenzenta -- </option>
+                                {% for reviewer in reviewers %}
+                                    <option value="{{ reviewer.id }}">{{ reviewer.username }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <td>
+                            <button class="myBtn btn btn-primary w-100 h1" type="submit" value="submit">Přiřadit recenzenty</button>
+                        </td>
+                    </tr>
+
+                    </tbody>
+                </table>
+            </div>
+            <span class="invalidFeedBack">
+                {{ reviewersError }}
+            </span>
+        </form>
+            <p>status článku: {% if post.published ==0  %} neuveřejněný {% else %} zveřejněný {% endif %}</p>
+        </div>
+        {% endfor %}
+
+        <h3>Přidělené, dosud nehotové recenze</h3>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Článek</th>
+                    <th>Recenzent</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for undoneReview in undoneReviews %}
+                        <tr>
+                            <td class="tableCellLongText" >
+                                <a href="{{ constant('URLROOT') }}/posts/show/{{ undoneReview.post.id }}">
+                                    {{  undoneReview.post.title }}
+                                </a>
+                            </td>
+                            <td>
+                                <a href="{{ constant('URLROOT') }}/users/index/{{ undoneReview.user_id }}">
+                                    {{ undoneReview.author.username }}
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+{% endblock %}

@@ -21,10 +21,10 @@
                         <input type="radio" value="1" name="topicRelevance" id="tR-rate-1">
                         <label for="tR-rate-1" class="fas fa-star"></label>
                     </div>
-                    <span class="invalidFeedBack">
-                        {{ topicRelevanceError }}
-                    </span>
                 </div>
+                <span class="invalidFeedBack">
+                    {{ topicRelevanceError }}
+                </span>
 
                 <div class="star-form-group mb-3">
                     <h3>Kvalita jazyka</h3>
@@ -41,10 +41,10 @@
                         <input type="radio" value="1" name="langQuality" id="lQ-rate-1">
                         <label for="lQ-rate-1" class="fas fa-star"></label>
                     </div>
-                    <span class="invalidFeedBack">
-                        {{ langQualityError }}
-                    </span>
                 </div>
+                <span class="invalidFeedBack">
+                    {{ langQualityError }}
+                </span>
 
                 <div class="star-form-group mb-3">
                     <h3>Originalita</h3>
@@ -61,10 +61,10 @@
                         <input type="radio" value="1" name="originality" id="og-rate-1">
                         <label for="og-rate-1" class="fas fa-star"></label>
                     </div>
-                    <span class="invalidFeedBack">
-                        {{ originalityError }}
-                    </span>
                 </div>
+                <span class="invalidFeedBack">
+                    {{ originalityError }}
+                </span>
 
                 <div class="mb-3">
                     <h3>Doporučení</h3>
@@ -81,18 +81,18 @@
                         <input type="radio" value="1" name="recommendation" id="rd-rate-1">
                         <label for="rd-rate-1" class="fas fa-star"></label>
                     </div>
-                    <span class="invalidFeedBack">
-                        {{ originalityError }}
-                    </span>
                 </div>
+                <span class="invalidFeedBack">
+                        {{ originalityError }}
+                </span>
 
                 <div class="form-group mb-4 form-item ">
                     <p>Poznámka (maximálně 255 znaků)</p>
                     <!-- id="wysiwygTextArea" -->
                         <textarea maxlength="255" rows="12" class="form-control" type="text" name="notes" placeholder="Zadejte své poznámky *">{{ notes }}</textarea>
                     <span class="invalidFeedBack">
-                    {{ notesError }}
-                </span>
+                        {{ notesError }}
+                    </span>
                 </div>
                 <button class="myBtn btn btn-primary green" name="submit" type="submit">Odeslat recenzi</button>
             </div>

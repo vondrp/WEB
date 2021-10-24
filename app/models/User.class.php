@@ -141,7 +141,22 @@ class User{
      */
     public function findUserReviews($user_id){
         //$user_id = $user->id;
-        $this->db->query('SELECT * FROM reviews WHERE user_id = :user_id ORDER BY created_at DESC');
+        $this->db->query('SELECT * FROM reviews WHERE user_id = :user_id 
+    AND recommendation != 0 ORDER BY created_at DESC');
+        $this->db->bind(':user_id', $user_id);
+
+        $results = $this->db->resultSet();
+
+        foreach ($results as $record) {
+            $record->post = $this->findPostById($record->post_id);
+        }
+        return $results;
+    }
+
+    public function findUserUndoneReviews($user_id){
+        //$user_id = $user->id;
+        $this->db->query('SELECT * FROM reviews WHERE user_id = :user_id AND recommendation = 0
+        AND topicRelevance = 0 AND langQuality = 0 AND originality = 0 ORDER BY created_at DESC');
         $this->db->bind(':user_id', $user_id);
 
         $results = $this->db->resultSet();

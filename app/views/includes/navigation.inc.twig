@@ -9,7 +9,7 @@
         <div class="navbar-collapse collapse" id="navbarSupportedContent">
             <ul class="navbar-nav nav-pills ">
                 <!--<li class="nav-item"><a class="nav-link" href=" constant('URLROOT')/pages/about">About</a></li> -->
-                <li class="nav-item"><a class="nav-link" href=" {{ constant('URLROOT')}}/pages/index#about">O nás</a></li>
+                <li class="nav-item"><a class="nav-link" href=" {{ constant('URLROOT')}}/pages/index#about">O konferenci</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ constant('URLROOT')}}/posts/index">Příspěvky</a></li>
                 {% if session.user is not empty and session.user.role is not same as('normal') %}
                     <li class="nav-item"><a class="nav-link" href="{{ constant('URLROOT')}}/posts/unpublished">Nevydané příspěvky</a></li>
@@ -19,6 +19,15 @@
             <ul class="navbar-nav nav-pills ms-auto">
                 {% if session.user is not empty %}
 
+                    {% if session.user.role is same as('admin') or session.user.role is same as('superadmin')%}
+                        <li class="nav-item">
+                            <span class="input-group">
+                                <a class="nav-link" href="{{ constant('URLROOT')}}/reviews/assignReviews">
+                                    Přidaď recenzenty
+                                </a>
+                            </span>
+                        </li>
+                    {% endif %}
                     <li class="nav-item">
                         <span class="input-group">
                             <a class="nav-link" href="{{ constant('URLROOT')}}/users/manageUsers">
@@ -30,29 +39,29 @@
                                 </a>
                         </span>
                     </li>
-                <li class="nav-item">
-                    <span class="input-group">
-                        <a class="nav-link" href="{{ constant('URLROOT')}}/users/index">
-                            <i class="fas fa-user" rel="uživatel" alt="user profile:"></i> {{ session.user.username }}({{ session.user.role }})
-                        </a>
-                    </span>
-                </li>
-                <li class="nav-item btn-login">
+                    <li class="nav-item">
                         <span class="input-group">
-                            <a class="nav-link" href="{{ constant('URLROOT')}}/users/logout">
-                                    <i class="fas fa-sign-out-alt"></i> Odhlásit se
+                            <a class="nav-link" href="{{ constant('URLROOT')}}/users/index">
+                                <i class="fas fa-user" rel="uživatel" alt="user profile:"></i> {{ session.user.username }}({{ session.user.role }})
                             </a>
                         </span>
-                    {% else %}
-                        <span class="input-group">
-                            <a class="nav-link" href="{{ constant('URLROOT')}}/users/login">
-                                <div >
-                                    <i class="fas fa-sign-in-alt"></i> Přihlásit se
-                                </div>
-                            </a>
-                        </span>
-                    {% endif %}
-                </li>
+                    </li>
+                    <li class="nav-item btn-login">
+                            <span class="input-group">
+                                <a class="nav-link" href="{{ constant('URLROOT')}}/users/logout">
+                                        <i class="fas fa-sign-out-alt"></i> Odhlásit se
+                                </a>
+                            </span>
+                        {% else %}
+                            <span class="input-group">
+                                <a class="nav-link" href="{{ constant('URLROOT')}}/users/login">
+                                    <div >
+                                        <i class="fas fa-sign-in-alt"></i> Přihlásit se
+                                    </div>
+                                </a>
+                            </span>
+                        {% endif %}
+                    </li>
             </ul>
         </div>
     </div>

@@ -9,6 +9,7 @@
                 <div class="star-form-group mb-3">
                     <h3>Relevance tématu</h3>
                     <div class="star-widget">
+                        <input type="hidden" {% if review.topicRelevance == 0 %} checked="checked" {% endif %} name="topicRelevance" value="0">
                         <input type="radio" {% if review.topicRelevance == 5 %} checked="checked" {% endif %} value="5" name="topicRelevance" id="tR-rate-5" >
                         <label for="tR-rate-5" class="fas fa-star"></label>
                         <input type="radio" {% if review.topicRelevance == 4 %} checked="checked" {% endif %} value="4" name="topicRelevance" id="tR-rate-4">
@@ -20,14 +21,15 @@
                         <input type="radio" {% if review.topicRelevance == 1 %} checked="checked" {% endif %} value="1" name="topicRelevance" id="tR-rate-1">
                         <label for="tR-rate-1" class="fas fa-star"></label>
                     </div>
-                    <span class="invalidFeedBack">
-                        {{ topicRelevanceError }}
-                    </span>
                 </div>
+                <span class="invalidFeedBack">
+                    {{ topicRelevanceError }}
+                </span>
 
                 <div class="star-form-group mb-3">
                     <h3>Kvalita jazyka</h3>
                     <div class="star-widget">
+                        <input type="hidden" {% if review.langQuality == 0 %} checked="checked" {% endif %} name="langQuality" value="0">
                         <input type="radio" {% if review.langQuality == 5 %} checked="checked" {% endif %} value="5" name="langQuality" id="lQ-rate-5" >
                         <label for="lQ-rate-5" class="fas fa-star"></label>
                         <input type="radio" {% if review.langQuality == 4 %} checked="checked" {% endif %} value="4" name="langQuality" id="lQ-rate-4">
@@ -39,14 +41,15 @@
                         <input type="radio" {% if review.langQuality == 1 %} checked="checked" {% endif %} value="1" name="langQuality" id="lQ-rate-1">
                         <label for="lQ-rate-1" class="fas fa-star"></label>
                     </div>
-                    <span class="invalidFeedBack">
-                        {{ langQualityError }}
-                    </span>
                 </div>
+                <span class="invalidFeedBack">
+                    {{ langQualityError }}
+                </span>
 
                 <div class="star-form-group mb-3">
                     <h3>Originalita</h3>
                     <div class="star-widget">
+                        <input type="hidden" {% if review.originality == 0 %} checked="checked" {% endif %} name="originality" value="0">
                         <input type="radio" {% if review.originality == 5 %} checked="checked" {% endif %} value="5" name="originality" id="og-rate-5" >
                         <label for="og-rate-5" class="fas fa-star"></label>
                         <input type="radio" {% if review.originality == 4 %} checked="checked" {% endif %} value="4" name="originality" id="og-rate-4">
@@ -58,14 +61,15 @@
                         <input type="radio" {% if review.originality == 1 %} checked="checked" {% endif %} value="1" name="originality" id="og-rate-1">
                         <label for="og-rate-1" class="fas fa-star"></label>
                     </div>
-                    <span class="invalidFeedBack">
-                        {{ originalityError }}
-                    </span>
                 </div>
+                <span class="invalidFeedBack">
+                    {{ originalityError }}
+                </span>
 
                 <div class="mb-3">
                     <h3>Doporučení</h3>
                     <div class="star-widget">
+                        <input type="hidden" {% if review.recommendation == 0 %} checked="checked" {% endif %} name="recommendation" value="0">
                         <input type="radio" {% if review.recommendation == 5 %} checked="checked" {% endif %} value="5" name="recommendation" id="rd-rate-5" >
                         <label for="rd-rate-5" class="fas fa-star"></label>
                         <input type="radio" {% if review.recommendation == 4 %} checked="checked" {% endif %} value="4" name="recommendation" id="rd-rate-4">
@@ -77,10 +81,10 @@
                         <input type="radio" {% if review.recommendation == 1 %} checked="checked" {% endif %} value="1" name="recommendation" id="rd-rate-1">
                         <label for="rd-rate-1" class="fas fa-star"></label>
                     </div>
-                    <span class="invalidFeedBack">
-                        {{ originalityError }}
-                    </span>
                 </div>
+                <span class="invalidFeedBack">
+                    {{ originalityError }}
+                </span>
 
                 <div class="form-group mb-4 form-item ">
                     <p>Poznámka (maximálně 255 znaků)</p>

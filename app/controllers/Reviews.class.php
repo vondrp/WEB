@@ -11,7 +11,7 @@ class Reviews extends Controller {
      */
     public function __construct(){
         $this->reviewModel = $this->model('Review');
-        $this->postModel = $this->model('Post');
+        //$this->postModel = $this->model('Post');
     }
 
     /**
@@ -35,7 +35,7 @@ class Reviews extends Controller {
             header("Location: ". URLROOT . "/posts");
         }
         //href="{{ constant('URLROOT') }}/posts/show/{{ post.id }}
-        $post = $this->postModel->findPostById($post_id);
+        $post = $this->reviewModel->findPostById($post_id);
         if(!$post){
             header("Location: ". URLROOT . "/posts");
         }
@@ -241,6 +241,64 @@ class Reviews extends Controller {
             }else{
                 die('Something went wrong');
             }
+        }
+    }
+
+    /**
+     * Controller of the view, where admins can assign
+     * reviewers to the post
+     */
+    public function assignReviews(){
+        if(!adminPermissions()){
+            header("Location: ". URLROOT ."/pages/index");
+        }
+
+        $posts = $this->reviewModel->findAllPostsWithoutAtLeastThreeReviews();
+        $undoneReviews = $this->reviewModel->findAllUnfinishedReviews();
+
+        $reviewerOptions = $this->reviewModel->findAllReviewers();
+        $data = [
+            'posts' => $posts,
+            'reviewers' => $reviewerOptions,
+            'undoneReviews' => $undoneReviews
+        ];
+        if($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $_POST = filter_input_array(INPUT_POST);
+            $data = [
+                'posts' => $posts,
+                'reviewers' => $reviewerOptions,
+                'undoneReviews' => $undoneReviews,
+                'post_id' => $_POST['post_id'],
+                'reviewerID_1' => ($_POST['reviewerID_1']),
+                'reviewerID_2' => ($_POST['reviewerID_2']),
+                'reviewerID_3' => ($_POST['reviewerID_3']),
+                'reviewersError' => ''
+            ];
+
+            if( ($data['reviewerID_1']==0)
+                || ($data['reviewerID_2']==0)
+                || ($data['reviewerID_3']==0)
+            ){
+                $data['reviewersError'] = 'Je třeba vybrat všechny 3 recenzenty';
+            }else if(
+                ($data['reviewerID_1'] == $data['reviewerID_2'] )
+                || ( $data['reviewerID_1'] == $data['reviewerID_3'] )
+                || ( $data['reviewerID_2'] == $data['reviewerID_3'] )
+            ){
+                $data['reviewersError'] = 'Vybraní recenzenti musí být různí';
+            }
+
+            if(empty($data['reviewersError'] ) ){
+                if($this->reviewModel->threeReviewersForPost($data)){
+                    header("Location:". URLROOT ."/reviews/assignReviews");
+                }else{
+                    die("Something went wrong, please try again!");
+                }
+            }else{
+                $this->view('reviews/assignReviews', $data);
+            }
+        }else{
+            $this->view('reviews/assignReviews', $data);
         }
     }
 }
