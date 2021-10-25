@@ -10,7 +10,7 @@
     /* URLROOT (Dynamic links)  - not neccessary to write whole address*/
     define('URLROOT', 'http://localhost/WEB');
     //Sitename
-    define('SITENAME', 'WEB semestralka');
+    define('SITENAME', 'Technologická konference');
 
     //web email page
     define('WEB_EMAIL', 'vondrp@students.zcu.cz');

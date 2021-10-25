@@ -21,8 +21,9 @@
   <component name="ChangeListManager">
     <list default="true" id="1abc618e-26ca-44d8-bd20-9e0420f40a7f" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/controllers/Posts.class.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/Posts.class.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/views/posts/show.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/posts/show.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/config/config.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/config/config.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/public/index.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/javascript/javascript.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/javascript/javascript.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,22 +52,24 @@
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../nette-tutorial" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../WebCv" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
     <property name="settings.editor.selected.configurable" value="preferences.editor" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="D:\programfiles\XAMPP\xampServer\htdocs\WEB\app\views\includes" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\programfiles\XAMPP\xampServer\htdocs\WEB\app" />
       <recent name="D:\programfiles\XAMPP\xampServer\htdocs\WEB\app\views\posts" />
       <recent name="D:\programfiles\XAMPP\xampServer\htdocs\WEB\app\models" />
       <recent name="D:\programfiles\XAMPP\xampServer\htdocs\WEB\app\controllers" />
       <recent name="D:\programfiles\XAMPP\xampServer\htdocs\WEB\app\views\users" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\programfiles\XAMPP\xampServer\htdocs\WEB\app\views\reviews" />
+      <recent name="D:\programfiles\XAMPP\xampServer\htdocs\WEB\app\views\posts" />
+      <recent name="D:\programfiles\XAMPP\xampServer\htdocs\WEB\app\views\includes" />
     </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -150,6 +153,14 @@
       <workItem from="1634463565137" duration="6870000" />
       <workItem from="1634746995801" duration="1616000" />
       <workItem from="1634811370146" duration="1969000" />
+      <workItem from="1634814043320" duration="1005000" />
+      <workItem from="1634818854653" duration="146000" />
+      <workItem from="1634819246370" duration="628000" />
+      <workItem from="1634998470525" duration="23113000" />
+      <workItem from="1635067835479" duration="17969000" />
+      <workItem from="1635094816784" duration="8511000" />
+      <workItem from="1635157055742" duration="4148000" />
+      <workItem from="1635183469385" duration="1651000" />
     </task>
     <servers />
   </component>
@@ -181,10 +192,10 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="527" y="282" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1536.824@0.0.1536.824" timestamp="1631706498258" />
-    <state x="549" y="167" key="FileChooserDialogImpl" timestamp="1634421948729">
+    <state x="549" y="167" key="FileChooserDialogImpl" timestamp="1635183541368">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="549" y="167" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1634421948729" />
+    <state x="549" y="167" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1635183541368" />
     <state x="1029" y="382" key="NewPhpFileDialog" timestamp="1632425488722">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -193,10 +204,10 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="0" y="31" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1634333967076" />
-    <state x="78" y="190" key="run.anything.popup" timestamp="1634244397727">
+    <state x="78" y="190" key="run.anything.popup" timestamp="1635026876345">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="78" y="190" key="run.anything.popup/0.0.1536.824@0.0.1536.824" timestamp="1634244397727" />
+    <state x="78" y="190" key="run.anything.popup/0.0.1536.824@0.0.1536.824" timestamp="1635026876345" />
     <state x="8" y="135" width="672" height="678" key="search.everywhere.popup" timestamp="1634247049089">
       <screen x="0" y="0" width="1536" height="824" />
     </state>

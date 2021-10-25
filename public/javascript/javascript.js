@@ -1,3 +1,7 @@
+/**
+ * remove attribute disabled from submit button
+ * in form for changing password, when all inputs all filled
+ */
 function logIn(){
     let usernameOrEmail = document.getElementById('usernameOrEmail');
     let password = document.getElementById('password')
@@ -13,6 +17,10 @@ function logIn(){
     });
 }
 
+/**
+ * remove attribute disabled from submit button
+ * in form for registration, when all inputs all filled
+ */
 function registrationUp(){
     let username = document.getElementById('username');
     let email = document.getElementById('username');
@@ -30,6 +38,10 @@ function registrationUp(){
     });
 }
 
+/**
+ * remove attribute disabled from submit button
+ * in form for changing password, when all inputs all filled
+ */
 function changePassword(){
     let originalPassword = document.getElementById('originalPassword');
     let newPassword = document.getElementById('newPassword');
@@ -46,6 +58,13 @@ function changePassword(){
     });
 }
 
+/**
+ * Change type of password input
+ * to password or text
+ * @param passwordId        id of an password input
+ * @param openEyeId         icon of an open eye
+ * @param closeEyeId        icon of an close eye
+ */
 function openCloseEye(passwordId, openEyeId, closeEyeId){
     let x = document.getElementById(passwordId);
     let y = document.getElementById(openEyeId);
@@ -64,6 +83,9 @@ function openCloseEye(passwordId, openEyeId, closeEyeId){
     }
 }
 
+/**
+ * default confirmation
+ */
 function confirmAction() {
     let confirmAction = confirm("Určitě chcete tuto akci podniknout?");
     if (confirmAction) {
