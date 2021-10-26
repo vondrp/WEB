@@ -3,10 +3,11 @@
 {% block content %}
     <div class="container center form_back_style">
         <h1 class="text-center pt-5">Vytvořit nový článek</h1>
+        <p><span class="invalidFeedBack">* - povině vyplněné</span></p>
 
         <form action="{{ constant('URLROOT')}}/posts/create" method="POST" enctype="multipart/form-data" accept-charset="UTF-8">
             <div class="form-group mb-4 form-item">
-                <label>Nadpis</label>
+                <label><span class="invalidFeedBack">* </span>Nadpis</label>
                 <input maxlength="255" class="form-control"  type="text" name="title" placeholder="Titulek článku *" value="{{ title }}" required>
                     <span class="invalidFeedBack">
                         {{ titleError }}
@@ -15,7 +16,7 @@
             </div>
 
             <div class="form-group mb-4 form-item">
-                <label>Vložení pdf s podrobnými informacemi o příspěvku</label>
+                <label><span class="invalidFeedBack">*</span> Vložení pdf s podrobnými informacemi o příspěvku</label>
                 <input class="form-control" type="file" accept="application/pdf" name="fileToUpload" placeholder="PDF soubor *" value="{{ post.file }}" required>
                 <span class="invalidFeedBack">
                     {{ fileError }}
@@ -24,13 +25,13 @@
             </div>
 
             <div class="form-group mb-4 form-item">
-                <label> Krátký popis (maximálně 255 znaků) </label>
+                <label>Krátký popis (maximálně 255 znaků) </label>
                 <textarea maxlength="255" rows="3" class="form-control" name="description" placeholder="Zadejte popisek">{{ description }}</textarea>
 
             </div>
 
             <div class="form-group mb-4 form-item ">
-
+                <label><span class="invalidFeedBack">*</span> Článek</label>
                 <textarea rows="12" class="form-control" id="wysiwygTextArea" name="content" placeholder="Zadejte svůj příspěvek *">
                     {{ content }}
                 </textarea>

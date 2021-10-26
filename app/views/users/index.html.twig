@@ -35,31 +35,32 @@
             {% endif %}
         </form>
 
-        {% if userUndoneReviews is not empty %}
-            <h3 class="mt-3">Přiřazené recenze k vyhodnocení</h3>
-            <div class="reviews table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                    <tr>
-                        <th scope="col">Nadpis článku</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for review in userUndoneReviews %}
+        {% if session is not empty %}
+            {% if userUndoneReviews is not empty %}
+                <h3 class="mt-3">Přiřazené recenze k vyhodnocení</h3>
+                <div class="reviews table-responsive">
+                    <table class="table table-striped">
+                        <thead>
                         <tr>
-                            <td class="tableCellLongText"><a href="{{ constant('URLROOT') }}/posts/show/{{ review.post.id }}">{{ review.post.title }}</a></td>
-                            {% if session.user is not empty  %}
-                                <td>
-                                    {{ macros.canUpdateReview(review) }}
-                                </td>
-                            {% endif %}
+                            <th scope="col">Nadpis článku</th>
                         </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody>
+                        {% for review in userUndoneReviews %}
+                            <tr>
+                                <td class="tableCellLongText"><a href="{{ constant('URLROOT') }}/posts/show/{{ review.post.id }}">{{ review.post.title }}</a></td>
+                                {% if session.user is not empty  %}
+                                    <td>
+                                        {{ macros.canUpdateReview(review) }}
+                                    </td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
         {% endif %}
-
 
 
 
@@ -101,6 +102,7 @@
                     <th scope="col">Kvalita tématu</th>
                     <th scope="col">Jazyk</th>
                     <th scope="col">Originalita</th>
+                    <th scope="col">Doporučení zda vydat</th>
                     <th scope="col">Poznámky</th>
                 </tr>
                 </thead>
@@ -110,13 +112,20 @@
                         <td class="tableCellLongText"><a href="{{ constant('URLROOT') }}/posts/show/{{ review.post.id }}">{{ review.post.title }}</a></td>
                         <td>{% for i in 1..review.topicRelevance %}
                                 <i class="star fas fa-star"></i>
-                            {% endfor %}</td>
+                            {% endfor %}
+                        </td>
                         <td>{% for i in 1..review.langQuality %}
                                 <i class="star fas fa-star"></i>
-                            {% endfor %}</td>
+                            {% endfor %}
+                        </td>
                         <td>{% for i in 1..review.originality %}
                                 <i class="star fas fa-star"></i>
-                            {% endfor %}</td>
+                            {% endfor %}
+                        </td>
+                        <td>{% for i in 1..review.recommendation %}
+                                <i class="star fas fa-star"></i>
+                            {% endfor %}
+                        </td>
                         <td class="tableCellLongText">{{ review.notes  | raw }}</td>
                         {% if session.user is not empty  %}
                             <td>

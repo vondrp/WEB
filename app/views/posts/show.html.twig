@@ -42,6 +42,7 @@
                     <th scope="col">Kvalita tématu</th>
                     <th scope="col">Jazyk</th>
                     <th scope="col">Originalita</th>
+                    <th scope="col">Doporučení zda vydat</th>
                     <th scope="col">Poznámky</th>
                 </tr>
                 </thead>
@@ -62,6 +63,10 @@
                                 {% endfor %}
                             </td>
                             <td>{% for i in 1..review.originality %}
+                                    <i class="star fas fa-star"></i>
+                                {% endfor %}
+                            </td>
+                            <td>{% for i in 1..review.recommendation %}
                                     <i class="star fas fa-star"></i>
                                 {% endfor %}
                             </td>
