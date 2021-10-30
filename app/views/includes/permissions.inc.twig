@@ -99,6 +99,24 @@
         {% endif %}
 {% endmacro %}
 
+{# show form for deleting a user, if right condition are met #}
+{% macro canBlockUser(user) %}
+
+    {% if ( (session.user.role is same as('admin')) and (user.role is not same as('superadmin')) )
+        or (session.user.role is same as('superadmin'))
+    %}
+        <form action="{{ constant('URLROOT')}}/users/turnStatusOfUserBlock/{{ user.id}}" method="POST" class="delete-form">
+            <button onclick="return confirmAction('uživatel', 'block');" class="myBtn btn btn-danger red" name="submit" type="submit">
+                    {% if user.blocked ==0 %}
+                        <i style="color: #f52a2a;"class="red fas fa-ban"></i> Zakázat
+                    {% else %}
+                        <i style="color:darkgreen;"class=" fas fa-check-circle"></i> Povolit
+                    {% endif %}
+            </button>
+        </form>
+    {% endif %}
+{% endmacro %}
+
 {# macro which enabled change user password with right permissions #}
 {% macro canChangeUserPassword(user) %}
     {% if user.id == session.user.id or (session.user.role is same as('superadmin'))

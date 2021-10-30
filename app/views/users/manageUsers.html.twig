@@ -9,6 +9,7 @@
             <thead>
             <tr>
                 <th scope="col">Id</th>
+                <th scope="col">Povolen</th>
                 <th scope="col">uživatelské jméno</th>
                 <th scope="col">email</th>
                 <th scope="col">role</th>
@@ -19,6 +20,12 @@
             {% for user in users%}
                 <tr>
                     <td>{{ user.id }}</td>
+                    <td> {% if user.blocked == 0 %}
+                            <i style="color:darkgreen;"class=" fas fa-check-circle"></i>
+                        {% else %}
+                            <i style="color: #f52a2a;"class="red fas fa-ban"></i>
+                            {% endif %}
+                    </td>
                     <td>{{ user.username }}</td>
                     <td>{{ user.email }}</td>
                     {% if ( (session.user.role is same as('admin')) and (user.role is not same as('superadmin'))
@@ -51,7 +58,7 @@
                         <td>{{ user.role }}</td>
                         <td> <a href="{{ constant('URLROOT')}}/users/index/{{ user.id }}">Údaje</a></td>
                     {% endif %}
-                    <td>{{ macros.canDeleteUser(user) }}</td>
+                    <td>{{ macros.canBlockUser(user) }}</td>
                 </tr>
             {% endfor %}
                 </tbody>

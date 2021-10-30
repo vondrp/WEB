@@ -131,7 +131,7 @@ class Users extends Controller{
                 if($this->userModel->register($data)){
                     //Redirect to the login page
                     $user = $this->userModel->findUserByEmail($data['email']);
-                    createUserSession($user);
+                    $this->createUserSession($user);
                 }else{
                     die("Došlo k chybě, zkuste to prosím znovu.");
                 }
@@ -177,9 +177,14 @@ class Users extends Controller{
             if(empty($data['usernameOrEmailError'])
                 && empty($data['passwordError'])){
                 $loggedInUser = $this->userModel->login($data['usernameOrEmail'], $data['password']);
-                if($loggedInUser){
-                    $this->createUserSession($loggedInUser);
 
+                if($loggedInUser){
+                    if($loggedInUser->blocked !=0){
+                        $data['passwordError'] = 'Váš účet je v současné době zablokovaný (ban)!';
+                        $this->view('users/login', $data);
+                    }else{
+                        $this->createUserSession($loggedInUser);
+                    }
                 }else{
                     $data['passwordError'] = 'Uživatelské jméno nebo heslo bylo zadáno špatně. Zkuste to prosím znovu.';
                     $this->view('users/login', $data);
@@ -194,9 +199,6 @@ class Users extends Controller{
      * Controller for managing users
      */
     public function manageUsers(){
-        if(!isLoggedIn()){
-            header("Location: ".URLROOT . "/users/login");
-        }
         $users = $this->userModel->getAllUsers();
         $data = [
             'users' => $users
@@ -601,12 +603,43 @@ class Users extends Controller{
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
             if($this->userModel->deleteUser($user_id)){
-                header("Location: ". URLROOT ."/users/index");
+                header("Location: ". URLROOT ."/users/manageUsers");
             }else{
                 die("Došlo k chybě, zkuste to prosím znovu.");
             }
         }
     }
+
+    /**
+     * Change user blocked status to it´s opposite
+     * @param null $user_id     id of the user which is going to be blocked/unblocked
+     */
+    public function turnStatusOfUserBlock($user_id = null){
+        if(!isLoggedIn()){
+            header("Location: ". URLROOT . "/users/login");
+        }
+        if($user_id == null){
+            header("Location: ". URLROOT . "/users/index");
+        }
+        $user = $user = $this->userModel->findUserByID($user_id);
+        if (!$user or !manipulateUserProfilePermissions($user)){
+            header('location: ' . URLROOT . '/users/index');
+        }
+
+        if($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+            $newBlock = 0;
+            if($user->blocked == 0){
+                $newBlock = 1;
+            }
+            if($this->userModel->changeUserBlockStatus($user_id, $newBlock)){
+                header("Location: ". URLROOT ."/users/manageUsers");
+            }else{
+                die("Došlo k chybě, zkuste to prosím znovu.");
+            }
+        }
+    }
+
     /**
      * unset all session parameters and redirect to header
      */

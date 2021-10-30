@@ -320,6 +320,23 @@ class User{
     }
 
     /**
+     * Change status of user blocked
+     * @param $user_id      id of the user
+     * @param $blocked      new blocked status 0 or 1
+     * @return bool         true - success, otherwise false
+     */
+    public function changeUserBlockStatus($user_id, $blocked){
+        $this->db->query('UPDATE users SET blocked = :blocked WHERE id = :id');
+        $this->db->bind(':blocked', $blocked);
+        $this->db->bind('id', $user_id);
+        if($this->db->execute()){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    /**
      * Update user role
      * @param $data     newRole of the user, user_id - id of the user
      * @return bool    true - if update succeeded, otherwise return false

@@ -17,9 +17,7 @@
             </ul>
 
             <ul class="navbar-nav nav-pills ms-auto">
-                {% if session.user is not empty %}
-
-                    {% if session.user.role is same as('admin') or session.user.role is same as('superadmin')%}
+                    {% if session.user is not empty and (session.user.role is same as('admin') or session.user.role is same as('superadmin'))%}
                         <li class="nav-item">
                             <span class="input-group">
                                 <a class="nav-link" href="{{ constant('URLROOT')}}/reviews/assignReviews">
@@ -31,7 +29,7 @@
                     <li class="nav-item">
                         <span class="input-group">
                             <a class="nav-link" href="{{ constant('URLROOT')}}/users/manageUsers">
-                                        {% if session.user.role == 'superadmin' or session.user.role == 'admin' %}
+                                        {% if session.user is not empty and (session.user.role is same as('superadmin') or session.user.role is same as('admin')) %}
                                             <i class="fas fa-users-cog"></i> Správa profilů
                                         {% else %}
                                             <i class="fas fa-users"></i> Seznam profilů
@@ -39,6 +37,7 @@
                                 </a>
                         </span>
                     </li>
+                    {% if session.user is not empty %}
                     <li class="nav-item">
                         <span class="input-group">
                             <a class="nav-link" href="{{ constant('URLROOT')}}/users/index">
@@ -46,7 +45,9 @@
                             </a>
                         </span>
                     </li>
+                    {% endif %}
                     <li class="nav-item btn-login">
+                        {% if session.user is not empty %}
                             <span class="input-group">
                                 <a class="nav-link" href="{{ constant('URLROOT')}}/users/logout">
                                         <i class="fas fa-sign-out-alt"></i> Odhlásit se
